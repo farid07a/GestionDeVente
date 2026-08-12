@@ -1,0 +1,54 @@
+<?xml version="1.0"?><!-- iReport connections -->
+<iReportConnectionSet>
+	<iReportConnection name="Empty datasource" connectionClass="com.jaspersoft.ireport.designer.connection.JREmptyDatasourceConnection">
+		<connectionParameter name="records"><![CDATA[1]]></connectionParameter>
+	</iReportConnection>
+	<iReportConnection name="Empty datasource (1)" connectionClass="com.jaspersoft.ireport.designer.connection.JREmptyDatasourceConnection">
+		<connectionParameter name="records"><![CDATA[1]]></connectionParameter>
+	</iReportConnection>
+	<iReportConnection name="CnxSqlServer" connectionClass="com.jaspersoft.ireport.designer.connection.JDBCConnection">
+		<connectionParameter name="Username"><![CDATA[sa]]></connectionParameter>
+		<connectionParameter name="SavePassword"><![CDATA[false]]></connectionParameter>
+		<connectionParameter name="Database"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="ServerAddress"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="JDBCDriver"><![CDATA[com.microsoft.sqlserver.jdbc.SQLServerDriver]]></connectionParameter>
+		<connectionParameter name="Url"><![CDATA[jdbc:sqlserver://localhost:1433;databaseName=DB_Residence]]></connectionParameter>
+		<connectionParameter name="Password"><![CDATA[]]></connectionParameter>
+	</iReportConnection>
+	<iReportConnection name="CnxToSqlServerOrdMission" connectionClass="com.jaspersoft.ireport.designer.connection.JDBCConnection">
+		<connectionParameter name="Username"><![CDATA[sa]]></connectionParameter>
+		<connectionParameter name="SavePassword"><![CDATA[false]]></connectionParameter>
+		<connectionParameter name="Database"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="ServerAddress"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="JDBCDriver"><![CDATA[com.microsoft.sqlserver.jdbc.SQLServerDriver]]></connectionParameter>
+		<connectionParameter name="Url"><![CDATA[jdbc:sqlserver://localhost:1433;databaseName=OrdMissionNew]]></connectionParameter>
+		<connectionParameter name="Password"><![CDATA[]]></connectionParameter>
+	</iReportConnection>
+	<iReportConnection name="ucanaccess" connectionClass="com.jaspersoft.ireport.designer.connection.JDBCConnection">
+		<connectionParameter name="Username"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="SavePassword"><![CDATA[false]]></connectionParameter>
+		<connectionParameter name="Database"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="ServerAddress"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="JDBCDriver"><![CDATA[net.ucanaccess.jdbc.UcanaccessDriver]]></connectionParameter>
+		<connectionParameter name="Url"><![CDATA[jdbc:ucanaccess://E:\\residenceAccess.accdb]]></connectionParameter>
+		<connectionParameter name="Password"><![CDATA[]]></connectionParameter>
+	</iReportConnection>
+	<iReportConnection name="ucanaccess.net" connectionClass="com.jaspersoft.ireport.designer.connection.JDBCConnection">
+		<connectionParameter name="Username"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="SavePassword"><![CDATA[false]]></connectionParameter>
+		<connectionParameter name="Database"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="ServerAddress"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="JDBCDriver"><![CDATA[net.ucanaccess.jdbc.UcanaccessDriver]]></connectionParameter>
+		<connectionParameter name="Url"><![CDATA[jdbc:ucanaccess://E://residenceAccess.accdb]]></connectionParameter>
+		<connectionParameter name="Password"><![CDATA[]]></connectionParameter>
+	</iReportConnection>
+	<iReportConnection name="ConnectAccess" connectionClass="com.jaspersoft.ireport.designer.connection.JDBCConnection">
+		<connectionParameter name="Username"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="SavePassword"><![CDATA[false]]></connectionParameter>
+		<connectionParameter name="Database"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="ServerAddress"><![CDATA[]]></connectionParameter>
+		<connectionParameter name="JDBCDriver"><![CDATA[net.ucanaccess.jdbc.UcanaccessDriver]]></connectionParameter>
+		<connectionParameter name="Url"><![CDATA[jdbc:ucanaccess://E:\\StoreDBDJ.accdb]]></connectionParameter>
+		<connectionParameter name="Password"><![CDATA[]]></connectionParameter>
+	</iReportConnection>
+</iReportConnectionSet>
