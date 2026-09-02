@@ -9,10 +9,14 @@ import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.EntrepriseDAOImpl;
 import entity.Entreprise;
+import entity.KeyboardLanguage;
 import home.HomeForm;
+import java.awt.Robot;
 import java.awt.event.KeyEvent;
+import java.awt.im.InputContext;
 import java.sql.Connection;
 import java.util.Locale;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -20,16 +24,19 @@ import java.util.Locale;
  */
 public class AddCompany extends javax.swing.JDialog {
 
-     Connection connection;
-      HomeForm homeForm;
-      Exite exite ;
+    Connection connection;
+    HomeForm homeForm;
+    Exite exite;
+    EntrepriseDAOImpl entrepriseDAOImpl;
+
     public AddCompany(java.awt.Frame parent, boolean modal) {
-        super(parent,modal);
-        this.homeForm= (HomeForm) parent;
+        super(parent, modal);
+        this.homeForm = (HomeForm) parent;
         initComponents();
         setLocationRelativeTo(this.homeForm);
         exite = new Exite(this, homeForm);
-        connection =  DatabaseConnection.getInstance().getConnection();   
+        connection = DatabaseConnection.getInstance().getConnection();
+        entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
         matricul.requestFocus();
     }
 
@@ -49,7 +56,7 @@ public class AddCompany extends javax.swing.JDialog {
         nom_fr_entrepr = new ui.card.TextFieldRound();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        nom_entrepr = new ui.card.TextFieldRound();
+        nom_entrepr_ar = new ui.card.TextFieldRound();
         tel = new ui.card.TextFieldRound();
         btn_annuler = new material.design.buttonRounder();
         btn_save = new material.design.buttonRounder();
@@ -122,23 +129,23 @@ public class AddCompany extends javax.swing.JDialog {
         jLabel5.setForeground(new java.awt.Color(102, 102, 102));
         jLabel5.setText("العنوان");
 
-        nom_entrepr.setBorder(null);
-        nom_entrepr.setForeground(new java.awt.Color(0, 0, 0));
-        nom_entrepr.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        nom_entrepr.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        nom_entrepr.addFocusListener(new java.awt.event.FocusAdapter() {
+        nom_entrepr_ar.setBorder(null);
+        nom_entrepr_ar.setForeground(new java.awt.Color(0, 0, 0));
+        nom_entrepr_ar.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        nom_entrepr_ar.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        nom_entrepr_ar.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                nom_entreprFocusGained(evt);
+                nom_entrepr_arFocusGained(evt);
             }
         });
-        nom_entrepr.addActionListener(new java.awt.event.ActionListener() {
+        nom_entrepr_ar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nom_entreprActionPerformed(evt);
+                nom_entrepr_arActionPerformed(evt);
             }
         });
-        nom_entrepr.addKeyListener(new java.awt.event.KeyAdapter() {
+        nom_entrepr_ar.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                nom_entreprKeyPressed(evt);
+                nom_entrepr_arKeyPressed(evt);
             }
         });
 
@@ -198,7 +205,7 @@ public class AddCompany extends javax.swing.JDialog {
         });
 
         jLabel7.setBackground(new java.awt.Color(43, 43, 140));
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("إضافة  شركة جديدة");
@@ -246,7 +253,7 @@ public class AddCompany extends javax.swing.JDialog {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(nom_fr_entrepr, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(17, 17, 17)
-                                .addComponent(nom_entrepr, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(nom_entrepr_ar, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(203, 203, 203)
                                 .addComponent(jLabel3)
@@ -285,7 +292,7 @@ public class AddCompany extends javax.swing.JDialog {
                     .addComponent(jLabel1))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nom_fr_entrepr, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(nom_entrepr, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(nom_entrepr_ar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
@@ -317,28 +324,31 @@ public class AddCompany extends javax.swing.JDialog {
         // TODO add your handling code here:
     }//GEN-LAST:event_nom_fr_entreprActionPerformed
 
-    private void nom_entreprActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nom_entreprActionPerformed
+    private void nom_entrepr_arActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nom_entrepr_arActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_nom_entreprActionPerformed
+    }//GEN-LAST:event_nom_entrepr_arActionPerformed
 
     private void telActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_telActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_telActionPerformed
 
     private void btn_annulerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_annulerActionPerformed
-         this.dispose();
-         
+        this.dispose();
+
     }//GEN-LAST:event_btn_annulerActionPerformed
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
- if (nom_entrepr.getText().isEmpty() ){
-             exite.showMessage("خــطـأ", "تأكد من ادخال المـعلـومـات");
-        return;
+        if (nom_entrepr_ar.getText().isEmpty()) {
+            exite.showMessageDialog("خــطـأ", "تأكد من ادخال المـعلـومـات");
+            return;
         }
-        Entreprise entreprise = new  Entreprise(0, nom_entrepr.getText(), nom_fr_entrepr.getText(), matricul.getText(), adress.getText(), tel.getText(), email.getText());
-       
-        
-        if( new EntrepriseDAOImpl(connection).save(entreprise) >0){
+        Entreprise entreprise = new Entreprise(0, nom_entrepr_ar.getText(), nom_fr_entrepr.getText(), matricul.getText(), adress.getText(), tel.getText(), email.getText());
+        Entreprise entrepriseExist =entrepriseDAOImpl.getEntrepriseParName(entreprise.getNom_ar());
+         if (entrepriseExist!=null) {
+            exite.showMessageDialog("تنبيه", "تأكد من اسم الشركة فهو موجود مسبقا ");
+            return;
+        }
+        if (new EntrepriseDAOImpl(connection).save(entreprise) > 0) {
             this.dispose();
             new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "تـم إضـافـة الشـركـة بـنـجـاح ");
             homeForm.getPan_Entreprise().setEntreprisesOnTab();
@@ -348,61 +358,189 @@ public class AddCompany extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_saveActionPerformed
 
     private void matriculActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_matriculActionPerformed
-         
+
     }//GEN-LAST:event_matriculActionPerformed
 
     private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_emailActionPerformed
 
-    private void nom_entreprKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nom_entreprKeyPressed
-if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB ) {
-                    nom_fr_entrepr.requestFocusInWindow();
-          }        
-    }//GEN-LAST:event_nom_entreprKeyPressed
+    private void nom_entrepr_arKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nom_entrepr_arKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            nom_fr_entrepr.requestFocusInWindow();
+        }
+    }//GEN-LAST:event_nom_entrepr_arKeyPressed
 
     private void matriculKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_matriculKeyPressed
-      if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB ) {
-                    nom_entrepr.requestFocusInWindow();
-          }
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            nom_entrepr_ar.requestFocusInWindow();
+        }
     }//GEN-LAST:event_matriculKeyPressed
 
     private void nom_fr_entreprKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nom_fr_entreprKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB ) {
-                    adress.requestFocusInWindow();
-          }
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            adress.requestFocusInWindow();
+        }
     }//GEN-LAST:event_nom_fr_entreprKeyPressed
 
     private void adressKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_adressKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB ) {
-                    tel.requestFocusInWindow();
-          }
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            tel.requestFocusInWindow();
+        }
     }//GEN-LAST:event_adressKeyPressed
 
     private void telKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_telKeyPressed
-       if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB ) {
-                    email.requestFocusInWindow();
-          }
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
+            email.requestFocusInWindow();
+        }
     }//GEN-LAST:event_telKeyPressed
 
     private void nom_fr_entreprFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nom_fr_entreprFocusGained
-        nom_fr_entrepr.getInputContext().selectInputMethod(new Locale("fr"));
-                System.out.println("test focus gqined");
+        java.awt.im.InputContext systemInputContext = java.awt.im.InputContext.getInstance();
+        Locale currentLocale = systemInputContext.getLocale();
+
+        String currentSystemLang = (currentLocale != null) ? currentLocale.getLanguage() : "";
+
+        if (currentSystemLang.equalsIgnoreCase("fr")) {
+            System.out.println("La lang et  1: "+currentSystemLang);
+            return;
+        }
+        try {
+            Robot robot = new Robot();
+            boolean found= true;
+            while (found) {
+                // استخدام Win + Space بدلاً من Alt + Shift لضمان التنقل الصحيح في Win 11
+                robot.keyPress(java.awt.event.KeyEvent.VK_WINDOWS);
+                robot.keyPress(java.awt.event.KeyEvent.VK_SPACE);
+                robot.keyRelease(java.awt.event.KeyEvent.VK_SPACE);
+                robot.keyRelease(java.awt.event.KeyEvent.VK_WINDOWS);
+
+          //      Thread.sleep(250);
+
+                // 3. قراءة اللغة الجديدة المحددة في النظام
+                java.awt.im.InputContext systemIC = java.awt.im.InputContext.getInstance();
+                Locale currentLocaleNew = systemIC.getLocale();
+                String currentLangNew = (currentLocaleNew != null) ? currentLocaleNew.getLanguage() : "";
+                if (currentLangNew.equalsIgnoreCase("fr") ||currentLangNew.equals(currentSystemLang) ||currentLangNew.equalsIgnoreCase("en") ) {   
+                    System.out.println(" lang : "+currentLangNew );
+                    found = false;
+                    break;
+                }
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+       
+//nom_fr_entrepr.requestFocusInWindow();
+//    InputContext ic = nom_fr_entrepr.getInputContext();
+//
+//    if (ic != null) {
+//        // 1. تجربة التغير المباشر أولاً (في حال دعم النظام)
+//        boolean foundFr = ic.selectInputMethod(new Locale("fr", "FR")) || ic.selectInputMethod(new Locale("fr"));
+//
+//        if (foundFr) {
+//            return; // تم التحويل للفرنسية فوراً
+//        }
+//
+//        // 2. حفظ اللغة الأولى قبل التبديل (مثل "en")
+//        Locale initialLocale = ic.getLocale();
+//        String startLang = (initialLocale != null) ? initialLocale.getLanguage() : "";
+//
+//        try {
+//            Robot robot = new Robot();
+//            int attempts = 0;
+//            int maxLanguages = 6; // حد أقصى للغات المثبتة في الويندوز
+//
+//            while (attempts < maxLanguages) {
+//                // استخدام Win + Space بدلاً من Alt + Shift لضمان التنقل الصحيح في Win 11
+//                robot.keyPress(java.awt.event.KeyEvent.VK_WINDOWS);
+//                robot.keyPress(java.awt.event.KeyEvent.VK_SPACE);
+//                robot.keyRelease(java.awt.event.KeyEvent.VK_SPACE);
+//                robot.keyRelease(java.awt.event.KeyEvent.VK_WINDOWS);
+//
+//                // مهلة 250 مللي ثانية ليقوم الويندوز بتحديث حقل النص باللغة الجديدة
+//                Thread.sleep(250);
+//
+//                // قراءة اللغة الجديدة بعد التبديل
+//                Locale currentLocale = ic.getLocale();
+//                String currentLang = (currentLocale != null) ? currentLocale.getLanguage() : "";
+//
+//                // الشرط الأول: إذا وصل للغة الفرنسية -> نجاح وخروج
+//                if (currentLang.equalsIgnoreCase("fr")) {
+//                    foundFr = true;
+//                    break;
+//                }
+//
+//                // الشرط الثاني: إذا عبر على العربية وتخطاها وعاد مجدداً لـ "en" (اللغة الأولى)
+//                // بشرط أن يكون قام بتجربة التبديل مرتين على الأقل (attempts > 0)
+//                if (attempts > 0 && currentLang.equalsIgnoreCase(startLang)) {
+//                    foundFr = false; // أكمل دورة كاملة دون العثور على الفرنسية
+//                    break;
+//                }
+//
+//                attempts++;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        // 3. إظهار رسالة التنبيه إذا عاد لنفس اللغة ولم يجد الفرنسية
+//        if (!foundFr) {
+//            javax.swing.JOptionPane.showMessageDialog(
+//                null, 
+//                "اللغة الفرنسية غير مثبتة في الويندوز!\nيرجى إضافتها من إعدادات Windows (Language Settings).", 
+//                "تنبيه - لغة الإدخال", 
+//                javax.swing.JOptionPane.WARNING_MESSAGE
+//            );
+//        }
+//    }
+//});
+
+//    SwingUtilities.invokeLater(() -> {
+//    nom_fr_entrepr.requestFocusInWindow();
+//    
+//    InputContext ic = nom_fr_entrepr.getInputContext();
+//    if (ic != null) {
+//        boolean success = false;
+//        
+//        // 1. تجربة التغيير المباشر لفرنسا
+//        success = ic.selectInputMethod(new Locale("fr", "FR"));
+//        
+//        // 2. إذا لم تنجح، تجربة لغة فرنسية عامة
+//        if (!success) {
+//            success = ic.selectInputMethod(new Locale("fr"));
+//        }
+//        
+//        // 3. البحث في كافة اللغات المتاحة في الكيبورد حتى إيجاد الفرنسية
+//        if (!success) {
+//            Locale[] availableLocales = Locale.getAvailableLocales();
+//            for (Locale loc : availableLocales) {
+//                if (loc.getLanguage().equalsIgnoreCase("fr")) {
+//                    if (ic.selectInputMethod(loc)) {
+//                        break; // تم العثور على الفرنسية وتطبيقها بنجاح
+//                    }
+//                }
+//            }
+//        }
+//    }
+//});
 
     }//GEN-LAST:event_nom_fr_entreprFocusGained
 
-    private void nom_entreprFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nom_entreprFocusGained
-        nom_entrepr.getInputContext().selectInputMethod(new Locale("Fr"));
-    }//GEN-LAST:event_nom_entreprFocusGained
+    private void nom_entrepr_arFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_nom_entrepr_arFocusGained
+        nom_entrepr_ar.getInputContext().selectInputMethod(new Locale("Fr"));
+    }//GEN-LAST:event_nom_entrepr_arFocusGained
 
     private void adressFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_adressFocusGained
         // TODO add your handling code here:
-                adress.getInputContext().selectInputMethod(new Locale("ar"));
+        adress.getInputContext().selectInputMethod(new Locale("ar"));
 
     }//GEN-LAST:event_adressFocusGained
 
     private void emailFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_emailFocusGained
-       adress.getInputContext().selectInputMethod(new Locale("fr"));
+        adress.getInputContext().selectInputMethod(new Locale("fr"));
         System.out.println("test focus gqined");
     }//GEN-LAST:event_emailFocusGained
 
@@ -463,7 +601,7 @@ if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private ui.card.TextFieldRound matricul;
-    private ui.card.TextFieldRound nom_entrepr;
+    private ui.card.TextFieldRound nom_entrepr_ar;
     private ui.card.TextFieldRound nom_fr_entrepr;
     private ui.card.TextFieldRound tel;
     // End of variables declaration//GEN-END:variables

@@ -24,6 +24,14 @@ public class PanProduitCategorie extends javax.swing.JPanel {
         this.pan_categorie = pan_categorie;
         setForm(pan_produit);
     }
+
+    public pan_produit getPan_produit() {
+        return pan_produit;
+    }
+
+    public pan_categorie getPan_categorie() {
+        return pan_categorie;
+    }
     
     
     private void setForm( JComponent com) {
@@ -45,15 +53,14 @@ pan_centre.removeAll();
         for (Component component : pan.getComponents()) {
             if (component instanceof button) {
                 button button = (button) component;
-                button.setColor1(new Color(156, 156, 255));
-                button.setColor2(new Color(156, 156, 255));
+                button.setColor1(new Color(0,0,102));
+                button.setColor2(new Color(0,0,102));
                 // button.repaint();
                 // button.revalidate();
             }
         }
-        btn.setColor2(Color.WHITE);
-        btn.setColor1(new Color(0, 204, 204));
-        //  btn.setColor1(new Color(0,204,204));
+        btn.setColor2(new Color(51,51,255));
+        btn.setColor1(new Color(0,0,102));     //  btn.setColor1(new Color(0,204,204));
         pan.repaint();
         pan.revalidate();
 
@@ -80,11 +87,11 @@ pan_centre.removeAll();
         pan_menu.setMaximumSize(new java.awt.Dimension(32767, 47));
         pan_menu.setMinimumSize(new java.awt.Dimension(0, 47));
 
-        btn_catego.setBackground(new java.awt.Color(226, 232, 240));
+        btn_catego.setBackground(new java.awt.Color(0, 204, 204));
         btn_catego.setForeground(new java.awt.Color(255, 255, 255));
         btn_catego.setText("النوعية -  العلامة التجارية");
-        btn_catego.setColor1(new java.awt.Color(226, 232, 240));
-        btn_catego.setColor2(new java.awt.Color(226, 232, 240));
+        btn_catego.setColor1(new java.awt.Color(0, 0, 102));
+        btn_catego.setColor2(new java.awt.Color(0, 0, 102));
         btn_catego.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btn_catego.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btn_catego.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -97,8 +104,8 @@ pan_centre.removeAll();
         btn_produit.setBackground(new java.awt.Color(0, 204, 204));
         btn_produit.setForeground(new java.awt.Color(255, 255, 255));
         btn_produit.setText("المنتجات");
-        btn_produit.setColor1(new java.awt.Color(255, 255, 255));
-        btn_produit.setColor2(new java.awt.Color(0, 204, 204));
+        btn_produit.setColor1(new java.awt.Color(51, 51, 255));
+        btn_produit.setColor2(new java.awt.Color(0, 0, 102));
         btn_produit.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btn_produit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         btn_produit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -113,11 +120,11 @@ pan_centre.removeAll();
         pan_menuLayout.setHorizontalGroup(
             pan_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_menuLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(44, Short.MAX_VALUE)
                 .addComponent(btn_catego, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_produit, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(40, 40, 40))
+                .addGap(50, 50, 50))
         );
         pan_menuLayout.setVerticalGroup(
             pan_menuLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

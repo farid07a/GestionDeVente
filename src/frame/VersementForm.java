@@ -19,13 +19,13 @@ import entity.Nomber;
 import entity.VersementEntreprise;
 import enums.ModePaiement;
 import home.HomeForm;
+import java.awt.ComponentOrientation;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
-import javafx.scene.control.RadioButton;
 import javax.swing.ButtonGroup;
 import javax.swing.table.DefaultTableModel;
 import material.design.designeTable;
@@ -54,6 +54,10 @@ public class VersementForm extends javax.swing.JDialog {
         group.add(radioChequ);
 
         setLocationRelativeTo(this.homeForm);
+        progressBarCustom1.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT.RIGHT_TO_LEFT);
+        progBarAcha.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT.RIGHT_TO_LEFT);
+        progressBarLastCredit.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT.RIGHT_TO_LEFT);
+        progressBarAugment.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT.RIGHT_TO_LEFT);
 
         new designeTable().setDesignTable(tab, jScrollPane2);
         connection = DatabaseConnection.getInstance().getConnection();
@@ -136,20 +140,13 @@ public class VersementForm extends javax.swing.JDialog {
 
     public void setAchatNotVersementInTablByEntreprise(Entreprise entreprise) {
 
-        labEntreprice.setText(entreprise.getNom_fr() + " ");
-
+        int progress = 0;
         DefaultTableModel model = (DefaultTableModel) tab.getModel();
         model.setRowCount(0);
         // exist cridete / NO
 
         double restCreditLastVersemet = new serviceVersementEntreprise(connection)
                 .GetLastRestVersementEntreprise(entreprise);
-
-        if (restCreditLastVersemet >= 0) {
-            labCreditLsatVersemnt.setText(formatter.format(restCreditLastVersemet));
-        } else {
-            labAguLsatVersemnt.setText(formatter.format(restCreditLastVersemet * -1));
-        }
 
         List<Achat> achats = achatDAOImpl.getAchatNotInTabVersementByEntreprise(entreprise);
         double PrixTotalCredit = 0;
@@ -176,17 +173,38 @@ public class VersementForm extends javax.swing.JDialog {
         labTotalAchats.setText(formatter.format(PrixTotalCredit));
         // laste credit + creditAchat NO IN tab    AchatClientVers
         if (restCreditLastVersemet >= 0) {
-            PrixTotalCredit = PrixTotalCredit + restCreditLastVersemet;
-            labCreditAvanVersement.setText(formatter.format(PrixTotalCredit));
+            labCreditLsatVersemnt.setText(formatter.format(restCreditLastVersemet));
+            double PrixTotalCreditAchat = PrixTotalCredit + restCreditLastVersemet;
+
+            labCreditAchatVersement.setText(formatter.format(PrixTotalCreditAchat));
             labAguLsatVersemnt.setText(formatter.format(00));
-            labTotal.setText(formatter.format(PrixTotalCredit));
+            labTotal.setText(formatter.format(PrixTotalCreditAchat));
+
+            progress = (int) ((PrixTotalCreditAchat / PrixTotalCreditAchat) * 100);
+            progressBarCustom1.setValue(progress);
+            progressBarAugment.setValue(0);
+            progress = (int) ((PrixTotalCredit / PrixTotalCreditAchat) * 100);
+            progBarAcha.setValue(progress);
+            progress = (int) ((restCreditLastVersemet / PrixTotalCreditAchat) * 100);
+            progressBarLastCredit.setValue(progress);
 
         } else {
-            labCreditAvanVersement.setText(formatter.format(PrixTotalCredit));
+            
             labCreditLsatVersemnt.setText(formatter.format(00));
+            labCreditAchatVersement.setText(formatter.format(PrixTotalCredit));
             labAguLsatVersemnt.setText(formatter.format(restCreditLastVersemet * -1));
-            prixVersementCreditAugm = PrixTotalCredit + restCreditLastVersemet;
-            labTotal.setText(formatter.format(prixVersementCreditAugm));
+           // -500+200 = -300
+            prixVersementCreditAugm = PrixTotalCredit ;//+ restCreditLastVersemet;
+           
+            labTotal.setText(formatter.format(PrixTotalCredit));
+
+            progress = (int) (((prixVersementCreditAugm) / prixVersementCreditAugm) * 100);
+            progressBarCustom1.setValue(progress);
+            progress = (int) (((restCreditLastVersemet * -1) / prixVersementCreditAugm) * 100);
+            progressBarAugment.setValue(progress);
+            progress = (int) ((PrixTotalCredit / prixVersementCreditAugm) * 100);
+            progBarAcha.setValue(progress);
+            progressBarLastCredit.setValue(0);
 
         }
 
@@ -240,20 +258,24 @@ public class VersementForm extends javax.swing.JDialog {
 
         double lastCredit = new Nomber().getNbDouble(labCreditLsatVersemnt.getText());
         double Credit = new Nomber().getNbDouble(labTotalAchats.getText());
+      
         double CreditNewAndLast = lastCredit + Credit;
 
         double restCridetApreVersement = CreditNewAndLast - montantAndAug; // +100 ent-->credi عند دين مؤسسة// -100 ---> بزيادة
-
+       
+        String numCheque = txtNumCheque.getText();
         ModePaiement mode_paiement = getModePaiement();
+
         VersementEntreprise versementEntreprise = null;
+
         if (restCridetApreVersement >= 0) {
             versementEntreprise = new VersementEntreprise(0, entreprise, montant,
                     LocalDate.now(), mode_paiement.name(), "", Credit,
-                    restCridetApreVersement);
+                    restCridetApreVersement, numCheque);
         } else {
             versementEntreprise = new VersementEntreprise(0, entreprise, montant,
                     LocalDate.now(), mode_paiement.name(), "بزيادة", Credit,
-                    restCridetApreVersement);
+                    restCridetApreVersement, numCheque);
         }
 
         if (versementEntrepriseDAOImpl.save(versementEntreprise) > 0) {
@@ -266,7 +288,7 @@ public class VersementForm extends javax.swing.JDialog {
             this.homeForm.getPanVersement().setVersmentOnTab();
 
         } else {
-            exite.showMessage("خــطـأ", "حـدث خــطـأ في عـمـلــيـة تـأكـيد عـملـيـة الـدفـع");
+            exite.showMessageDialog("خــطـأ", "حـدث خــطـأ في عـمـلــيـة تـأكـيد عـملـيـة الـدفـع");
         }
 
         return versementEntreprise;
@@ -274,7 +296,6 @@ public class VersementForm extends javax.swing.JDialog {
     }
 
     public void initItems() {
-        labEntreprice.setText("");
         labTotalAchats.setText(0.00 + "");
         textMontantVersement.setText(0.00 + "");
         radioEsp.setSelected(true);
@@ -283,7 +304,7 @@ public class VersementForm extends javax.swing.JDialog {
         labCreditLsatVersemnt.setText(0.00 + "");
         labAguLsatVersemnt.setText(0.00 + "");
         labTotal.setText(0.00 + "");
-        labCreditAvanVersement.setText(0.00 + "");
+        labCreditAchatVersement.setText(0.00 + "");
 
         DefaultTableModel model = (DefaultTableModel) tab.getModel();
         model.setRowCount(0);
@@ -299,46 +320,11 @@ public class VersementForm extends javax.swing.JDialog {
         jScrollPane2 = new javax.swing.JScrollPane();
         tab = new javax.swing.JTable();
         txt_search = new material.design.SearchTextRound();
-        panRound2 = new ui.card.panRound();
-        jLabel7 = new javax.swing.JLabel();
-        textMontantVersement = new ui.card.TextFieldPrice();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel26 = new javax.swing.JLabel();
-        pan_gradiant2 = new ui.card.pan_gradiant();
-        radioCart = new material.design.RadioButtonCustomAR();
-        pan_gradiant3 = new ui.card.pan_gradiant();
-        radioChequ = new material.design.RadioButtonCustomAR();
-        pan_gradiant4 = new ui.card.pan_gradiant();
-        radioEsp = new material.design.RadioButtonCustomAR();
         btn_save = new material.design.buttonRounder();
         btn_annuler = new material.design.buttonRounder();
         jLabel1 = new javax.swing.JLabel();
         comboboxRound1 = new material.design.ComboboxRoundNew();
-        panRound6 = new ui.card.panRound();
-        labCreditLsatVersemnt = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel23 = new javax.swing.JLabel();
-        panRound5 = new ui.card.panRound();
-        labAguLsatVersemnt = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        panRound3 = new ui.card.panRound();
-        jLabel19 = new javax.swing.JLabel();
-        labTotalAchats = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel24 = new javax.swing.JLabel();
-        labEntreprice = new javax.swing.JLabel();
-        panRound8 = new ui.card.panRound();
-        jLabel21 = new javax.swing.JLabel();
-        labTotal = new javax.swing.JLabel();
-        jLabel22 = new javax.swing.JLabel();
         panRound4 = new ui.card.panRound();
-        jLabel5 = new javax.swing.JLabel();
-        labCreditAvanVersement = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel27 = new javax.swing.JLabel();
         pan_gradiant1 = new ui.card.pan_gradiant();
@@ -351,6 +337,46 @@ public class VersementForm extends javax.swing.JDialog {
         jLabel16 = new javax.swing.JLabel();
         labAug_avec_versment = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
+        panRound21 = new ui.card.panRound2();
+        jLabel5 = new javax.swing.JLabel();
+        labCreditAchatVersement = new javax.swing.JLabel();
+        jLabel20 = new javax.swing.JLabel();
+        progressBarCustom1 = new splashscreen.ProgressBarCustom();
+        panRound22 = new ui.card.panRound2();
+        jLabel24 = new javax.swing.JLabel();
+        jLabel19 = new javax.swing.JLabel();
+        labTotalAchats = new javax.swing.JLabel();
+        jLabel13 = new javax.swing.JLabel();
+        progBarAcha = new splashscreen.ProgressBarCustom();
+        panRound23 = new ui.card.panRound2();
+        jLabel6 = new javax.swing.JLabel();
+        labCreditLsatVersemnt = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        progressBarLastCredit = new splashscreen.ProgressBarCustom();
+        panRound24 = new ui.card.panRound2();
+        jLabel3 = new javax.swing.JLabel();
+        labAguLsatVersemnt = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel14 = new javax.swing.JLabel();
+        progressBarAugment = new splashscreen.ProgressBarCustom();
+        panRound25 = new ui.card.panRound2();
+        jLabel7 = new javax.swing.JLabel();
+        pan_radioEsp = new ui.card.pan_gradiant();
+        radioEsp = new material.design.RadioButtonCustomAR();
+        txtNumCheque = new material.design.TextField();
+        pan_radioChequ = new ui.card.pan_gradiant();
+        radioChequ = new material.design.RadioButtonCustomAR();
+        textMontantVersement = new ui.card.TextFieldPrice();
+        jLabel26 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        pan_radioCart = new ui.card.pan_gradiant();
+        radioCart = new material.design.RadioButtonCustomAR();
+        jLabel21 = new javax.swing.JLabel();
+        labTotal = new javax.swing.JLabel();
+        jLabel22 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -409,190 +435,7 @@ public class VersementForm extends javax.swing.JDialog {
                 .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(tableScrollButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addGap(20, 20, 20))
-        );
-
-        panRound2.setBackground(new java.awt.Color(253, 253, 253));
-        panRound2.setColor1(new java.awt.Color(246, 246, 246));
-        panRound2.setMaximumSize(new java.awt.Dimension(493, 269));
-
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 51, 204));
-        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel7.setText("الـمـبـلــغ الـمـدفــوع ");
-        jLabel7.setToolTipText("");
-
-        textMontantVersement.setForeground(new java.awt.Color(0, 0, 0));
-        textMontantVersement.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textMontantVersement.setText("00.00");
-        textMontantVersement.setFont(new java.awt.Font("Times New Roman", 1, 30)); // NOI18N
-        textMontantVersement.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textMontantVersementActionPerformed(evt);
-            }
-        });
-        textMontantVersement.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                textMontantVersementKeyReleased(evt);
-            }
-        });
-
-        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-portefeuille-35.png"))); // NOI18N
-
-        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 51, 204));
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel8.setText("طــريـقــة الــدفــع ");
-
-        jLabel26.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
-        jLabel26.setText("دج");
-
-        pan_gradiant2.setColor1(new java.awt.Color(189, 189, 255));
-        pan_gradiant2.setColor2(new java.awt.Color(189, 189, 255));
-
-        radioCart.setBackground(new java.awt.Color(51, 204, 0));
-        radioCart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-carte-bancaire-40.png"))); // NOI18N
-        radioCart.setText("بطاقة");
-        radioCart.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        radioCart.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        radioCart.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        radioCart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioCartActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pan_gradiant2Layout = new javax.swing.GroupLayout(pan_gradiant2);
-        pan_gradiant2.setLayout(pan_gradiant2Layout);
-        pan_gradiant2Layout.setHorizontalGroup(
-            pan_gradiant2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_gradiant2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
-        );
-        pan_gradiant2Layout.setVerticalGroup(
-            pan_gradiant2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_gradiant2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pan_gradiant3.setColor1(new java.awt.Color(255, 235, 204));
-        pan_gradiant3.setColor2(new java.awt.Color(255, 235, 204));
-
-        radioChequ.setBackground(new java.awt.Color(51, 204, 0));
-        radioChequ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cheque-de-paiement.png"))); // NOI18N
-        radioChequ.setText("صك بريدي");
-        radioChequ.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        radioChequ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        radioChequ.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        radioChequ.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioChequActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pan_gradiant3Layout = new javax.swing.GroupLayout(pan_gradiant3);
-        pan_gradiant3.setLayout(pan_gradiant3Layout);
-        pan_gradiant3Layout.setHorizontalGroup(
-            pan_gradiant3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_gradiant3Layout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pan_gradiant3Layout.setVerticalGroup(
-            pan_gradiant3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_gradiant3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        pan_gradiant4.setColor1(new java.awt.Color(193, 255, 193));
-        pan_gradiant4.setColor2(new java.awt.Color(193, 255, 193));
-
-        radioEsp.setBackground(new java.awt.Color(51, 204, 0));
-        radioEsp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-cash-40.png"))); // NOI18N
-        radioEsp.setText("نقدا");
-        radioEsp.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        radioEsp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        radioEsp.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        radioEsp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioEspActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout pan_gradiant4Layout = new javax.swing.GroupLayout(pan_gradiant4);
-        pan_gradiant4.setLayout(pan_gradiant4Layout);
-        pan_gradiant4Layout.setHorizontalGroup(
-            pan_gradiant4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_gradiant4Layout.createSequentialGroup()
-                .addContainerGap(26, Short.MAX_VALUE)
-                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-        );
-        pan_gradiant4Layout.setVerticalGroup(
-            pan_gradiant4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_gradiant4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        javax.swing.GroupLayout panRound2Layout = new javax.swing.GroupLayout(panRound2);
-        panRound2.setLayout(panRound2Layout);
-        panRound2Layout.setHorizontalGroup(
-            panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound2Layout.createSequentialGroup()
-                .addGap(135, 135, 135)
-                .addComponent(pan_gradiant3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
-                .addComponent(pan_gradiant2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(39, 39, 39)
-                .addComponent(pan_gradiant4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(195, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel8)
-                .addGap(61, 61, 61))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound2Layout.createSequentialGroup()
-                .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panRound2Layout.createSequentialGroup()
-                        .addGap(96, 96, 96)
-                        .addComponent(jLabel26)
-                        .addGap(18, 18, 18)
-                        .addComponent(textMontantVersement, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panRound2Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jLabel12)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel7)
-                .addGap(49, 49, 49))
-        );
-        panRound2Layout.setVerticalGroup(
-            panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound2Layout.createSequentialGroup()
-                .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panRound2Layout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addGap(9, 9, 9)
-                        .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(textMontantVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(5, 5, 5)
-                .addComponent(jLabel8)
-                .addGap(3, 3, 3)
-                .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(pan_gradiant3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(pan_gradiant4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pan_gradiant2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(20, 20, 20))
         );
 
         btn_save.setBackground(new java.awt.Color(22, 163, 74));
@@ -624,244 +467,19 @@ public class VersementForm extends javax.swing.JDialog {
         jLabel1.setText("تـــســجــيــل دفـــعــة وتــحــديــث رصيد المــؤسـســة");
         jLabel1.setOpaque(true);
 
+        comboboxRound1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         comboboxRound1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboboxRound1ActionPerformed(evt);
             }
         });
 
-        panRound6.setBackground(new java.awt.Color(255, 255, 255));
-        panRound6.setColor1(new java.awt.Color(243, 243, 243));
-
-        labCreditLsatVersemnt.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        labCreditLsatVersemnt.setForeground(new java.awt.Color(255, 0, 0));
-        labCreditLsatVersemnt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labCreditLsatVersemnt.setText("0.00");
-
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText("الديــون اخـر عملية دفع ");
-
-        jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel15.setForeground(new java.awt.Color(255, 0, 0));
-        jLabel15.setText("دج");
-
-        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-moins-29.png"))); // NOI18N
-
-        javax.swing.GroupLayout panRound6Layout = new javax.swing.GroupLayout(panRound6);
-        panRound6.setLayout(panRound6Layout);
-        panRound6Layout.setHorizontalGroup(
-            panRound6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound6Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addComponent(jLabel23)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(19, 19, 19))
-            .addGroup(panRound6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel15)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labCreditLsatVersemnt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        panRound6Layout.setVerticalGroup(
-            panRound6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound6Layout.createSequentialGroup()
-                        .addComponent(jLabel6)
-                        .addGap(5, 5, 5)
-                        .addGroup(panRound6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labCreditLsatVersemnt)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jLabel23))
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        panRound5.setColor1(new java.awt.Color(243, 243, 243));
-
-        labAguLsatVersemnt.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        labAguLsatVersemnt.setForeground(new java.awt.Color(0, 153, 0));
-        labAguLsatVersemnt.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labAguLsatVersemnt.setText("1000000000");
-
-        jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 153, 0));
-        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel9.setText("   الفـائض من عملية دفع ");
-
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-ouvrir-le-document-35 (1).png"))); // NOI18N
-
-        jLabel14.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(0, 153, 0));
-        jLabel14.setText("دج");
-
-        javax.swing.GroupLayout panRound5Layout = new javax.swing.GroupLayout(panRound5);
-        panRound5.setLayout(panRound5Layout);
-        panRound5Layout.setHorizontalGroup(
-            panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound5Layout.createSequentialGroup()
-                .addGroup(panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(jLabel14)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labAguLsatVersemnt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(23, Short.MAX_VALUE))
-        );
-        panRound5Layout.setVerticalGroup(
-            panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel14)
-                        .addGap(27, 27, 27))
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addComponent(jLabel9)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labAguLsatVersemnt)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-
-        panRound3.setColor1(new java.awt.Color(243, 243, 243));
-
-        jLabel19.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel19.setForeground(new java.awt.Color(255, 161, 20));
-        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel19.setText("ثـمن المشـتريــات");
-
-        labTotalAchats.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        labTotalAchats.setForeground(new java.awt.Color(255, 161, 20));
-        labTotalAchats.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labTotalAchats.setText("0.00");
-
-        jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel13.setForeground(new java.awt.Color(255, 161, 20));
-        jLabel13.setText("دج");
-
-        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-panier-rapide-30.png"))); // NOI18N
-
-        javax.swing.GroupLayout panRound3Layout = new javax.swing.GroupLayout(panRound3);
-        panRound3.setLayout(panRound3Layout);
-        panRound3Layout.setHorizontalGroup(
-            panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel13))
-                .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labTotalAchats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addContainerGap())
-                    .addGroup(panRound3Layout.createSequentialGroup()
-                        .addGap(46, 46, 46)
-                        .addComponent(jLabel19)
-                        .addContainerGap(23, Short.MAX_VALUE))))
-        );
-        panRound3Layout.setVerticalGroup(
-            panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel24)
-                    .addGroup(panRound3Layout.createSequentialGroup()
-                        .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(labTotalAchats, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel13))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        labEntreprice.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        labEntreprice.setForeground(new java.awt.Color(0, 0, 102));
-        labEntreprice.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        labEntreprice.setText("Entreprise");
-
-        panRound8.setBackground(new java.awt.Color(0, 51, 102));
-        panRound8.setForeground(new java.awt.Color(255, 255, 255));
-        panRound8.setColor1(new java.awt.Color(242, 242, 242));
-
-        jLabel21.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel21.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        jLabel21.setForeground(new java.awt.Color(69, 69, 69));
-        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel21.setText("المبلغ المستحق دفعه  :");
-
-        labTotal.setBackground(new java.awt.Color(255, 255, 255));
-        labTotal.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
-        labTotal.setForeground(new java.awt.Color(0, 51, 204));
-        labTotal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labTotal.setText("00.00");
-
-        jLabel22.setBackground(new java.awt.Color(255, 255, 255));
-        jLabel22.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        jLabel22.setForeground(new java.awt.Color(0, 0, 204));
-        jLabel22.setText("دج");
-
-        javax.swing.GroupLayout panRound8Layout = new javax.swing.GroupLayout(panRound8);
-        panRound8.setLayout(panRound8Layout);
-        panRound8Layout.setHorizontalGroup(
-            panRound8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound8Layout.createSequentialGroup()
-                .addContainerGap(160, Short.MAX_VALUE)
-                .addComponent(jLabel22)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 395, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
-                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54))
-        );
-        panRound8Layout.setVerticalGroup(
-            panRound8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound8Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                    .addComponent(labTotal)
-                    .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(14, Short.MAX_VALUE))
-        );
-
         panRound4.setColor1(new java.awt.Color(243, 243, 243));
         panRound4.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 204));
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("المشتريات + الديون ");
-        panRound4.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 0, -1, 30));
-
-        labCreditAvanVersement.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        labCreditAvanVersement.setForeground(new java.awt.Color(0, 0, 204));
-        labCreditAvanVersement.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        labCreditAvanVersement.setText("0.00");
-        panRound4.add(labCreditAvanVersement, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 30, 150, 20));
-
-        jLabel20.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(0, 0, 204));
-        jLabel20.setText("دج");
-        panRound4.add(jLabel20, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 30, -1, 20));
-
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 17)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 0, 102));
-        jLabel4.setText("إخـــتـــر الــشــــركـــــــة");
+        jLabel4.setText("إختـر الــشـركــة");
 
         jLabel27.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         jLabel27.setForeground(new java.awt.Color(255, 0, 51));
@@ -902,7 +520,7 @@ public class VersementForm extends javax.swing.JDialog {
                 .addComponent(jLabel2)
                 .addGap(5, 5, 5)
                 .addComponent(jLabel28)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
         pan_gradiant1Layout.setVerticalGroup(
             pan_gradiant1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -950,7 +568,7 @@ public class VersementForm extends javax.swing.JDialog {
                 .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jLabel11)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         pan_gradiant5Layout.setVerticalGroup(
             pan_gradiant5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -967,90 +585,560 @@ public class VersementForm extends javax.swing.JDialog {
                 .addGap(14, 14, 14))
         );
 
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel5.setText("المشتريات + الديون ");
+
+        labCreditAchatVersement.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        labCreditAchatVersement.setForeground(new java.awt.Color(4, 164, 246));
+        labCreditAchatVersement.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labCreditAchatVersement.setText("0.00");
+
+        jLabel20.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel20.setText("دج");
+
+        progressBarCustom1.setBackground(new java.awt.Color(215, 241, 255));
+        progressBarCustom1.setForeground(new java.awt.Color(0, 121, 183));
+        progressBarCustom1.setOrientation(1);
+
+        javax.swing.GroupLayout panRound21Layout = new javax.swing.GroupLayout(panRound21);
+        panRound21.setLayout(panRound21Layout);
+        panRound21Layout.setHorizontalGroup(
+            panRound21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound21Layout.createSequentialGroup()
+                .addGroup(panRound21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panRound21Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel5))
+                    .addGroup(panRound21Layout.createSequentialGroup()
+                        .addGap(25, 25, 25)
+                        .addGroup(panRound21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labCreditAchatVersement, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound21Layout.createSequentialGroup()
+                                .addComponent(progressBarCustom1, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel20)))))
+                .addGap(15, 15, 15))
+        );
+        panRound21Layout.setVerticalGroup(
+            panRound21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panRound21Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labCreditAchatVersement)
+                .addGap(0, 0, 0)
+                .addGroup(panRound21Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel20)
+                    .addComponent(progressBarCustom1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel24.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-panier-rapide-30.png"))); // NOI18N
+
+        jLabel19.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel19.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel19.setText("ثـمن المشـتريــات");
+
+        labTotalAchats.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        labTotalAchats.setForeground(new java.awt.Color(255, 153, 0));
+        labTotalAchats.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labTotalAchats.setText("0.00");
+
+        jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel13.setText("دج");
+
+        progBarAcha.setBackground(new java.awt.Color(255, 237, 220));
+        progBarAcha.setForeground(new java.awt.Color(255, 153, 51));
+
+        javax.swing.GroupLayout panRound22Layout = new javax.swing.GroupLayout(panRound22);
+        panRound22.setLayout(panRound22Layout);
+        panRound22Layout.setHorizontalGroup(
+            panRound22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound22Layout.createSequentialGroup()
+                .addGroup(panRound22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panRound22Layout.createSequentialGroup()
+                        .addGap(38, 38, 38)
+                        .addComponent(labTotalAchats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panRound22Layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel19))
+                    .addGroup(panRound22Layout.createSequentialGroup()
+                        .addGap(0, 26, Short.MAX_VALUE)
+                        .addComponent(progBarAcha, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel13)))
+                .addGap(16, 16, 16))
+        );
+        panRound22Layout.setVerticalGroup(
+            panRound22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panRound22Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panRound22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jLabel19, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labTotalAchats)
+                .addGroup(panRound22Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel13)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound22Layout.createSequentialGroup()
+                        .addGap(15, 15, 15)
+                        .addComponent(progBarAcha, javax.swing.GroupLayout.PREFERRED_SIZE, 5, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel6.setText("الديـون من آخر عملية دفع ");
+
+        labCreditLsatVersemnt.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        labCreditLsatVersemnt.setForeground(new java.awt.Color(255, 0, 0));
+        labCreditLsatVersemnt.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labCreditLsatVersemnt.setText("0.00");
+
+        jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel15.setText("دج");
+
+        jLabel23.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-moins-29.png"))); // NOI18N
+
+        progressBarLastCredit.setBackground(new java.awt.Color(255, 238, 238));
+        progressBarLastCredit.setForeground(new java.awt.Color(255, 0, 51));
+
+        javax.swing.GroupLayout panRound23Layout = new javax.swing.GroupLayout(panRound23);
+        panRound23.setLayout(panRound23Layout);
+        panRound23Layout.setHorizontalGroup(
+            panRound23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound23Layout.createSequentialGroup()
+                .addGroup(panRound23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panRound23Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel23)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panRound23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labCreditLsatVersemnt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)))
+                    .addGroup(panRound23Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(progressBarLastCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel15)))
+                .addGap(14, 14, 14))
+        );
+        panRound23Layout.setVerticalGroup(
+            panRound23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panRound23Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panRound23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panRound23Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labCreditLsatVersemnt))
+                    .addComponent(jLabel23))
+                .addGroup(panRound23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel15)
+                    .addGroup(panRound23Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(progressBarLastCredit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-ouvrir-le-document-35 (1).png"))); // NOI18N
+
+        labAguLsatVersemnt.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        labAguLsatVersemnt.setForeground(new java.awt.Color(0, 153, 0));
+        labAguLsatVersemnt.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labAguLsatVersemnt.setText("0.00");
+
+        jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel9.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel9.setText("   الفـائض من عملية دفع ");
+
+        jLabel14.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel14.setText("دج");
+
+        progressBarAugment.setBackground(new java.awt.Color(229, 243, 222));
+        progressBarAugment.setForeground(new java.awt.Color(98, 161, 36));
+        progressBarAugment.setOrientation(1);
+
+        javax.swing.GroupLayout panRound24Layout = new javax.swing.GroupLayout(panRound24);
+        panRound24.setLayout(panRound24Layout);
+        panRound24Layout.setHorizontalGroup(
+            panRound24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound24Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panRound24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panRound24Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(panRound24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panRound24Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(labAguLsatVersemnt, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound24Layout.createSequentialGroup()
+                        .addGap(0, 10, Short.MAX_VALUE)
+                        .addComponent(progressBarAugment, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel14)))
+                .addGap(13, 13, 13))
+        );
+        panRound24Layout.setVerticalGroup(
+            panRound24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panRound24Layout.createSequentialGroup()
+                .addGroup(panRound24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panRound24Layout.createSequentialGroup()
+                        .addGap(4, 4, 4)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labAguLsatVersemnt))
+                    .addGroup(panRound24Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(panRound24Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel14)
+                    .addGroup(panRound24Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(progressBarAugment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        panRound25.setColor1(new java.awt.Color(250, 250, 250));
+        panRound25.setColor2(new java.awt.Color(250, 250, 250));
+
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(0, 51, 204));
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel7.setText("المبلغ المدفوع");
+        jLabel7.setToolTipText("");
+
+        pan_radioEsp.setColor1(new java.awt.Color(193, 255, 193));
+        pan_radioEsp.setColor2(new java.awt.Color(193, 255, 193));
+        pan_radioEsp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pan_radioEspMouseClicked(evt);
+            }
+        });
+
+        radioEsp.setBackground(new java.awt.Color(51, 204, 0));
+        radioEsp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-cash-40.png"))); // NOI18N
+        radioEsp.setText("نقدا");
+        radioEsp.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        radioEsp.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        radioEsp.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioEsp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioEspActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pan_radioEspLayout = new javax.swing.GroupLayout(pan_radioEsp);
+        pan_radioEsp.setLayout(pan_radioEspLayout);
+        pan_radioEspLayout.setHorizontalGroup(
+            pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioEspLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(radioEsp, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pan_radioEspLayout.setVerticalGroup(
+            pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pan_radioEspLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        txtNumCheque.setForeground(new java.awt.Color(0, 0, 102));
+        txtNumCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtNumCheque.setToolTipText("");
+        txtNumCheque.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        txtNumCheque.setLabelText("رقم الحساب البريدي");
+        txtNumCheque.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtNumChequeMouseClicked(evt);
+            }
+        });
+        txtNumCheque.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumChequeKeyTyped(evt);
+            }
+        });
+
+        pan_radioChequ.setColor1(new java.awt.Color(255, 235, 204));
+        pan_radioChequ.setColor2(new java.awt.Color(255, 235, 204));
+        pan_radioChequ.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pan_radioChequMouseClicked(evt);
+            }
+        });
+
+        radioChequ.setBackground(new java.awt.Color(51, 204, 0));
+        radioChequ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cheque-de-paiement.png"))); // NOI18N
+        radioChequ.setText("صك بريدي");
+        radioChequ.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        radioChequ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        radioChequ.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioChequ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioChequActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pan_radioChequLayout = new javax.swing.GroupLayout(pan_radioChequ);
+        pan_radioChequ.setLayout(pan_radioChequLayout);
+        pan_radioChequLayout.setHorizontalGroup(
+            pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pan_radioChequLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addComponent(radioChequ, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pan_radioChequLayout.setVerticalGroup(
+            pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pan_radioChequLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        textMontantVersement.setForeground(new java.awt.Color(0, 0, 0));
+        textMontantVersement.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        textMontantVersement.setText("0.00");
+        textMontantVersement.setFont(new java.awt.Font("Times New Roman", 1, 30)); // NOI18N
+        textMontantVersement.setSelectionColor(new java.awt.Color(255, 0, 0));
+        textMontantVersement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textMontantVersementActionPerformed(evt);
+            }
+        });
+        textMontantVersement.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                textMontantVersementKeyReleased(evt);
+            }
+        });
+
+        jLabel26.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
+        jLabel26.setText("دج");
+
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 51, 204));
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel8.setText("طريقة الدفع");
+
+        jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-portefeuille-35.png"))); // NOI18N
+
+        pan_radioCart.setColor1(new java.awt.Color(189, 189, 255));
+        pan_radioCart.setColor2(new java.awt.Color(189, 189, 255));
+        pan_radioCart.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pan_radioCartMouseClicked(evt);
+            }
+        });
+
+        radioCart.setBackground(new java.awt.Color(51, 204, 0));
+        radioCart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-carte-bancaire-40.png"))); // NOI18N
+        radioCart.setText("بطاقة");
+        radioCart.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        radioCart.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        radioCart.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioCart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioCartActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pan_radioCartLayout = new javax.swing.GroupLayout(pan_radioCart);
+        pan_radioCart.setLayout(pan_radioCartLayout);
+        pan_radioCartLayout.setHorizontalGroup(
+            pan_radioCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pan_radioCartLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(radioCart, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pan_radioCartLayout.setVerticalGroup(
+            pan_radioCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pan_radioCartLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabel21.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel21.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel21.setForeground(new java.awt.Color(69, 69, 69));
+        jLabel21.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jLabel21.setText("المبلغ المستحق دفعه  :");
+
+        labTotal.setBackground(new java.awt.Color(255, 255, 255));
+        labTotal.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
+        labTotal.setForeground(new java.awt.Color(0, 51, 204));
+        labTotal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labTotal.setText("0.00");
+
+        jLabel22.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel22.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        jLabel22.setForeground(new java.awt.Color(0, 0, 204));
+        jLabel22.setText("دج");
+
+        javax.swing.GroupLayout panRound25Layout = new javax.swing.GroupLayout(panRound25);
+        panRound25.setLayout(panRound25Layout);
+        panRound25Layout.setHorizontalGroup(
+            panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panRound25Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound25Layout.createSequentialGroup()
+                        .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtNumCheque, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound25Layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jLabel26)))
+                        .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panRound25Layout.createSequentialGroup()
+                                .addGap(517, 517, 517)
+                                .addComponent(jLabel8))
+                            .addGroup(panRound25Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(textMontantVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 481, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(panRound25Layout.createSequentialGroup()
+                                        .addComponent(pan_radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(38, 38, 38)
+                                        .addComponent(pan_radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(29, 29, 29)
+                                        .addComponent(pan_radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound25Layout.createSequentialGroup()
+                        .addGap(0, 13, Short.MAX_VALUE)
+                        .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(panRound25Layout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel7))
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 813, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panRound25Layout.createSequentialGroup()
+                                .addComponent(jLabel22)
+                                .addGap(54, 54, 54)
+                                .addComponent(labTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 359, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel21)
+                                .addGap(9, 9, 9)))))
+                .addGap(23, 23, 23))
+        );
+        panRound25Layout.setVerticalGroup(
+            panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound25Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
+                    .addComponent(labTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panRound25Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(textMontantVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(pan_radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(pan_radioEsp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(pan_radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(txtNumCheque, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel8))
+                .addGap(17, 17, 17))
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(240, 240, 240)
+                .addComponent(comboboxRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(38, 38, 38)
+                        .addGap(220, 220, 220)
+                        .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(140, 140, 140)
+                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(28, 28, 28)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(panRound25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(panRound24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panRound23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(panRound22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(panRound21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(pan_gradiant1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(pan_gradiant5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(11, 11, 11))
-                            .addComponent(panRound2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(panRound5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(10, 10, 10)
-                                .addComponent(panRound6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panRound3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(panRound8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(labEntreprice, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(34, 34, 34)
-                                .addComponent(comboboxRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(250, 250, 250)
-                                .addComponent(jLabel27)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(pan_gradiant5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(82, 82, 82)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(pantab, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(46, 46, 46))
+                .addGap(78, 78, 78))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(9, 9, 9)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(1, 1, 1))
-                            .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, 0)
-                        .addComponent(comboboxRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(labEntreprice, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(comboboxRound1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(panRound5, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(panRound6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panRound3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                .addComponent(panRound8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(4, 4, 4)
-                .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(13, 13, 13)
+                    .addComponent(panRound21, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panRound22, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panRound23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panRound24, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(23, 23, 23)
+                .addComponent(panRound25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pan_gradiant1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(pan_gradiant5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(35, 35, 35)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(pantab, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(pantab, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(25, 25, 25))
         );
 
@@ -1076,17 +1164,44 @@ public class VersementForm extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_annulerActionPerformed
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
-        
-        messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـدفـع", "هـل أنت متـأكـد مـن عـمـلـية الـدفـع");
-        if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
-            
-            double montant = new Nomber().getNbDouble(textMontantVersement.getText());
-            if (comboboxRound1.getSelectedIndex() != -1 && montant > 0) {
-                String nomEntreprise = comboboxRound1.getSelectedItem().toString();
-                Entreprise entreprise = entrepriseDAOImpl.getEntrepriseParName(nomEntreprise);
-                saveVersement(entreprise); // save versement+ Save ClientPayeeParEntreprise      
-            }
+        double montant = new Nomber().getNbDouble(textMontantVersement.getText());
+        double achatAcredit = new Nomber().getNbDouble(labCreditAchatVersement.getText());
+        double lestCredit = new Nomber().getNbDouble( labCreditLsatVersemnt.getText());
+//        if (achatAcredit>0) {
+//            exite.showMessageDialog("تـنـبـيه", "لا يمكنك تسجيل الدفع لأن الشركة ليس لها ديون");
+//            return;
+//        }
+        if (comboboxRound1.getSelectedIndex() == -1 && montant <= 0) {
+            exite.showMessageDialog("تـنـبـيه", "الـرجـاء إدخـال مـبـلـغ الـدفـعـة و إخـتـيـار الـشركـة");
+            return;
         }
+        if (montant <= 0) {
+            exite.showMessageDialog("تـنـبـيه", "الـرجـاء إدخـال مـبـلـغ الـدفـعـة");
+            return;
+        }
+        if (comboboxRound1.getSelectedIndex() == -1) {
+            exite.showMessageDialog("تـنـبـيه", "الـرجـاء إخـتـيـار الـشركـة الـمـعنـيـة بالـدفـع");
+            return;
+        }
+                if (achatAcredit==0 && lestCredit ==0) {
+            exite.showMessageDialog("تـنـبـيه", "لا يمكنك تسجيل الدفع لأن الشركة ليس لها ديون");
+            return;
+        }
+        
+        if (radioChequ.isSelected() && txtNumCheque.getText().isEmpty()) {
+            exite.showMessageDialog("تـنـبـيه", "الرجاء إدخال رقم الصـك البريدي");
+            return;
+        }
+        messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـدفـع", "هـل أنت متـأكـد مـن عـمـلـية الـدفـع");
+        if (messageDialog.getMessageType() == MessageDialog.MessageType.CANCEL) {
+            return;
+        }
+        montant = new Nomber().getNbDouble(textMontantVersement.getText());
+        String nomEntreprise = comboboxRound1.getSelectedItem().toString();
+        Entreprise entreprise = entrepriseDAOImpl.getEntrepriseParName(nomEntreprise);
+        saveVersement(entreprise); // save versement+ Save ClientPayeeParEntreprise  
+        System.out.println("Save New Versement :" + nomEntreprise + "  montant : " + montant);
+
     }//GEN-LAST:event_btn_saveActionPerformed
 
     private void radioEspActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioEspActionPerformed
@@ -1098,7 +1213,9 @@ public class VersementForm extends javax.swing.JDialog {
     }//GEN-LAST:event_radioCartActionPerformed
 
     private void radioChequActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioChequActionPerformed
-        // TODO add your handling code here:
+        if (radioChequ.isSelected()) {
+            txtNumCheque.requestFocus();
+        }
     }//GEN-LAST:event_radioChequActionPerformed
 
     private void textMontantVersementKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textMontantVersementKeyReleased
@@ -1107,12 +1224,48 @@ public class VersementForm extends javax.swing.JDialog {
     }//GEN-LAST:event_textMontantVersementKeyReleased
 
     private void textMontantVersementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textMontantVersementActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_textMontantVersementActionPerformed
 
     private void txt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchActionPerformed
+
+    private void pan_radioChequMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_radioChequMouseClicked
+        if (radioEsp.isSelected()) {
+            radioEsp.setSelected(false);
+            txtNumCheque.requestFocus();
+        } else {
+            radioEsp.setSelected(true);
+        }
+    }//GEN-LAST:event_pan_radioChequMouseClicked
+
+    private void pan_radioCartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_radioCartMouseClicked
+        if (radioCart.isSelected()) {
+            radioCart.setSelected(false);
+        } else {
+            radioCart.setSelected(true);
+        }
+    }//GEN-LAST:event_pan_radioCartMouseClicked
+
+    private void pan_radioEspMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_radioEspMouseClicked
+        if (radioEsp.isSelected()) {
+            radioEsp.setSelected(false);
+        } else {
+            radioEsp.setSelected(true);
+
+        }
+    }//GEN-LAST:event_pan_radioEspMouseClicked
+
+    private void txtNumChequeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtNumChequeMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNumChequeMouseClicked
+
+    private void txtNumChequeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumChequeKeyTyped
+//        if (!Character.isDigit(evt.getKeyChar())) {
+//            evt.consume();
+//        }
+    }//GEN-LAST:event_txtNumChequeKeyTyped
 
     /**
      * @param args the command line arguments
@@ -1191,32 +1344,37 @@ public class VersementForm extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel labAguLsatVersemnt;
     private javax.swing.JLabel labAug_avec_versment;
-    private javax.swing.JLabel labCreditAvanVersement;
+    private javax.swing.JLabel labCreditAchatVersement;
     private javax.swing.JLabel labCreditLsatVersemnt;
     private javax.swing.JLabel labCredit_avec_versment;
-    private javax.swing.JLabel labEntreprice;
     private javax.swing.JLabel labTotal;
     private javax.swing.JLabel labTotalAchats;
-    private ui.card.panRound panRound2;
-    private ui.card.panRound panRound3;
+    private ui.card.panRound2 panRound21;
+    private ui.card.panRound2 panRound22;
+    private ui.card.panRound2 panRound23;
+    private ui.card.panRound2 panRound24;
+    private ui.card.panRound2 panRound25;
     private ui.card.panRound panRound4;
-    private ui.card.panRound panRound5;
-    private ui.card.panRound panRound6;
-    private ui.card.panRound panRound8;
     private ui.card.pan_gradiant pan_gradiant1;
-    private ui.card.pan_gradiant pan_gradiant2;
-    private ui.card.pan_gradiant pan_gradiant3;
-    private ui.card.pan_gradiant pan_gradiant4;
     private ui.card.pan_gradiant pan_gradiant5;
+    private ui.card.pan_gradiant pan_radioCart;
+    private ui.card.pan_gradiant pan_radioChequ;
+    private ui.card.pan_gradiant pan_radioEsp;
     private ui.card.panRound pantab;
+    private splashscreen.ProgressBarCustom progBarAcha;
+    private splashscreen.ProgressBarCustom progressBarAugment;
+    private splashscreen.ProgressBarCustom progressBarCustom1;
+    private splashscreen.ProgressBarCustom progressBarLastCredit;
     private material.design.RadioButtonCustomAR radioCart;
     private material.design.RadioButtonCustomAR radioChequ;
     private material.design.RadioButtonCustomAR radioEsp;
     private javax.swing.JTable tab;
     private ui.table.TableScrollButton tableScrollButton1;
     private ui.card.TextFieldPrice textMontantVersement;
+    private material.design.TextField txtNumCheque;
     private material.design.SearchTextRound txt_search;
     // End of variables declaration//GEN-END:variables
 }

@@ -12,6 +12,8 @@ package Reports;
 public final class ReportNames {
     public static final String CLIENT_LIST = "ListClient.jasper";
     public static final String CLIENT_PURCHASES_BY_ID = "ListAchatOfClientByID.jasper";
+    public static final String CLIENT_PURCHASES_BY_ID_ACHAT= "ListAchatOfClientByIdAchat.jasper";
+    
     public static final String CLIENT_PURCHASES_BY_DATE = "ListAchatOfClientByDate.jasper";
     public static final String CLIENT_PURCHASES_BY_YEAR = "ListAchatOfClientByYear.jasper";
     

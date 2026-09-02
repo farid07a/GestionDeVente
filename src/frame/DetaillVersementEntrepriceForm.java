@@ -10,6 +10,8 @@ import entity.Client;
 import entity.ClientPayeParEntreprise;
 import entity.VersementEntreprise;
 import home.HomeForm;
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.sql.Connection;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -17,6 +19,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
+import material.design.DialogShake;
+import material.design.DropShadowPanel;
+import material.design.OutsideClickHandler;
+import material.design.TitleBarPanel;
+import material.design.TitleBarPanel1;
 import material.design.designeTable;
 
 /**
@@ -25,45 +33,61 @@ import material.design.designeTable;
  */
 public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
 
-   VersementEntreprise versementEntreprise;
-   Connection connection;
+    VersementEntreprise versementEntreprise;
+    Connection connection;
     HomeForm homeForm;
-   ClientPayeParEntrepriseDAOImpl clientPayeParEntrepriseDAOImpl;
-   DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US)); 
+    ClientPayeParEntrepriseDAOImpl clientPayeParEntrepriseDAOImpl;
+    DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
+   
 
-    public DetaillVersementEntrepriceForm(java.awt.Frame parent, boolean modal,VersementEntreprise versementEntreprise) {
+    public DetaillVersementEntrepriceForm(java.awt.Frame parent, boolean modal, VersementEntreprise versementEntreprise) {
         super(parent, modal);
-        this.homeForm = (HomeForm) parent;
-        connection= DatabaseConnection.getInstance().getConnection();
-        this.versementEntreprise=versementEntreprise;
+        this.homeForm = (HomeForm) parent;      
+    
+        connection = DatabaseConnection.getInstance().getConnection();
+        this.versementEntreprise = versementEntreprise;
         clientPayeParEntrepriseDAOImpl = new ClientPayeParEntrepriseDAOImpl(connection);
         initComponents();
+        
+        
         new designeTable().setDesignTable(tab, jScrollPane2);
         new designeTable().SearchTable(tab, txt_search);
         labNomEntrep.setText(versementEntreprise.getEntreprise().getNom_ar());
         labDatVersement.setText(versementEntreprise.getDate_versement().toString());
         labSommeVersement.setText(formatter.format(versementEntreprise.getMontant()));
-        labRestCredit.setText(formatter.format(versementEntreprise.getReste_credit()));
+        if (versementEntreprise.getReste_credit() < 0) {
+            labRestCredit.setText("0.00");
+            labAugMantant.setText(formatter.format(versementEntreprise.getReste_credit()));
+        } else {
+            labRestCredit.setText(formatter.format(versementEntreprise.getReste_credit()));
+            labAugMantant.setText("0.00");
+        }
         setClientPayeeParVersementInTab();
-        
-    }
+        setLocationRelativeTo(homeForm);
+        TableColumn column = tab.getColumnModel().getColumn(0);
+        tab.getColumnModel().removeColumn(column);
+}
 
-    public void setClientPayeeParVersementInTab(){
-       DefaultTableModel model = (DefaultTableModel) tab.getModel();
+    public void setClientPayeeParVersementInTab() {
+        DefaultTableModel model = (DefaultTableModel) tab.getModel();
         model.setRowCount(0);
-        
-       List<ClientPayeParEntreprise> clientPayeParEntreprises = clientPayeParEntrepriseDAOImpl.getClientPayeeParVersement(versementEntreprise);
-       
+
+        List<ClientPayeParEntreprise> clientPayeParEntreprises = clientPayeParEntrepriseDAOImpl.getClientPayeeParVersement(versementEntreprise);
+
+        double total = 0;
         for (ClientPayeParEntreprise clientPayeParEntreprise : clientPayeParEntreprises) {
-            Client client =clientPayeParEntreprise.getAchat().getClient();
-            model.addRow(new Object[]{ clientPayeParEntreprise.getId(),
-           clientPayeParEntreprise.getAchat().getDate_achat(),
-           formatter.format(clientPayeParEntreprise.getAchat().getPrix_total()),
-           client.getPrenom()+" "+ client.getNom(),
-                    client.getMatricule()
+            Client client = clientPayeParEntreprise.getAchat().getClient();
+            total = total + clientPayeParEntreprise.getAchat().getPrix_total();
+            model.addRow(new Object[]{clientPayeParEntreprise.getId(),
+                clientPayeParEntreprise.getAchat().getDate_achat(),
+                formatter.format(clientPayeParEntreprise.getAchat().getPrix_total()),
+                client.getPrenom() + " " + client.getNom(),
+                client.getMatricule()
             });
         }
+        totalAchat.setText(formatter.format(total));
     }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -83,10 +107,22 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         jLabel1 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
         labDatVersement = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        labAugMantant = new javax.swing.JLabel();
+        totalAchat = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setMaximumSize(new java.awt.Dimension(700, 660));
+        jPanel1.setMinimumSize(new java.awt.Dimension(700, 660));
+        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panRound4.setColor1(new java.awt.Color(255, 255, 255));
 
@@ -139,115 +175,105 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 342, Short.MAX_VALUE)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
+
+        jPanel1.add(panRound4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 680, 390));
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("الــشـــركــــة   :");
+        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 50, 87, 36));
 
         labNomEntrep.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         labNomEntrep.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jPanel1.add(labNomEntrep, new org.netbeans.lib.awtextra.AbsoluteConstraints(219, 50, 350, 36));
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel5.setText("اجـمـالـي الــدفــع : ");
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel5.setText("قيمة الدفعة : ");
+        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 100, 94, 27));
 
         labSommeVersement.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        labSommeVersement.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labSommeVersement.setForeground(new java.awt.Color(0, 0, 204));
+        labSommeVersement.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labSommeVersement.setText("0.00");
+        jPanel1.add(labSommeVersement, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 100, 90, 32));
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jLabel6.setText("الــديــون الـمـتـبـقـيـة  :");
+        jLabel6.setText("الديون المتبقية لدفعة :");
+        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 130, -1, 27));
 
         labRestCredit.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         labRestCredit.setForeground(new java.awt.Color(255, 51, 51));
-        labRestCredit.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        labRestCredit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labRestCredit.setText("0.00");
+        jPanel1.add(labRestCredit, new org.netbeans.lib.awtextra.AbsoluteConstraints(467, 132, 90, 30));
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        jLabel1.setBackground(new java.awt.Color(43, 43, 140));
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 26)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("تفاصيل عملية الدفع");
+        jLabel1.setOpaque(true);
+        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 710, 40));
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel7.setText("تـاريــخ الدفــع  : ");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 100, 27));
 
         labDatVersement.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         labDatVersement.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jPanel1.add(labDatVersement, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 100, 32));
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(labRestCredit, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel6))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(labSommeVersement, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5)
-                        .addGap(13, 13, 13))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labNomEntrep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(labDatVersement, javax.swing.GroupLayout.DEFAULT_SIZE, 553, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-                    .addComponent(labNomEntrep, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labDatVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(labSommeVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(labRestCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-        );
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel2.setText("المبلغ الزائد لدفعة :");
+        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 170, 130, -1));
+
+        labAugMantant.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        labAugMantant.setForeground(new java.awt.Color(51, 153, 0));
+        labAugMantant.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labAugMantant.setText("0.00");
+        jPanel1.add(labAugMantant, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 170, 90, -1));
+
+        totalAchat.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        totalAchat.setForeground(new java.awt.Color(0, 0, 153));
+        totalAchat.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        totalAchat.setText("0.00");
+        jPanel1.add(totalAchat, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 590, 40, 40));
+
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel8.setText("المجموع :");
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 590, 110, 40));
+
+        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel3.setText("دج");
+        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 110, 20, 20));
+
+        jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel9.setText("دج");
+        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 600, 20, 20));
+
+        jLabel10.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel10.setText("دج");
+        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 170, 20, 20));
+
+        jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel11.setText("دج");
+        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 20, 20));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -271,16 +297,24 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(DetaillVersementEntrepriceForm.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
         //</editor-fold>
@@ -288,7 +322,7 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                DetaillVersementEntrepriceForm dialog = new DetaillVersementEntrepriceForm(new javax.swing.JFrame(), true,null);
+                DetaillVersementEntrepriceForm dialog = new DetaillVersementEntrepriceForm(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
@@ -302,12 +336,19 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labAugMantant;
     private javax.swing.JLabel labDatVersement;
     private javax.swing.JLabel labNomEntrep;
     private javax.swing.JLabel labRestCredit;
@@ -315,6 +356,7 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     private ui.card.panRound panRound4;
     private javax.swing.JTable tab;
     private ui.table.TableScrollButton tableScrollButton1;
+    private javax.swing.JLabel totalAchat;
     private material.design.SearchTextRound txt_search;
     // End of variables declaration//GEN-END:variables
 }

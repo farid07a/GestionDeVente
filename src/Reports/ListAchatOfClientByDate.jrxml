@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="60911953-7f1b-4e8d-abe9-a60d5c3a706c">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="231"/>
 	<parameter name="CLIENT_ID" class="java.lang.String"/>
 	<parameter name="FName" class="java.lang.String"/>
 	<parameter name="Date_Achat" class="java.util.Date"/>
@@ -228,14 +228,8 @@ WHERE Achat.date_achat = $P{Date_Achat}]]>
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
 	<summary>
-		<band height="48" splitType="Stretch">
+		<band height="456" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="73" height="34" uuid="ebee789b-02d3-486c-9b5a-0573d8cd75ff"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -244,7 +238,7 @@ WHERE Achat.date_achat = $P{Date_Achat}]]>
 				<text><![CDATA[Somme:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="443" y="0" width="45" height="34" uuid="766cd71c-fb06-4adb-bfab-9159ed69d0c2"/>
+				<reportElement x="357" y="0" width="75" height="34" uuid="766cd71c-fb06-4adb-bfab-9159ed69d0c2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
@@ -258,12 +252,19 @@ WHERE Achat.date_achat = $P{Date_Achat}]]>
 				<textFieldExpression><![CDATA[$V{TotalPrice}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="488" y="0" width="67" height="34" uuid="472d36cb-17de-4330-8eb3-5de89a2a4c74"/>
+				<reportElement x="432" y="0" width="123" height="34" uuid="472d36cb-17de-4330-8eb3-5de89a2a4c74"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="54" y="307" width="162" height="27" uuid="705861db-f98c-4919-baf7-3226b07aae47"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

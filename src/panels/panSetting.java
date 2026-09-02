@@ -4,6 +4,11 @@
  */
 package panels;
 
+import entity.Utilisateur;
+import frame.AddUtilisateur;
+import frame.EntrepriseForm;
+import home.HomeForm;
+
 /**
  *
  * @author pc
@@ -13,8 +18,11 @@ public class panSetting extends javax.swing.JPanel {
     /**
      * Creates new form panSetting
      */
-    public panSetting() {
+    HomeForm homeForm;
+    public panSetting(HomeForm homeForm) {
+         this.homeForm = homeForm;
         initComponents();
+
     }
 
     /**
@@ -39,7 +47,7 @@ public class panSetting extends javax.swing.JPanel {
         button7.setForeground(new java.awt.Color(255, 255, 255));
         button7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-organisation-64 (2).png"))); // NOI18N
         button7.setText("مــؤســســتي");
-        button7.setColor1(new java.awt.Color(255, 255, 255));
+        button7.setColor1(new java.awt.Color(0, 0, 102));
         button7.setColor2(new java.awt.Color(0, 0, 102));
         button7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         button7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -90,6 +98,11 @@ public class panSetting extends javax.swing.JPanel {
         button1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         button1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button1ActionPerformed(evt);
+            }
+        });
 
         button2.setForeground(new java.awt.Color(255, 255, 255));
         button2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-supprimer-pour-toujours-48.png"))); // NOI18N
@@ -172,6 +185,7 @@ public class panSetting extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void button7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button7ActionPerformed
+        new EntrepriseForm(homeForm, true).setVisible(true);
     }//GEN-LAST:event_button7ActionPerformed
 
     private void button9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button9ActionPerformed
@@ -183,6 +197,10 @@ public class panSetting extends javax.swing.JPanel {
     private void button4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button4ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_button4ActionPerformed
+
+    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
+        new AddUtilisateur(homeForm, true).setVisible(true);
+    }//GEN-LAST:event_button1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

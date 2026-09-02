@@ -29,12 +29,13 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Versement_Entreprise (id_entreprise, montant, date_versement, mode_paiement, remarque, total_credit, reste_credit) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return "INSERT INTO Versement_Entreprise  (id_entreprise, montant, date_versement, mode_paiement, remarque, total_credit, reste_credit ,num_cheque) VALUES  (? ,? , ? , ? , ? , ? , ? , ? )";
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE Versement_Entreprise SET id_entreprise=?, montant=?, date_versement=?, mode_paiement=?, remarque=?, total_credit=?, reste_credit=? WHERE id=?";
+        return "UPDATE Versement_Entreprise "
+                + "SET id_entreprise=?, montant=?, date_versement=?, mode_paiement=?, remarque=?, total_credit=?, reste_credit=? ,num_cheque=? WHERE id=?";
     }
 
     @Override
@@ -47,6 +48,7 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
         ps.setString(5, entity.getRemarque());
         ps.setDouble(6, entity.getTotal_credit());
         ps.setDouble(7, entity.getReste_credit());
+        ps.setString(8, entity.getNumCheque());
 
     }
 
@@ -60,7 +62,8 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
         ps.setString(5, entity.getRemarque());
         ps.setDouble(6, entity.getTotal_credit());
         ps.setDouble(7, entity.getReste_credit());
-        ps.setInt(8, entity.getId());
+        ps.setString(8, entity.getNumCheque());
+        ps.setInt(9, entity.getId());
 
     }
 
@@ -77,7 +80,8 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
                 rs.getString("mode_paiement"),
                 rs.getString("remarque"),
                 rs.getDouble("total_credit"),
-                rs.getDouble("reste_credit")
+                rs.getDouble("reste_credit"),
+                rs.getString("num_cheque")
         );
 
     }
@@ -107,7 +111,7 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
     return versementEntreprise ;
 }
     
-    public List<VersementEntreprise> getLastVersementParEntreprise() {
+    public List<VersementEntreprise> getLastVersementParEntreprises() {
 
     List<VersementEntreprise> list = new ArrayList<>();
 
@@ -118,8 +122,10 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
             "GROUP BY id_entreprise" +
             ")";
 
-    try (PreparedStatement ps = connection.prepareStatement(query);
-         ResultSet rs = ps.executeQuery()) {
+    try {
+        PreparedStatement ps = connection.prepareStatement(query);
+    
+         ResultSet rs = ps.executeQuery();
 
         while (rs.next()) {
             list.add(mapResultSetToEntity(rs));
@@ -132,5 +138,125 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
 
     return list;
 }
+    
+    public List<VersementEntreprise> getVersementEntrepriseByIdEntreprise(Entreprise entreprise) {
 
+    List<VersementEntreprise> list = new ArrayList<>();
+
+    String query =
+            "SELECT * FROM Versement_Entreprise " +
+            " WHERE  id_entreprise = ?  ";
+
+    try {
+         PreparedStatement ps = connection.prepareStatement(query);
+         ps.setInt(1, entreprise.getId());
+         ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            list.add(mapResultSetToEntity(rs));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+     
+     public List<Object[]> getSommeVesementGroupByEntreprise(){
+
+    List<Object[]> list = new ArrayList<>();
+
+    String query =
+            "SELECT e.id, e.nom_ar, " +
+            "COALESCE(SUM(v.montant), 0) AS total_montant " +
+            "FROM Entreprise e " +
+            "LEFT JOIN Versement_Entreprise v " +
+            "ON e.id = v.id_entreprise " +
+            "GROUP BY e.id, e.nom_ar " +
+            "ORDER BY e.id ASC";
+
+    try (PreparedStatement ps = connection.prepareStatement(query);
+         ResultSet rs = ps.executeQuery()) {
+
+        while (rs.next()) {
+
+            list.add(new Object[]{
+                rs.getInt("id"),
+                rs.getString("nom_ar"),
+                rs.getDouble("total_montant")
+            });
+        }
+
+    } catch (SQLException e) {
+        throw new DAOException(
+                "Erreur lors de récupération du total des versements.",
+                e
+        );
+    }
+
+    return list;
+}
+ 
+     public List<VersementEntreprise> getVersementEntrepriseByEntrepriseAndYearAndMonth(
+        Entreprise entreprise, int mois,int annee) {
+
+    List<VersementEntreprise> list = new ArrayList<>();
+
+    String query =
+            "SELECT * FROM Versement_Entreprise " +
+            "WHERE id_entreprise = ? " +
+            "AND YEAR(date_versement) = ? " +
+            "AND MONTH(date_versement) = ? " +
+            "ORDER BY date_versement DESC";
+
+    try {
+        PreparedStatement ps = connection.prepareStatement(query);
+
+        ps.setInt(1, entreprise.getId());
+        ps.setInt(2, mois);
+        ps.setInt(3, annee);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            list.add(mapResultSetToEntity(rs));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
+    
+     public List<VersementEntreprise> getVersementEntrepriseByEntrepriseAndYear(
+        Entreprise entreprise, int annee) {
+
+    List<VersementEntreprise> list = new ArrayList<>();
+
+    String query =
+            "SELECT * FROM Versement_Entreprise " +
+            "WHERE id_entreprise = ? " +
+            "AND YEAR(date_versement) = ? " +
+            "ORDER BY date_versement DESC";
+
+    try {
+        PreparedStatement ps = connection.prepareStatement(query);
+
+        ps.setInt(1, entreprise.getId());
+        ps.setInt(2, annee);
+
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            list.add(mapResultSetToEntity(rs));
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return list;
+}
 }

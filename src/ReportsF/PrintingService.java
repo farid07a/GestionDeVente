@@ -268,11 +268,12 @@ public static void main(String[] args) {
 //        Client client  = clientDao.findById(clientId);
 //        
 //        //params.put("CLIENT_ID", client.getId());
-        params.put("CLIENT_ID", 4);
+        params.put("CLIENT_ID", 11);
         params.put("FName", "Farid KHEBBACHE");
         params.put("ENTERPRISE_NAME_FR","CILAS");
 
-        service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID, params,null);
+        service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID, params);
+        JOptionPane.showMessageDialog(null, "client");
 //        LocalDate specificDate = LocalDate.of(2026, 8,12);
 //        
 //        

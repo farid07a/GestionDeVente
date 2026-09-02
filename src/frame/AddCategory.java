@@ -118,7 +118,7 @@ public class AddCategory extends javax.swing.JDialog {
         });
 
         jLabel7.setBackground(new java.awt.Color(43, 43, 140));
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("إضافة نـوعـيـة جـديـدة");

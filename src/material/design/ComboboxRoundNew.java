@@ -25,7 +25,7 @@ public class ComboboxRoundNew<E> extends JComboBox<E> {
 
     private int radius = 18;
     private final Color borderColor = new Color(220, 224, 230);
-    private final Color focusColor = new Color(37, 99, 235);
+    private final Color focusColor =new Color(51,153,255);// new Color(37, 99, 235);
     private boolean mouseOver;
 
     // --- الإضافات: النص والتسمية الجانبية وتعديل الارتفاع ---
@@ -65,7 +65,8 @@ public class ComboboxRoundNew<E> extends JComboBox<E> {
                 Component com = super.getListCellRendererComponent(jlist, o, i, bln, bln1);
                 setBorder(new EmptyBorder(4, 8, 4, 8));
                 if (bln) {
-                    com.setBackground(new Color(240, 242, 245));
+                    com.setBackground(new Color(101,178,255));//new Color(240, 242, 245));
+                    com.setForeground(Color.WHITE);
                 }
                 setHorizontalAlignment(SwingConstants.RIGHT);
                 return com;
@@ -81,7 +82,7 @@ public class ComboboxRoundNew<E> extends JComboBox<E> {
         private boolean show;
 
         public ComboUI() {
-            setFont(new Font("Time New Romen", Font.BOLD, 14));
+            setFont(new Font("Time New Romen", Font.BOLD, 16));
 
             addMouseListener(new MouseAdapter() {
                 @Override
@@ -153,8 +154,8 @@ public class ComboboxRoundNew<E> extends JComboBox<E> {
             };
             animator = new Animator(300, target);
             animator.setResolution(0);
-            animator.setAcceleration(0.5f);
-            animator.setDeceleration(0.5f);
+            animator.setAcceleration(0.4f);
+            animator.setDeceleration(0.4f);
         }
 
         @Override
@@ -171,7 +172,7 @@ public class ComboboxRoundNew<E> extends JComboBox<E> {
             BasicComboPopup pop = new BasicComboPopup(comboBox) {
                 @Override
                 protected JScrollPane createScroller() {
-                    list.setFixedCellHeight(30);
+                    list.setFixedCellHeight(40);
                     JScrollPane scroll = new JScrollPane(list);
                     scroll.setBackground(Color.WHITE);
                     ScrollBarCustom sb = new ScrollBarCustom();

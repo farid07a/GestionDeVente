@@ -110,7 +110,7 @@ public class MessageDialog extends javax.swing.JDialog {
     public void ShowConfirmMessageInDialog(String title, String message){
         dialogue.setGlassPane(glass);
         glass.setVisible(true);
-         fram.setGlassPane(glass);
+         dialogue.setGlassPane(glass);
         glass.setVisible(true);
         lbTitle.setText(title);
         txt.setText(message);

@@ -15,7 +15,7 @@ public class CategorieDAOImpl extends AbstractDAO<Categorie> {
 
     public CategorieDAOImpl(Connection connection) {
         super(connection);
-        
+
     }
 
     @Override
@@ -60,10 +60,26 @@ public class CategorieDAOImpl extends AbstractDAO<Categorie> {
         );
 
     }
-    
-    
-    public Categorie getCategorierParName(String nomCategorie){
-         Categorie categorie =null;
+
+    public Categorie getCategorierParNameFr(String nomCategorie) {
+        Categorie categorie = null;
+        try {
+            String query = "SELECT * FROM " + getTableName() + " WHERE description=?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, nomCategorie);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                categorie = mapResultSetToEntity(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categorie;
+
+    }
+
+    public Categorie getCategorierParName(String nomCategorie) {
+        Categorie categorie = null;
         try {
             String query = "SELECT * FROM " + getTableName() + " WHERE nomCategorie=?";
             PreparedStatement statement = connection.prepareStatement(query);
@@ -76,8 +92,7 @@ public class CategorieDAOImpl extends AbstractDAO<Categorie> {
             e.printStackTrace();
         }
         return categorie;
-        
-        
+
     }
 
 }

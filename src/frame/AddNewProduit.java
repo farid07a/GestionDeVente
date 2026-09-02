@@ -86,8 +86,8 @@ public class AddNewProduit extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel2.setBackground(new java.awt.Color(58, 58, 173));
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel2.setBackground(new java.awt.Color(43, 43, 140));
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("إضـافـة مـنـتـج جـديـــد");
@@ -119,7 +119,7 @@ public class AddNewProduit extends javax.swing.JDialog {
         tableScrollButton3.add(jScrollPane1, java.awt.BorderLayout.PAGE_START);
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 51, 255));
+        jLabel1.setForeground(new java.awt.Color(0, 0, 102));
         jLabel1.setText("الــمنـــتــجـــات ( انقر مرتين للإضافة)");
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

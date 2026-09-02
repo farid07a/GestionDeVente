@@ -7,7 +7,12 @@ package chart;
 import chart.ModelChart;
 import chartshadow.ModelData;
 import config.DatabaseConnection;
+import dao.impl.EntrepriseDAOImpl;
+import dao.impl.VersementEntrepriseDAOImpl;
+import entity.Entreprise;
+import entity.VersementEntreprise;
 import java.awt.Color;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,89 +25,137 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *
  * @author client
  */
-
 public class costumChart extends javax.swing.JPanel {
 
     /**
      * Creates new form NewJPanel
      */
-        DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
+    DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
+
     public costumChart() {
         initComponents();
-        
+
         chart.setTitle("دج");
         chart.addLegend("دفـعـات الـشـركـات", Color.decode("#7b4397"), Color.decode("#dc2430"));
 //        chart.addLegend("Chombres", Color.decode("#e65c00"), Color.decode("#F9D423"));
 //        chart.addLegend("Services", Color.decode("#0099F7"), Color.decode("#F11712"));
-        
-setData2();
-    //    test();
+
+        setData2();
+        //    test();
     }
-    private void setData2() {
+private void setData2() {
+
+    System.out.println("========== setData2 START ==========");
 
     try {
 
         chart.clear();
+        System.out.println("1 - chart.clear() OK");
 
-        String sql =
-                "SELECT e.id, e.nom_ar AS entreprise, " +
-                "       COALESCE(SUM(v.montant), 0) AS total_versement " +
-                "FROM Entreprise e " +
-                "LEFT JOIN Versement_Entreprise v " +
-                "       ON e.id = v.id_entreprise " +
-                "GROUP BY e.id, e.nom_ar " +
-                "ORDER BY e.id ASC";
+        Connection connection = DatabaseConnection
+                .getInstance()
+                .getConnection();
 
-        PreparedStatement ps =
-                DatabaseConnection.getInstance()
-                        .getConnection()
-                        .prepareStatement(sql);
+        System.out.println("2 - getConnection() OK");
+        System.out.println("Connection = " + connection);
+        System.out.println("Connection closed = " + connection.isClosed());
 
-        ResultSet rs = ps.executeQuery();
+        VersementEntrepriseDAOImpl versementEntrepriseDAOImpl
+                = new VersementEntrepriseDAOImpl(connection);
 
-        while (rs.next()) {
+        System.out.println("3 - VersementEntrepriseDAOImpl OK");
 
-            String entreprise = rs.getString("entreprise");
+        EntrepriseDAOImpl entrepriseDAOImpl
+                = new EntrepriseDAOImpl(connection);
 
-            double totalVersement =
-                    rs.getDouble("total_versement");
+        System.out.println("4 - EntrepriseDAOImpl OK");
+
+        List<Entreprise> entreprises = entrepriseDAOImpl.findAll();
+
+        System.out.println("5 - findAll Entreprise OK");
+        System.out.println("Nombre entreprises = " + entreprises.size());
+
+        for (Entreprise entreprise : entreprises) {
+
+            System.out.println("--------------------------------");
+            System.out.println("Entreprise : " + entreprise.getNom_fr());
+
+            List<VersementEntreprise> versementEntreprises
+                    = versementEntrepriseDAOImpl
+                     .getVersementEntrepriseByIdEntreprise(entreprise);
+
+            System.out.println("Versements trouvés = "
+                    + versementEntreprises.size());
+
+            double sommeVersement = versementEntreprises.stream()
+                    .mapToDouble(VersementEntreprise::getMontant)
+                    .sum();
+
+            System.out.println("Somme = " + sommeVersement);
 
             chart.addData(
                     new ModelChart(
-                            entreprise,
-                            new double[]{
-                                totalVersement
-                            }
+                            entreprise.getNom_ar(),
+                            new double[]{sommeVersement}
                     )
             );
         }
 
-        rs.close();
-        ps.close();
-
         chart.start();
 
-    } catch (SQLException e) {
+        System.out.println("========== setData2 FIN OK ==========");
+
+    } catch (Exception e) {
+
+        System.out.println("========== ERREUR setData2 ==========");
+
         e.printStackTrace();
     }
 }
+//    private void setData2() {
+//         chart.clear();
+//        Connection connection = DatabaseConnection.getInstance().getConnection();
+//        VersementEntrepriseDAOImpl versementEntrepriseDAOImpl = new VersementEntrepriseDAOImpl(connection);
+//        EntrepriseDAOImpl entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
+//        double sommeVersement;   
+//            List<Entreprise> entreprises = entrepriseDAOImpl.findAll();
+//            List<VersementEntreprise> versementEntreprises;
+//            for (Entreprise entreprise : entreprises) {
+//                versementEntreprises = new ArrayList<>();
+//                versementEntreprises = versementEntrepriseDAOImpl.getVersementEntrepriseByIdEntreprise(entreprise);
+//                sommeVersement = versementEntreprises.stream()
+//                        .mapToDouble(VersementEntreprise::getMontant)
+//                        .sum();
+//                System.out.println(" entreprises : " + entreprise.getNom_fr() +
+//                        "  AllVersement : " +sommeVersement );
+//
+//                chart.addData(
+//                        new ModelChart(
+//                                entreprise.getNom_ar(),
+//                                new double[]{sommeVersement}
+//                        )
+//                );
+//            }
+//            
+//        
+//            chart.start();
+//    }
+
     private void setData() {
         try {
             List<ModelData> lists = new ArrayList<>();
             //DatabaseConnection.getInstance().connectToDatabase();
-            
-            
+
             String sql = "select DATE_FORMAT(Date,'%M') as `Month`, SUM(TotalAmount) as Amount, SUM(TotalCost) as Cost, SUM(TotalProfit) as Profit from orders group by DATE_FORMAT(Date,'%m%Y') order by Date DESC limit 7";
-           
-            String s="SELECT MONTH(birth_date) AS birth_date FROM [Hotel_NailZakaria].[dbo].[client] "; //Month
+
+            String s = "SELECT MONTH(birth_date) AS birth_date FROM [Hotel_NailZakaria].[dbo].[client] "; //Month
             //dbConnection obj=new dbConnection();
             //Connection cnx=obj.getConnection();
-            
+
 //            PreparedStatement p = DatabaseConnection.getInstance().getConnection().prepareStatement(sql);
 //            ResultSet r = p.executeQuery();
 //            while (r.next()) {
@@ -129,9 +182,10 @@ setData2();
     }
 
     private void test() {
-        
-      
-            /*********************************************/
+
+        /**
+         * ******************************************
+         */
 //            
 //            chart.clear();
 //            
@@ -196,7 +250,6 @@ setData2();
 //            listData = new BookingDao().getAllReservationByDates(date1,date2);
 //            chart.addData(new ModelChart("DÉC", new double[]{listData.size()}));
 //            
-            
         chart.addData(new ModelChart("JANVIER", new double[]{5, 50, 100}));
         chart.addData(new ModelChart("FÉVRIER", new double[]{600, 300, 150}));
         chart.addData(new ModelChart("MARS", new double[]{200, 50, 900}));
@@ -210,11 +263,9 @@ setData2();
         chart.addData(new ModelChart(" NOVEMBRE", new double[]{450, 800, 100}));
         chart.addData(new ModelChart(" DÉCEMBRE", new double[]{450, 800, 100}));
 
-chart.start();
-       
+        chart.start();
+
     }
-    
-    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -230,16 +281,16 @@ chart.start();
 
         panelShadow1.setShadowColor(new java.awt.Color(153, 0, 0));
 
-        chart.setForeground(new java.awt.Color(102, 102, 102));
+        chart.setForeground(new java.awt.Color(100, 100, 100));
         chart.setFillColor(true);
-        chart.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        chart.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         chart.setTitleFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
 
         javax.swing.GroupLayout panelShadow1Layout = new javax.swing.GroupLayout(panelShadow1);
         panelShadow1.setLayout(panelShadow1Layout);
         panelShadow1Layout.setHorizontalGroup(
             panelShadow1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelShadow1Layout.createSequentialGroup()
+            .addGroup(panelShadow1Layout.createSequentialGroup()
                 .addComponent(chart, javax.swing.GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
                 .addContainerGap())
         );

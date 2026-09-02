@@ -12,11 +12,16 @@ import dao.impl.ProduitDAOImpl;
 import entity.Categorie;
 import entity.Produit;
 import frame.AddProduit;
+import frame.AddQt;
 import frame.ModifyProduit;
 import frame.Nouvelle_Achat;
 import home.HomeForm;
 import java.sql.Connection;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import material.design.designeTable;
@@ -33,6 +38,7 @@ public class pan_produit extends javax.swing.JPanel {
     ValidationMessageDialog validationMessageDialog;
     Exite exite;
     MessageDialog messageDialog;
+    DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
 
     public pan_produit(HomeForm homeForm) {
         this.homeForm = homeForm;
@@ -71,9 +77,13 @@ public class pan_produit extends javax.swing.JPanel {
             double prix_ache = produit.getPrix_achat();
             double prix_vent = produit.getPrix_vente();
             int qt = produit.getQty();
-
-            model.addRow(new Object[]{id, prix_vent, prix_ache, qt, refernce, marque,
+            model.insertRow(0, new Object[]{id,
+                formatter.format(prix_vent),
+                formatter.format(prix_ache),
+                qt, refernce, marque,
                 marque, desg});
+//            model.addRow(new Object[]{id, prix_vent, prix_ache, qt, refernce, marque,
+//                marque, desg});
         }
 
         lab_nbProduit.setText(produits.size() + "");
@@ -95,16 +105,17 @@ public class pan_produit extends javax.swing.JPanel {
         btnSupprim = new material.design.buttonRounder();
         btnModf1 = new material.design.buttonRounder();
         btnNewAchat = new material.design.buttonRounder();
+        btnModf2 = new material.design.buttonRounder();
         panCenter = new javax.swing.JPanel();
         panRound1 = new ui.card.panRound();
         tableScrollButton1 = new ui.table.TableScrollButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tab = new javax.swing.JTable();
         txt_search = new material.design.SearchTextRound();
+        panbuttom = new javax.swing.JPanel();
         panRound2 = new ui.card.panRound();
         jLabel = new javax.swing.JLabel();
         lab_nbProduit = new javax.swing.JLabel();
-        panbuttom = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
@@ -172,6 +183,16 @@ public class pan_produit extends javax.swing.JPanel {
             }
         });
 
+        btnModf2.setBackground(new java.awt.Color(17, 152, 185));
+        btnModf2.setForeground(new java.awt.Color(255, 255, 255));
+        btnModf2.setText("زيادة عدد المنتجات ");
+        btnModf2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        btnModf2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModf2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panTopLayout = new javax.swing.GroupLayout(panTop);
         panTop.setLayout(panTopLayout);
         panTopLayout.setHorizontalGroup(
@@ -179,10 +200,12 @@ public class pan_produit extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
                 .addGap(100, 100, 100)
                 .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(56, 56, 56)
-                .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28)
+                .addComponent(btnModf2, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -194,12 +217,14 @@ public class pan_produit extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
                 .addGap(13, 13, 13)
                 .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnSupprim, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                        .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnModf2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                        .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -229,11 +254,24 @@ public class pan_produit extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        tab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tabMouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(tab);
 
         tableScrollButton1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
-        txt_search.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        txt_search.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_searchKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_searchKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout panRound1Layout = new javax.swing.GroupLayout(panRound1);
         panRound1.setLayout(panRound1Layout);
@@ -241,7 +279,7 @@ public class pan_produit extends javax.swing.JPanel {
             panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound1Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 735, Short.MAX_VALUE)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE)
                 .addGap(15, 15, 15))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -252,20 +290,45 @@ public class pan_produit extends javax.swing.JPanel {
             panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound1Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(8, 8, 8)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                 .addGap(15, 15, 15))
         );
+
+        javax.swing.GroupLayout panCenterLayout = new javax.swing.GroupLayout(panCenter);
+        panCenter.setLayout(panCenterLayout);
+        panCenterLayout.setHorizontalGroup(
+            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panCenterLayout.createSequentialGroup()
+                .addGap(100, 100, 100)
+                .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
+        );
+        panCenterLayout.setVerticalGroup(
+            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panCenterLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(10, 10, 10))
+        );
+
+        add(panCenter);
+
+        panbuttom.setBackground(new java.awt.Color(255, 255, 255));
+        panbuttom.setMaximumSize(new java.awt.Dimension(32767, 50));
+        panbuttom.setMinimumSize(new java.awt.Dimension(200, 50));
+        panbuttom.setName(""); // NOI18N
+        panbuttom.setPreferredSize(new java.awt.Dimension(169, 50));
 
         panRound2.setBackground(new java.awt.Color(255, 255, 255));
         panRound2.setColor1(new java.awt.Color(255, 255, 255));
 
-        jLabel.setFont(new java.awt.Font("Cairo", 1, 13)); // NOI18N
+        jLabel.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel.setForeground(new java.awt.Color(51, 204, 0));
         jLabel.setText("عــدد المنتجات : ");
 
-        lab_nbProduit.setFont(new java.awt.Font("Cairo", 1, 13)); // NOI18N
+        lab_nbProduit.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         lab_nbProduit.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lab_nbProduit.setText("00");
 
@@ -284,52 +347,23 @@ public class pan_produit extends javax.swing.JPanel {
             panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound2Layout.createSequentialGroup()
                 .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
-                    .addComponent(lab_nbProduit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(12, 12, 12))
+                    .addComponent(lab_nbProduit, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                    .addComponent(jLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
-
-        javax.swing.GroupLayout panCenterLayout = new javax.swing.GroupLayout(panCenter);
-        panCenter.setLayout(panCenterLayout);
-        panCenterLayout.setHorizontalGroup(
-            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panCenterLayout.createSequentialGroup()
-                .addGap(100, 100, 100)
-                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(15, 15, 15))))
-        );
-        panCenterLayout.setVerticalGroup(
-            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panCenterLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-        );
-
-        add(panCenter);
-
-        panbuttom.setBackground(new java.awt.Color(255, 255, 255));
-        panbuttom.setMaximumSize(new java.awt.Dimension(32767, 50));
-        panbuttom.setMinimumSize(new java.awt.Dimension(200, 50));
-        panbuttom.setName(""); // NOI18N
-        panbuttom.setPreferredSize(new java.awt.Dimension(169, 50));
 
         javax.swing.GroupLayout panbuttomLayout = new javax.swing.GroupLayout(panbuttom);
         panbuttom.setLayout(panbuttomLayout);
         panbuttomLayout.setHorizontalGroup(
             panbuttomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 880, Short.MAX_VALUE)
+            .addGroup(panbuttomLayout.createSequentialGroup()
+                .addGap(98, 98, 98)
+                .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, 219, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(614, Short.MAX_VALUE))
         );
         panbuttomLayout.setVerticalGroup(
             panbuttomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addComponent(panRound2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         add(panbuttom);
@@ -341,24 +375,26 @@ public class pan_produit extends javax.swing.JPanel {
 
     private void btnSupprimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupprimActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Produit produit = produitDAOImpl.findById(id);
-            messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف الـنـوعـيـة");
-            if (messageDialog.getMessageType() == MessageDialog.MessageType.YES  ) {
+            messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف المنتج");
+            if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
                 if (produitDAOImpl.delete(id) > 0) {
                     validationMessageDialog.showMessage("خــطـأ", "تم حذف المنتج بنجاح");
                     setProduitsOnTab();
-                }else {
-                exite.showMessage("خــطـأ", "لا يمكنك الحذف  قـم بـتـحـديـد الـمـنـتـج");
+                } else {
+                    exite.showMessage("خــطـأ", "لا يمكنك حذف الـمـنـتـج");
+                }
             }
-            } 
         }
     }//GEN-LAST:event_btnSupprimActionPerformed
 
     private void btnModfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModfActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Produit produit = produitDAOImpl.findById(id);
             new ModifyProduit(this.homeForm, true, produit).setVisible(true);
@@ -374,12 +410,53 @@ public class pan_produit extends javax.swing.JPanel {
     private void btnNewAchatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewAchatActionPerformed
         new Nouvelle_Achat(this.homeForm, true).setVisible(true);
     }//GEN-LAST:event_btnNewAchatActionPerformed
+    private int lastRow = -1;
+    private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
+        if (!SwingUtilities.isLeftMouseButton(evt)) {
+            return;
+        }
+
+        int row = tab.rowAtPoint(evt.getPoint());
+
+        if (row == -1) {
+            tab.clearSelection();
+            lastRow = -1;
+            return;
+        }
+
+        if (lastRow == row) {
+            tab.clearSelection();
+            lastRow = -1;
+        } else {
+            tab.setRowSelectionInterval(row, row);
+            lastRow = row;
+        }
+    }//GEN-LAST:event_tabMouseReleased
+
+    private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
+
+    }//GEN-LAST:event_txt_searchKeyTyped
+
+    private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
+        lab_nbProduit.setText(tab.getRowCount() + "");
+    }//GEN-LAST:event_txt_searchKeyReleased
+
+    private void btnModf2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModf2ActionPerformed
+        if (tab.getSelectedRow() != -1) {
+             int viewRow = tab.getSelectedRow();
+                int selectedRow = tab.convertRowIndexToModel(viewRow);
+                int id =(int)tab.getModel().getValueAt(selectedRow, 0);
+                Produit produit = produitDAOImpl.findById(id);
+                new AddQt(homeForm, true, produit).setVisible(true);
+        }
+    }//GEN-LAST:event_btnModf2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private material.design.buttonRounder btnAdd;
     private material.design.buttonRounder btnModf;
     private material.design.buttonRounder btnModf1;
+    private material.design.buttonRounder btnModf2;
     private material.design.buttonRounder btnNewAchat;
     private material.design.buttonRounder btnSupprim;
     private javax.swing.JLabel jLabel;

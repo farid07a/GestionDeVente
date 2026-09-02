@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="60911953-7f1b-4e8d-abe9-a60d5c3a706c">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="232"/>
 	<parameter name="CLIENT_ID" class="java.lang.String"/>
 	<parameter name="FName" class="java.lang.String"/>
 	<parameter name="YEAR" class="java.lang.Integer"/>
@@ -235,14 +235,8 @@ WHERE Client.id = $P{CLIENT_ID}
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
 	<summary>
-		<band height="48" splitType="Stretch">
+		<band height="451" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="73" height="34" uuid="ebee789b-02d3-486c-9b5a-0573d8cd75ff"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -271,6 +265,13 @@ WHERE Client.id = $P{CLIENT_ID}
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="53" y="299" width="162" height="27" uuid="d5b8966f-d9af-4731-a572-7d36dbace197"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

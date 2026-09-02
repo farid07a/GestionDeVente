@@ -19,6 +19,8 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import material.design.designeTable;
@@ -33,7 +35,7 @@ public class PanClient extends javax.swing.JPanel {
     Connection connection;
     ClientDAOImpl clientDAOImpl;
     MessageDialog messageDialog;
-    Exite exite ;
+    Exite exite;
 
     public PanClient(HomeForm homeForm) {
         this.homeForm = homeForm;
@@ -41,8 +43,8 @@ public class PanClient extends javax.swing.JPanel {
         connection = DatabaseConnection.getInstance().getConnection();
         clientDAOImpl = new ClientDAOImpl(connection);
         messageDialog = new MessageDialog(homeForm);
-        exite= new  Exite(homeForm);
-        
+        exite = new Exite(homeForm);
+
         new designeTable().SearchTable(tab, txt_search);
         new designeTable().setDesignTable(tab, jScrollPane2);
 
@@ -56,7 +58,7 @@ public class PanClient extends javax.swing.JPanel {
 
     public void print() {
         PrintingService service_print = new PrintingService();
-        final Map<String, Object> params = new HashMap<>();
+        Map<String, Object> params1 = new HashMap<>();
         btnImp.addPopupItem("قـائـمـة الـزبـائـن", e -> {
 //            Client client = clientDAOImpl.findById(5);
 //            params.put("CLIENT_ID", client.getId());
@@ -70,24 +72,27 @@ public class PanClient extends javax.swing.JPanel {
 //            service_print.printReport(ReportNames.CLIENT_LIST, params);
 
         });
+        
         btnImp.addPopupItem("قـائــمـة مـشـتـريـات الزبـون", e -> {
-
             if (tab.getSelectedRow() != -1) {
-                final Map<String, Object> params2 = new HashMap<>();
-                int row = tab.getSelectedRow();
+               Map<String, Object> params = new HashMap<>();
+                 int viewRow = tab.getSelectedRow();
+                 int row = tab.convertRowIndexToModel(viewRow);
+                 
                 int id = (int) tab.getModel().getValueAt(row, 0);
                 Client client = clientDAOImpl.findById(id);
-                params2.put("CLIENT_ID", client.getId());
-                params2.put("FName", client.getNom() + " " + client.getPrenom());
+                params.put("CLIENT_ID", client.getId());
+                params.put("FName", client.getNom() + " " + client.getPrenom());
                 if (!client.getEntreprise().getNom_fr().isEmpty()) {
-                    params2.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
+                    params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
                 } else {
                     params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
                 }
 
                 service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID, params);
-            }else{
-                         exite.showMessage("خـطـأ", "قـم بـتـحـديـد الــزبـون مـن الـجـدول");
+
+            } else {
+                exite.showMessage("خـطـأ", "قـم بـتـحـديـد الــزبـون مـن الـجـدول");
 
             }
         });
@@ -100,6 +105,7 @@ public class PanClient extends javax.swing.JPanel {
         List<Client> clients = clientDAOImpl.findAll();
         String nom_entreprise = "";
         for (Client client : clients) {
+            String matricul = client.getMatricule();
             int id = client.getId();
             String nom = client.getNom();
             String prenom = client.getPrenom();
@@ -111,8 +117,10 @@ public class PanClient extends javax.swing.JPanel {
             if (client.getEntreprise() != null) {
                 nom_entreprise = client.getEntreprise().getNom_ar();
             }
-            model.addRow(new Object[]{id, tel, adress, nom_entreprise, prenom
-                + " " + nom});
+            model.insertRow(0, new Object[]{id, tel, adress, nom_entreprise, prenom
+                + " " + nom, matricul});
+//            model.addRow(new Object[]{id, tel, adress, nom_entreprise, prenom
+//                + " " + nom});
         }
         lab_nbClient.setText(clients.size() + "");
 
@@ -139,10 +147,10 @@ public class PanClient extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         tab = new javax.swing.JTable();
         txt_search = new material.design.SearchTextRound();
+        panbuttom = new javax.swing.JPanel();
         panRound1 = new ui.card.panRound();
         jLabel1 = new javax.swing.JLabel();
         lab_nbClient = new javax.swing.JLabel();
-        panbuttom = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
@@ -156,7 +164,7 @@ public class PanClient extends javax.swing.JPanel {
         btnSupprim.setForeground(new java.awt.Color(255, 255, 255));
         btnSupprim.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-trash-64.png"))); // NOI18N
         btnSupprim.setText("حذف ");
-        btnSupprim.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnSupprim.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btnSupprim.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSupprimActionPerformed(evt);
@@ -178,7 +186,7 @@ public class PanClient extends javax.swing.JPanel {
         btnModf.setForeground(new java.awt.Color(255, 255, 255));
         btnModf.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-pencil-drawing-64.png"))); // NOI18N
         btnModf.setText("تعديل ");
-        btnModf.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnModf.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btnModf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnModfActionPerformed(evt);
@@ -189,7 +197,7 @@ public class PanClient extends javax.swing.JPanel {
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
         btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-plus-64 (2).png"))); // NOI18N
         btnAdd.setText("زبون جديد");
-        btnAdd.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        btnAdd.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddActionPerformed(evt);
@@ -201,6 +209,11 @@ public class PanClient extends javax.swing.JPanel {
         btnImp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-print-48.png"))); // NOI18N
         btnImp.setText("طــباعـة التـقـاريــر");
         btnImp.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        btnImp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImpActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panTopLayout = new javax.swing.GroupLayout(panTop);
         panTop.setLayout(panTopLayout);
@@ -230,8 +243,8 @@ public class PanClient extends javax.swing.JPanel {
                             .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -250,7 +263,7 @@ public class PanClient extends javax.swing.JPanel {
 
             },
             new String [] {
-                "id", "الهاتف", "العنوان", "الشركة ", "الاسم و اللقب", ""
+                "id", "الهاتف", "العنوان", "الشركة ", "الاسم و اللقب", "رقم التعريف الوظيفي"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -261,13 +274,24 @@ public class PanClient extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        tab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tabMouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(tab);
 
         tableScrollButton1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
+        txt_search.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         txt_search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_searchActionPerformed(evt);
+            }
+        });
+        txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_searchKeyReleased(evt);
             }
         });
 
@@ -287,21 +311,45 @@ public class PanClient extends javax.swing.JPanel {
         panRound4Layout.setVerticalGroup(
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound4Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(5, 5, 5)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
                 .addGap(14, 14, 14))
         );
+
+        javax.swing.GroupLayout panCenterLayout = new javax.swing.GroupLayout(panCenter);
+        panCenter.setLayout(panCenterLayout);
+        panCenterLayout.setHorizontalGroup(
+            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panCenterLayout.createSequentialGroup()
+                .addGap(100, 100, 100)
+                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
+        );
+        panCenterLayout.setVerticalGroup(
+            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panCenterLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        add(panCenter);
+
+        panbuttom.setBackground(new java.awt.Color(255, 255, 255));
+        panbuttom.setMaximumSize(new java.awt.Dimension(32767, 50));
+        panbuttom.setMinimumSize(new java.awt.Dimension(50, 50));
+        panbuttom.setPreferredSize(new java.awt.Dimension(0, 50));
 
         panRound1.setBackground(new java.awt.Color(255, 255, 255));
         panRound1.setColor1(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Cairo", 1, 15)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 204, 0));
         jLabel1.setText("عــدد الزبــائــن : ");
 
-        lab_nbClient.setFont(new java.awt.Font("Cairo", 1, 15)); // NOI18N
+        lab_nbClient.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         lab_nbClient.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lab_nbClient.setText("00");
 
@@ -319,52 +367,25 @@ public class PanClient extends javax.swing.JPanel {
         panRound1Layout.setVerticalGroup(
             panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lab_nbClient, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addGap(5, 5, 5)
+                .addGroup(panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lab_nbClient, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
-
-        javax.swing.GroupLayout panCenterLayout = new javax.swing.GroupLayout(panCenter);
-        panCenter.setLayout(panCenterLayout);
-        panCenterLayout.setHorizontalGroup(
-            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panCenterLayout.createSequentialGroup()
-                .addGap(100, 100, 100)
-                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(15, 15, 15))
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-        panCenterLayout.setVerticalGroup(
-            panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panCenterLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-
-        add(panCenter);
-
-        panbuttom.setBackground(new java.awt.Color(255, 255, 255));
-        panbuttom.setMaximumSize(new java.awt.Dimension(32767, 50));
-        panbuttom.setMinimumSize(new java.awt.Dimension(50, 50));
-        panbuttom.setPreferredSize(new java.awt.Dimension(0, 50));
 
         javax.swing.GroupLayout panbuttomLayout = new javax.swing.GroupLayout(panbuttom);
         panbuttom.setLayout(panbuttomLayout);
         panbuttomLayout.setHorizontalGroup(
             panbuttomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 976, Short.MAX_VALUE)
+            .addGroup(panbuttomLayout.createSequentialGroup()
+                .addGap(97, 97, 97)
+                .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 259, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(620, Short.MAX_VALUE))
         );
         panbuttomLayout.setVerticalGroup(
             panbuttomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         add(panbuttom);
@@ -376,7 +397,8 @@ public class PanClient extends javax.swing.JPanel {
 
     private void btnSupprimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupprimActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Client client = clientDAOImpl.findById(id);
 
@@ -387,20 +409,22 @@ public class PanClient extends javax.swing.JPanel {
                     new ValidationMessageDialog(homeForm).showMessage("حـذف", "تم حذف المنتج بنجاح");
                     setClientsOnTab();
 
-                }else {
-                new Exite(homeForm).showMessage("خــطـأ", "لا يمكنك حذف المنتج");
+                } else {
+                    new Exite(homeForm).showMessage("خــطـأ", "لا يمكنك حذف المنتج");
+                }
             }
-            } 
         }
     }//GEN-LAST:event_btnSupprimActionPerformed
 
     private void btnModfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModfActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Client client = clientDAOImpl.findById(id);
             new ModifyClient(this.homeForm, true, client).setVisible(true);
         }
+
 
     }//GEN-LAST:event_btnModfActionPerformed
 
@@ -412,6 +436,36 @@ public class PanClient extends javax.swing.JPanel {
         txt_search.requestFocusInWindow();
         txt_search.selectAll();
     }//GEN-LAST:event_btnModf1ActionPerformed
+    private int lastRow = -1;
+    private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
+        if (!SwingUtilities.isLeftMouseButton(evt)) {
+            return;
+        }
+
+        int row = tab.rowAtPoint(evt.getPoint());
+
+        if (row == -1) {
+            tab.clearSelection();
+            lastRow = -1;
+            return;
+        }
+
+        if (lastRow == row) {
+            tab.clearSelection();
+            lastRow = -1;
+        } else {
+            tab.setRowSelectionInterval(row, row);
+            lastRow = row;
+        }
+    }//GEN-LAST:event_tabMouseReleased
+
+    private void btnImpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImpActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnImpActionPerformed
+
+    private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
+        lab_nbClient.setText(tab.getRowCount()+"");
+    }//GEN-LAST:event_txt_searchKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

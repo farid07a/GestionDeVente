@@ -11,49 +11,86 @@ import config.DatabaseConnection;
 import dao.impl.CategorieDAOImpl;
 import dao.impl.ProduitDAOImpl;
 import entity.Categorie;
+import entity.Nomber;
 import entity.Produit;
 import home.HomeForm;
+import java.awt.Dialog;
+import java.awt.Frame;
+import java.awt.Window;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
-/**
- *
- * @author pc
- */
+
+
 public class AddProduit extends javax.swing.JDialog {
 
     Connection connection;
     HomeForm homeForm;
-
+    private Window parentWindow;
     ValidationMessageDialog validationMessageDialog;
     Exite exite;
     MessageDialog messageDialog;
+    ProduitDAOImpl produitDAOImpl;
+    CategorieDAOImpl categorieDAOImpl;
+    DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
+    Nomber nomber = new Nomber();
+    private Dialog parentDialog;
 
-    public AddProduit(java.awt.Frame parent, boolean modal) {
+    public AddProduit(Frame parent, boolean modal) {
         super(parent, modal);
-        this.homeForm = (HomeForm) parent;
+
+        this.parentWindow = parent;
+
+        if (parent instanceof HomeForm) {
+            this.homeForm = (HomeForm) parent;
+        }
 
         initComponents();
+        initData();
+    }
+
+    public AddProduit(Dialog parent, boolean modal) {
+        super(parent, modal);
+
+        this.parentWindow = parent;
+        this.parentDialog = parent;
+
+        if (parent.getOwner() instanceof HomeForm) {
+            this.homeForm = (HomeForm) parent.getOwner();
+        }
+
+        initComponents();
+        initData();
+    }
+
+    void initData() {
         setLocationRelativeTo(this.homeForm);
         connection = DatabaseConnection.getInstance().getConnection();
+        produitDAOImpl = new ProduitDAOImpl(connection);
         validationMessageDialog = new ValidationMessageDialog(this, homeForm);
         exite = new Exite(this, homeForm);
         messageDialog = new MessageDialog(homeForm);
-        setInfoCategirie();
+        setInfoCategorie();
         txt_nom.requestFocus();
     }
 
-    public void setInfoCategirie() {
+    public void setInfoCategorie() {
         List<Categorie> categories = new CategorieDAOImpl(connection).findAll();
-        if (categories != null) {
+        if (!categories.isEmpty()) {
             List<String> categoryNames = new ArrayList<>();
-
             for (Categorie categorie : categories) {
                 categoryNames.add(categorie.getNomCategorie());
             }
+            
+              System.out.println("nom categ = " + categoryNames.size());
+        System.out.println("catego  = " + categoryNames);
+            
             txt_catego_aut.setDictionary(categoryNames);
 
         }
@@ -84,6 +121,8 @@ public class AddProduit extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         txt_catego_aut = new ui.autosuggestextefield.AutoSuggestTextField();
         jLabel2 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -103,6 +142,9 @@ public class AddProduit extends javax.swing.JDialog {
         txt_qt.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txt_qtKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_qtKeyTyped(evt);
             }
         });
 
@@ -138,7 +180,16 @@ public class AddProduit extends javax.swing.JDialog {
 
         txt_prix_achat.setBorder(null);
         txt_prix_achat.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_prix_achat.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        txt_prix_achat.setText("0.0");
+        txt_prix_achat.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
+        txt_prix_achat.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_prix_achatFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_prix_achatFocusLost(evt);
+            }
+        });
         txt_prix_achat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_prix_achatActionPerformed(evt);
@@ -148,11 +199,23 @@ public class AddProduit extends javax.swing.JDialog {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txt_prix_achatKeyPressed(evt);
             }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_prix_achatKeyTyped(evt);
+            }
         });
 
         txt_prix_vent.setBorder(null);
         txt_prix_vent.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txt_prix_vent.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        txt_prix_vent.setText("0.0");
+        txt_prix_vent.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
+        txt_prix_vent.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                txt_prix_ventFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                txt_prix_ventFocusLost(evt);
+            }
+        });
         txt_prix_vent.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_prix_ventActionPerformed(evt);
@@ -161,6 +224,9 @@ public class AddProduit extends javax.swing.JDialog {
         txt_prix_vent.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 txt_prix_ventKeyPressed(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_prix_ventKeyTyped(evt);
             }
         });
 
@@ -200,7 +266,7 @@ public class AddProduit extends javax.swing.JDialog {
         });
 
         jLabel7.setBackground(new java.awt.Color(43, 43, 140));
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("إضافة منتج جديد");
@@ -219,6 +285,14 @@ public class AddProduit extends javax.swing.JDialog {
         jLabel2.setForeground(new java.awt.Color(102, 102, 102));
         jLabel2.setText("اسم المنتج");
 
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel8.setText("*");
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel9.setText("*");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -231,9 +305,11 @@ public class AddProduit extends javax.swing.JDialog {
                         .addGap(460, 460, 460)
                         .addComponent(jLabel5))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(170, 170, 170)
+                        .addGap(161, 161, 161)
+                        .addComponent(jLabel8)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel4)
-                        .addGap(209, 209, 209)
+                        .addGap(173, 173, 173)
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(450, 450, 450)
@@ -247,8 +323,9 @@ public class AddProduit extends javax.swing.JDialog {
                         .addComponent(txt_remarq, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
                                 .addComponent(txt_prix_vent, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(20, 20, 20)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(txt_prix_achat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -260,7 +337,9 @@ public class AddProduit extends javax.swing.JDialog {
                                         .addGap(24, 24, 24)))
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(179, 179, 179)
+                                        .addGap(164, 164, 164)
+                                        .addComponent(jLabel9)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(txt_qt, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))))
@@ -272,24 +351,27 @@ public class AddProduit extends javax.swing.JDialog {
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel9))
                 .addGap(4, 4, 4)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_catego_aut, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(txt_catego_aut, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel5)
                 .addGap(4, 4, 4)
-                .addComponent(txt_qt, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txt_qt, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel3))
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txt_prix_vent, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txt_prix_achat, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(34, 34, 34)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txt_prix_vent, javax.swing.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
+                    .addComponent(txt_prix_achat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(30, 30, 30)
                 .addComponent(jLabel6)
                 .addGap(0, 0, 0)
                 .addComponent(txt_remarq, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -310,14 +392,20 @@ public class AddProduit extends javax.swing.JDialog {
     }//GEN-LAST:event_txt_remarqActionPerformed
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        ProduitDAOImpl produitDAOImpl = new ProduitDAOImpl(connection);
         if (txt_nom.getText().isEmpty() || txt_prix_vent.getText().isEmpty()) {
-            exite.showMessage("خــطـأ", "تأكد من ادخال المـعلـومـات");
+            exite.showMessageDialog("تنبيه", "تأكد من ادخال المـعلـومـات");
             return;
         }
+
+        if (txt_nom.getText().isEmpty() || txt_prix_vent.getText().isEmpty()) {
+            exite.showMessageDialog("تنبيه", "تأكد من ادخال المـعلـومـات");
+            return;
+        }
+
         String txt_categ = "";
 
         Categorie categorie = null;
+
         //        if(comp_categ.getSelectedIndex() !=-1 ){
         //            txt_categ=comp_categ.getSelectedItem().toString();
         //            categorie = new CategorieDAOImpl(connection).getCategorierParName(txt_categ);
@@ -325,25 +413,45 @@ public class AddProduit extends javax.swing.JDialog {
         //         }
         if (!txt_catego_aut.getText().isEmpty()) {
             txt_categ = txt_catego_aut.getText();
-            categorie = new CategorieDAOImpl(connection).getCategorierParName(txt_categ);
-
+            categorie = new CategorieDAOImpl(connection).getCategorierParNameFr(txt_categ);
         }
+        Produit produitExist = produitDAOImpl.getProduitParNameAndCatego(txt_nom.getText(), categorie);
+
+        if (produitExist != null) {
+            exite.showMessageDialog("تنبيه", "المنتج تم حفظه سابقا");
+            return;
+        }
+
         int qt = Integer.parseInt(txt_qt.getText());
-        double prix_achat = Double.parseDouble(txt_prix_achat.getText());
-        double prix_vent = Double.parseDouble(txt_prix_vent.getText());
+        double prix_achat = nomber.getNbDouble(txt_prix_achat.getText());
+        double prix_vent = nomber.getNbDouble(txt_prix_vent.getText());
 
         Produit produit = new Produit(0, txt_categ, txt_nom.getText(), txt_categ, categorie, qt, prix_achat, prix_vent);
 
-      // messageDialog.showMessagetoDialog(" مـنـتـج ", "هـل أنت متـأكـد  مـن إضـافـة المـنـتـج");     
+        // messageDialog.showMessagetoDialog(" مـنـتـج ", "هـل أنت متـأكـد  مـن إضـافـة المـنـتـج");     
         //if (messageDialog.getMessageType() == MessageDialog.MessageType.OK) {
+        if (produitDAOImpl.save(produit) > 0) {
 
-            if (produitDAOImpl.save(produit) > 0) {
-                this.dispose();
-                validationMessageDialog.showMessage("إضـافـة", "تـم إضافة المنتح بنجاح");
+            this.dispose();
+
+            if (parentWindow instanceof HomeForm) {
+
+                validationMessageDialog.showMessage("إضـافـة", "تـم إضافة المنتج بنجاح");
+
                 homeForm.getPan_produit().setProduitsOnTab();
 
+            } else {
+                validationMessageDialog.showMessagetoDialog("إضـافـة", "تـم إضافة المنتج بنجاح");
+
+                if (parentDialog instanceof Nouvelle_Achat) {
+                    ((Nouvelle_Achat) parentDialog).setProduitsOnTab();
+                }
+
+                if (homeForm != null) {
+                    homeForm.getPan_produit().setProduitsOnTab();
+                }
             }
-   // }
+        }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -400,6 +508,127 @@ public class AddProduit extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_txt_prix_ventKeyPressed
 
+    private void txt_qtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_qtKeyTyped
+        if (!Character.isDigit(evt.getKeyChar())) {
+            evt.consume();
+        }
+    }//GEN-LAST:event_txt_qtKeyTyped
+
+    private void txt_prix_achatKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_prix_achatKeyTyped
+        char c = evt.getKeyChar();
+        if (Character.isDigit(c)) {
+            return;
+        }
+        if (c == '.' && !txt_prix_achat.getText().contains(".")) {
+            return;
+        }
+
+        evt.consume();
+    }//GEN-LAST:event_txt_prix_achatKeyTyped
+
+    private void txt_prix_ventKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_prix_ventKeyTyped
+        char c = evt.getKeyChar();
+        if (Character.isDigit(c)) {
+            return;
+        }
+        if (c == '.' && !txt_prix_vent.getText().contains(".")) {
+            return;
+        }
+
+        evt.consume();
+
+//        char c = evt.getKeyChar();
+//    if (Character.isDigit(c)) {
+//        return;
+//    }
+//    if (c == '.' && !txt_prix_vent.getText().contains(".")) {
+//        return;
+//    }
+//    evt.consume();
+//    txt_prix_vent.setText(formatter.format(Double.parseDouble(txt_prix_vent.getText())));
+    }//GEN-LAST:event_txt_prix_ventKeyTyped
+
+    private void txt_prix_ventFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_prix_ventFocusLost
+        String text = txt_prix_vent.getText().trim();
+        if (text.isEmpty()) {
+            return;
+        }
+
+        try {
+            // نحذف الفواصل الموجودة
+            text = text.replace(",", "");
+
+            double value = Double.parseDouble(text);
+
+            txt_prix_vent.setText(
+                    formatter.format(value)
+            );
+
+        } catch (NumberFormatException e) {
+            // لا نفرغ الحقل
+        }
+    }//GEN-LAST:event_txt_prix_ventFocusLost
+
+    private void txt_prix_ventFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_prix_ventFocusGained
+        String text = txt_prix_vent.getText().trim();
+        if (!text.isEmpty()) {
+            try {
+
+                double value = Double.parseDouble(
+                        text.replace(",", "")
+                );
+
+                txt_prix_vent.setText(
+                        String.valueOf(value)
+                );
+
+                txt_prix_vent.selectAll();
+
+            } catch (NumberFormatException e) {
+                // لا شيء
+            }
+        }
+    }//GEN-LAST:event_txt_prix_ventFocusGained
+
+    private void txt_prix_achatFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_prix_achatFocusGained
+        String text = txt_prix_achat.getText().trim();
+        if (!text.isEmpty()) {
+
+            try {
+
+                double value = Double.parseDouble(
+                        text.replace(",", "")
+                );
+
+                txt_prix_achat.setText(
+                        String.valueOf(value)
+                );
+
+                txt_prix_achat.selectAll();
+
+            } catch (NumberFormatException e) {
+                // لا شيء
+            }
+        }
+    }//GEN-LAST:event_txt_prix_achatFocusGained
+
+    private void txt_prix_achatFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_txt_prix_achatFocusLost
+        String text = txt_prix_achat.getText().trim();
+        if (text.isEmpty()) {
+            return;
+        }
+        try {
+            // نحذف الفواصل الموجودة
+            text = text.replace(",", "");
+            double value = Double.parseDouble(text);
+            txt_prix_achat.setText(
+                    formatter.format(value)
+            );
+        } catch (NumberFormatException e) {
+            // لا نفرغ الحقل
+        }
+    }//GEN-LAST:event_txt_prix_achatFocusLost
+
     /**
      * @param args the command line arguments
      */
@@ -452,6 +681,8 @@ public class AddProduit extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private ui.autosuggestextefield.AutoSuggestTextField txt_catego_aut;
     private ui.card.TextFieldRound txt_nom;

@@ -40,10 +40,9 @@ import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
 import org.jdesktop.animation.timing.TimingTargetAdapter;
 
-
 public class AutoSuggestTextField extends TextFiledRound {
 
-     public String getSaveObject() {
+    public String getSaveObject() {
         return saveObject;
     }
 
@@ -55,11 +54,9 @@ public class AutoSuggestTextField extends TextFiledRound {
     private final DefaultListModel<String> listModel;
     private List<String> dataDictionary;
     private boolean isAdjusting = false;
-    
-    private int radius = 14;
-    private String saveObject="categorie";
 
-   
+    private int radius = 14;
+    private String saveObject = "categorie";
 
     // Colors
     private final Color borderColor = new Color(220, 224, 230);   // #DCE0E6
@@ -71,18 +68,24 @@ public class AutoSuggestTextField extends TextFiledRound {
 
     public AutoSuggestTextField() {
         super();
-          setOpaque(false);
+        setOpaque(false);
         setBackground(backgroundColor);
         setForeground(new Color(52, 58, 64));
         setCaretColor(new Color(52, 58, 64));
- setBorder(BorderFactory.createEmptyBorder(10, 18, 10, 18));
-      //  setBorder(new EmptyBorder(20, 3, 10, 3));
+        setBorder(BorderFactory.createEmptyBorder(10, 18, 10, 18));
+        //  setBorder(new EmptyBorder(20, 3, 10, 3));
         setSelectionColor(new Color(76, 204, 255));
 
         addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent fe) {
                 showing(false);
+                // نتحقق أولاً هل القائمة مفتوحة أم لا لمنع التكرار
+                SwingUtilities.invokeLater(() -> {
+                    if (!dataDictionary.isEmpty() && !popupMenu.isShowing()) {
+                        filter();
+                    }
+                });
             }
 
             @Override
@@ -90,6 +93,7 @@ public class AutoSuggestTextField extends TextFiledRound {
                 showing(true);
             }
         });
+
         TimingTarget target = new TimingTargetAdapter() {
             @Override
             public void begin() {
@@ -164,27 +168,31 @@ public class AutoSuggestTextField extends TextFiledRound {
         });
 
         // مستمع الماوس الموحد (تم إزالة التكرار)
+        // مستمع الماوس الموحد (يعمل عند الضغط بالماوس مباشرة)
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {
-                if (!popupMenu.isShowing()) {
-                    filter();
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    SwingUtilities.invokeLater(() -> {
+                        if (!popupMenu.isShowing()) {
+                            filter();
+                        }
+                    });
                 }
             }
 
             @Override
-            public void mouseEntered(MouseEvent me) {
+            public void mouseEntered(MouseEvent e) {
                 mouseOver = true;
                 repaint();
             }
 
             @Override
-            public void mouseExited(MouseEvent me) {
+            public void mouseExited(MouseEvent e) {
                 mouseOver = false;
                 repaint();
             }
         });
-
         // التحكم بالأسهم والأزرار
         this.addKeyListener(new KeyAdapter() {
             @Override
@@ -276,7 +284,7 @@ public class AutoSuggestTextField extends TextFiledRound {
 
         if (!popupMenu.isShowing() && this.isShowing()) {
             popupMenu.show(this, 0, getHeight());
-            this.requestFocusInWindow();
+            SwingUtilities.invokeLater(() -> this.requestFocusInWindow());
         }
     }
 
@@ -293,21 +301,20 @@ public class AutoSuggestTextField extends TextFiledRound {
             String txt = value.substring(ADD_PREFIX.length()).trim();
             if (!txt.isEmpty()) {
                 switch (saveObject) {
-                    case "categorie":                       
-                // 1. إذا كان الـ DAO متوفراً، نقوم بحفظ الفئة في قاعدة البيانات فوراً
-                System.out.println(" save");
-                // افترضنا أن Constructor الكلاس Categorie يستقبل: (id, nom, description)
-                Categorie categorie = new Categorie(0, txt, "");
-                CategorieDAOImpl categorieDAOImpl = new CategorieDAOImpl(DatabaseConnection.getInstance().getConnection());
-                if (categorieDAOImpl.save(categorie) > 0) {
-                    System.out.println("تم حفظ الفئة بنجاح في قاعدة البيانات!");
-                } else {
-                    System.err.println("فشل الحفظ في قاعدة البيانات!");
-                }            
-                 
+                    case "categorie":
+                        // 1. إذا كان الـ DAO متوفراً، نقوم بحفظ الفئة في قاعدة البيانات فوراً
+                        System.out.println(" save");
+                        // افترضنا أن Constructor الكلاس Categorie يستقبل: (id, nom, description)
+                        Categorie categorie = new Categorie(0, txt, "");
+                        CategorieDAOImpl categorieDAOImpl = new CategorieDAOImpl(DatabaseConnection.getInstance().getConnection());
+                        if (categorieDAOImpl.save(categorie) > 0) {
+                            System.out.println("تم حفظ الفئة بنجاح في قاعدة البيانات!");
+                        } else {
+                            System.err.println("فشل الحفظ في قاعدة البيانات!");
+                        }
+
                         break;
-                     
-                        
+
                     default:
                         break;
                 }
@@ -536,8 +543,7 @@ public class AutoSuggestTextField extends TextFiledRound {
 //        createLineStyle(g2);
 //        g2.dispose();
 //    }
-    
-       @Override
+    @Override
     protected void paintComponent(Graphics g) {
 
         Graphics2D g2 = (Graphics2D) g.create();
@@ -582,7 +588,6 @@ public class AutoSuggestTextField extends TextFiledRound {
     //==========================
     // Getter & Setter
     //==========================
-
     public int getRadius() {
         return radius;
     }
@@ -644,20 +649,20 @@ public class AutoSuggestTextField extends TextFiledRound {
         }
         super.setText(string);
     }
-    
+
     public void Select(String text) {
 
-    if (text == null || text.trim().isEmpty()) {
-        return;
+        if (text == null || text.trim().isEmpty()) {
+            return;
+        }
+
+        isAdjusting = true;
+
+        setText(text);
+
+        isAdjusting = false;
+
+        popupMenu.setVisible(false);
     }
-
-    isAdjusting = true;
-
-    setText(text);
-
-    isAdjusting = false;
-
-    popupMenu.setVisible(false);
-}
 
 }

@@ -94,24 +94,41 @@ public class AchatDetailDAOImpl extends AbstractDAO<AchatDetail> {
         List<AchatDetail> achatDetails = new ArrayList<>();
 
         String query = "SELECT * FROM " + getTableName() + " WHERE id_achat=?";
-    
+
         try {
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setInt(1, achat.getId());
-        
+
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 AchatDetail detail = mapResultSetToEntity(resultSet);
                 achatDetails.add(detail);
             }
-        
+
             resultSet.close();
             statement.close();
-        
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return achatDetails;
+    }
+
+    public int deleteByAchatId(int achatId) {
+
+        String query = "DELETE FROM " +getTableName()+"  WHERE id_achat = ?";
+
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, achatId);
+
+            return ps.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return 0;
     }
 
 }

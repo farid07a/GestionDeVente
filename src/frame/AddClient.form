@@ -97,7 +97,7 @@
                           <Component id="btnSave" min="-2" pref="105" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace min="0" pref="29" max="32767" attributes="0"/>
+                  <EmptySpace min="0" pref="32" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -322,7 +322,7 @@
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="66" green="66" red="66" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value=" &#x631;&#x642;&#x645; &#x627;&#x644;&#x62a;&#x639;&#x631;&#x64a;&#x641; &#x627;&#x644;&#x648;&#x636;&#x64a;&#x641;&#x64a;"/>
+            <Property name="text" type="java.lang.String" value=" &#x631;&#x642;&#x645; &#x627;&#x644;&#x62a;&#x639;&#x631;&#x64a;&#x641; &#x627;&#x644;&#x648;&#x638;&#x64a;&#x641;&#x64a;"/>
           </Properties>
         </Component>
         <Component class="ui.card.TextFieldRound" name="matricul">
@@ -346,7 +346,7 @@
               <Color blue="8c" green="2b" red="2b" type="rgb"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Times New Roman" size="18" style="1"/>
+              <Font name="Times New Roman" size="22" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>

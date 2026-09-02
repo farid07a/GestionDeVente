@@ -80,10 +80,10 @@
         <Component class="javax.swing.JLabel" name="jLabel2">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ad" green="3a" red="3a" type="rgb"/>
+              <Color blue="8c" green="2b" red="2b" type="rgb"/>
             </Property>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Times New Roman" size="18" style="1"/>
+              <Font name="Times New Roman" size="22" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -134,7 +134,7 @@
               <Font name="Times New Roman" size="16" style="1"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="33" red="0" type="rgb"/>
+              <Color blue="66" green="0" red="0" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="&#x627;&#x644;&#x640;&#x640;&#x645;&#x646;&#x640;&#x640;&#x640;&#x62a;&#x640;&#x640;&#x62c;&#x640;&#x640;&#x640;&#x627;&#x62a; ( &#x627;&#x646;&#x642;&#x631; &#x645;&#x631;&#x62a;&#x64a;&#x646; &#x644;&#x644;&#x625;&#x636;&#x627;&#x641;&#x629;)"/>
           </Properties>

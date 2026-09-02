@@ -9,6 +9,7 @@ import entity.Achat;
 import entity.AchatDetail;
 import entity.Client;
 import entity.Entreprise;
+import exception.DAOException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -136,6 +137,37 @@ public class AchatDAOImpl extends AbstractDAO<Achat> {
         return achats;
 
     }
+    
+      public List<Achat> getAchatByEntreprise(Entreprise entreprise) {
+
+    List<Achat> list = new ArrayList<>();
+
+    String query =
+            "SELECT a.* " +
+            "FROM Achat AS a " +
+            "INNER JOIN Client AS c ON a.id_client = c.id " +
+            "WHERE c.id_entreprise = ? " +
+            "ORDER BY a.id ASC";
+
+    try (PreparedStatement ps = connection.prepareStatement(query)) {
+
+        ps.setInt(1, entreprise.getId());
+
+        try (ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(mapResultSetToEntity(rs));
+            }
+        }
+
+    } catch (SQLException e) {
+        throw new DAOException(
+                "Erreur lors de récupération des achats de l'entreprise.",
+                e );
+    }
+
+    return list;
+}
     
 
 }

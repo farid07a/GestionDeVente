@@ -9,16 +9,13 @@ import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.CategorieDAOImpl;
-import dao.impl.ProduitDAOImpl;
 import entity.Categorie;
-import entity.Produit;
 import frame.AddCategory;
-import frame.AddProduit;
 import frame.ModifyCategory;
-import frame.ModifyProduit;
 import home.HomeForm;
 import java.sql.Connection;
 import java.util.List;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import material.design.designeTable;
@@ -42,14 +39,13 @@ public class pan_categorie extends javax.swing.JPanel {
         messageDialog = new MessageDialog(homeForm);
         new designeTable().SearchTable(tab, txt_search);
         new designeTable().setDesignTable(tab, jScrollPane2);
-        
+
         TableColumn column = tab.getColumnModel().getColumn(0);
         tab.getColumnModel().removeColumn(column);
-        
+
         setCategoriesOnTab();
 
     }
-
 
     public void setCategoriesOnTab() {
         DefaultTableModel model = (DefaultTableModel) tab.getModel();
@@ -59,8 +55,8 @@ public class pan_categorie extends javax.swing.JPanel {
             int id = categorie.getId();
             String nom_ar = categorie.getNomCategorie();
             String nom_fr = categorie.getDescription();
-
-            model.addRow(new Object[]{id,  nom_fr, nom_ar});
+            model.insertRow(0, new Object[]{id, nom_fr, nom_ar});
+            //   model.addRow(new Object[]{id,  nom_fr, nom_ar});
         }
 
     }
@@ -85,10 +81,10 @@ public class pan_categorie extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         tab = new javax.swing.JTable();
         txt_search = new material.design.SearchTextRound();
+        panButtom = new javax.swing.JPanel();
         panRound2 = new ui.card.panRound();
         jLabel = new javax.swing.JLabel();
-        lab_nbProduit = new javax.swing.JLabel();
-        panButtom = new javax.swing.JPanel();
+        lab_nbCatego = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
@@ -161,10 +157,10 @@ public class pan_categorie extends javax.swing.JPanel {
             .addGroup(panTopLayout.createSequentialGroup()
                 .addGap(10, 10, 10)
                 .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(11, 11, 11))
         );
 
@@ -194,9 +190,27 @@ public class pan_categorie extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        tab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tabMouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(tab);
 
         tableScrollButton1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        txt_search.setFont(new java.awt.Font("Times New Roman", 0, 16)); // NOI18N
+        txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txt_searchKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_searchKeyReleased(evt);
+            }
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txt_searchKeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout panRound4Layout = new javax.swing.GroupLayout(panRound4);
         panRound4.setLayout(panRound4Layout);
@@ -208,51 +222,17 @@ public class pan_categorie extends javax.swing.JPanel {
                 .addGap(15, 15, 15))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panRound4Layout.setVerticalGroup(
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound4Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 296, Short.MAX_VALUE)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                 .addGap(15, 15, 15))
-        );
-
-        panRound2.setBackground(new java.awt.Color(255, 255, 255));
-        panRound2.setColor1(new java.awt.Color(255, 255, 255));
-
-        jLabel.setFont(new java.awt.Font("Cairo", 1, 15)); // NOI18N
-        jLabel.setForeground(new java.awt.Color(51, 204, 0));
-        jLabel.setText("عــدد المنتجات : ");
-
-        lab_nbProduit.setFont(new java.awt.Font("Cairo", 1, 15)); // NOI18N
-        lab_nbProduit.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lab_nbProduit.setText("00");
-
-        javax.swing.GroupLayout panRound2Layout = new javax.swing.GroupLayout(panRound2);
-        panRound2.setLayout(panRound2Layout);
-        panRound2Layout.setHorizontalGroup(
-            panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lab_nbProduit, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel)
-                .addGap(33, 33, 33))
-        );
-        panRound2Layout.setVerticalGroup(
-            panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(panRound2Layout.createSequentialGroup()
-                        .addComponent(jLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(4, 4, 4))
-                    .addComponent(lab_nbProduit, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(12, 12, 12))
         );
 
         javax.swing.GroupLayout panCenterLayout = new javax.swing.GroupLayout(panCenter);
@@ -261,39 +241,69 @@ public class pan_categorie extends javax.swing.JPanel {
             panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panCenterLayout.createSequentialGroup()
                 .addGap(100, 100, 100)
-                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(15, 15, 15))))
+                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
         );
         panCenterLayout.setVerticalGroup(
             panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panCenterLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
+                .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         add(panCenter);
 
         panButtom.setBackground(new java.awt.Color(255, 255, 255));
+        panButtom.setMaximumSize(new java.awt.Dimension(32767, 50));
         panButtom.setMinimumSize(new java.awt.Dimension(100, 50));
         panButtom.setPreferredSize(new java.awt.Dimension(242, 50));
+
+        panRound2.setBackground(new java.awt.Color(255, 255, 255));
+        panRound2.setColor1(new java.awt.Color(255, 255, 255));
+
+        jLabel.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel.setText("العدد");
+
+        lab_nbCatego.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        lab_nbCatego.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lab_nbCatego.setText("00");
+
+        javax.swing.GroupLayout panRound2Layout = new javax.swing.GroupLayout(panRound2);
+        panRound2.setLayout(panRound2Layout);
+        panRound2Layout.setHorizontalGroup(
+            panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lab_nbCatego, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel)
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+        panRound2Layout.setVerticalGroup(
+            panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panRound2Layout.createSequentialGroup()
+                .addComponent(lab_nbCatego, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(panRound2Layout.createSequentialGroup()
+                .addGap(7, 7, 7)
+                .addComponent(jLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout panButtomLayout = new javax.swing.GroupLayout(panButtom);
         panButtom.setLayout(panButtomLayout);
         panButtomLayout.setHorizontalGroup(
             panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1021, Short.MAX_VALUE)
+            .addGroup(panButtomLayout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(748, Short.MAX_VALUE))
         );
         panButtomLayout.setVerticalGroup(
             panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         add(panButtom);
@@ -305,35 +315,70 @@ public class pan_categorie extends javax.swing.JPanel {
 
     private void btnSupprimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupprimActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Categorie categorie = categorieDAOImpl.findById(id);
-             messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف الـنـوعـيـة");
+            messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف الـنـوعـيـة");
             if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
-            if (categorieDAOImpl.delete(id) > 0) {
-                setCategoriesOnTab();
-                new ValidationMessageDialog(homeForm).showMessage("حـذف", "تم حذف الـنـوعـيـة بنجاح");
-            }else {
-            new Exite(homeForm).showMessage("خــطـأ", "لا يمكنك حذف الـنـوعـية");
-             }
+                if (categorieDAOImpl.delete(id) > 0) {
+                    setCategoriesOnTab();
+                    new ValidationMessageDialog(homeForm).showMessage("حـذف", "تم حذف الـنـوعـيـة بنجاح");
+                } else {
+                    new Exite(homeForm).showMessage("خــطـأ", "لا يمكنك حذف الـنـوعـية");
+                }
             }
-        } 
+        }
     }//GEN-LAST:event_btnSupprimActionPerformed
 
     private void btnModfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModfActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Categorie categorie = categorieDAOImpl.findById(id);
-           new ModifyCategory(this.homeForm, true, categorie).setVisible(true);
+            new ModifyCategory(this.homeForm, true, categorie).setVisible(true);
 
         }
 
     }//GEN-LAST:event_btnModfActionPerformed
 
     private void btnModf1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModf1ActionPerformed
-       txt_search.requestFocus();
+        txt_search.requestFocus();
     }//GEN-LAST:event_btnModf1ActionPerformed
+    private int lastRow = -1;
+    private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
+        if (!SwingUtilities.isLeftMouseButton(evt)) {
+            return;
+        }
+
+        int row = tab.rowAtPoint(evt.getPoint());
+
+        if (row == -1) {
+            tab.clearSelection();
+            lastRow = -1;
+            return;
+        }
+
+        if (lastRow == row) {
+            tab.clearSelection();
+            lastRow = -1;
+        } else {
+            tab.setRowSelectionInterval(row, row);
+            lastRow = row;
+        }
+    }//GEN-LAST:event_tabMouseReleased
+
+    private void txt_searchKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txt_searchKeyTyped
+
+    private void txt_searchKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyPressed
+    }//GEN-LAST:event_txt_searchKeyPressed
+
+    private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
+        lab_nbCatego.setText(tab.getRowCount() + "");
+    }//GEN-LAST:event_txt_searchKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -343,7 +388,7 @@ public class pan_categorie extends javax.swing.JPanel {
     private material.design.buttonRounder btnSupprim;
     private javax.swing.JLabel jLabel;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lab_nbProduit;
+    private javax.swing.JLabel lab_nbCatego;
     private javax.swing.JPanel panButtom;
     private javax.swing.JPanel panCenter;
     private ui.card.panRound panRound2;

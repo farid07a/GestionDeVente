@@ -39,7 +39,7 @@ public class ProduitDAOImpl extends AbstractDAO<Produit> {
         ps.setString(1, entity.getReference());
         ps.setString(2, entity.getDesignation());
         ps.setString(3, entity.getMarque());
-       // ps.setInt(4, entity.getCategorie().getId());
+        // ps.setInt(4, entity.getCategorie().getId());
         if (entity.getCategorie() == null) {
             ps.setNull(4, java.sql.Types.INTEGER);
         } else {
@@ -62,7 +62,7 @@ public class ProduitDAOImpl extends AbstractDAO<Produit> {
         } else {
             ps.setInt(4, entity.getCategorie().getId());
         }
-       // ps.setInt(4, entity.getCategorie().getId());
+        // ps.setInt(4, entity.getCategorie().getId());
         ps.setInt(5, entity.getQty());
         ps.setDouble(6, entity.getPrix_achat());
         ps.setDouble(7, entity.getPrix_vente());
@@ -85,6 +85,36 @@ public class ProduitDAOImpl extends AbstractDAO<Produit> {
                 rs.getDouble("prix_achat"),
                 rs.getDouble("prix_vente")
         );
+
+    }
+
+    public Produit getProduitParNameAndCatego(String name, Categorie categorie) {
+        Produit produit = null;
+        try {
+            if (categorie != null) {
+                String query = "SELECT * FROM " + getTableName() + " WHERE designation =? And id_categorie=?  ";
+                PreparedStatement statement = connection.prepareStatement(query);
+                statement.setString(1, name);
+                statement.setInt(2, categorie.getId());
+                ResultSet resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    produit = mapResultSetToEntity(resultSet);
+                }
+            } else {
+                {
+                    String query = "SELECT * FROM " + getTableName() + " WHERE designation =?  ";
+                    PreparedStatement statement = connection.prepareStatement(query);
+                    statement.setString(1, name);
+                    ResultSet resultSet = statement.executeQuery();
+                    if (resultSet.next()) {
+                        produit = mapResultSetToEntity(resultSet);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return produit;
 
     }
 

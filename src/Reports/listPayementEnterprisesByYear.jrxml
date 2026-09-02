@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0c724bee-dae1-4ae0-a0c9-5e49b8203f4f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="238"/>
 	<parameter name="ENTERPRISE_NAME_FR" class="java.lang.String"/>
 	<parameter name="ENTERPRISE_ID" class="java.lang.String"/>
 	<parameter name="YEAR" class="java.lang.Integer"/>
@@ -294,70 +294,71 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="26" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="19" splitType="Stretch"/>
-	</pageFooter>
 	<summary>
-		<band height="74" splitType="Stretch">
+		<band height="484" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="80" y="54" width="83" height="20" backcolor="#009999" uuid="24ea36dc-fe52-4b82-b524-ef343d9680c9"/>
-				<textElement>
+				<reportElement mode="Opaque" x="134" y="0" width="76" height="28" backcolor="#009999" uuid="24ea36dc-fe52-4b82-b524-ef343d9680c9"/>
+				<textElement textAlignment="Right">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[الديون المتبقية:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="502" y="0" width="53" height="20" uuid="837ccfdf-e69e-44dd-bb04-f08b9fbff294"/>
+				<reportElement mode="Opaque" x="502" y="0" width="53" height="28" backcolor="#009999" uuid="837ccfdf-e69e-44dd-bb04-f08b9fbff294"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[العدد الكلي:]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Opaque" x="0" y="54" width="80" height="20" backcolor="#009999" uuid="a204f063-8407-48b8-bd89-bbe6e5515e15"/>
+				<reportElement mode="Opaque" x="0" y="0" width="134" height="28" backcolor="#009999" uuid="a204f063-8407-48b8-bd89-bbe6e5515e15"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{LAST_CREADIT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="402" y="0" width="100" height="20" uuid="a90a44b5-6ba7-454a-aed9-6bf18bf38501"/>
+				<reportElement mode="Opaque" x="397" y="0" width="105" height="28" backcolor="#009999" uuid="a90a44b5-6ba7-454a-aed9-6bf18bf38501"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="502" y="54" width="53" height="20" backcolor="#009999" uuid="9b981d88-1a77-4a76-933c-1b4e50289bce"/>
+				<reportElement mode="Opaque" x="502" y="32" width="53" height="27" backcolor="#009999" uuid="9b981d88-1a77-4a76-933c-1b4e50289bce"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[كل الديون:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="297" y="54" width="76" height="20" backcolor="#009999" uuid="33e4ad65-754f-4e12-9f22-f927db369ea1"/>
-				<textElement>
+				<reportElement mode="Opaque" x="134" y="32" width="76" height="27" backcolor="#009999" uuid="33e4ad65-754f-4e12-9f22-f927db369ea1"/>
+				<textElement textAlignment="Right">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[كل المدفوعات:]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Opaque" x="163" y="54" width="134" height="20" backcolor="#009999" uuid="6cea3195-484e-46a2-8a28-4157ece3bde1"/>
+				<reportElement mode="Opaque" x="0" y="32" width="134" height="27" backcolor="#009999" uuid="6cea3195-484e-46a2-8a28-4157ece3bde1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{ALL_VERSEMENT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="373" y="54" width="129" height="20" backcolor="#009999" uuid="0841306a-914a-4fbc-9157-ca56c931919e"/>
+				<reportElement mode="Opaque" x="397" y="32" width="105" height="27" backcolor="#009999" uuid="0841306a-914a-4fbc-9157-ca56c931919e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{ALL_CREDIT}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="44" y="360" width="162" height="27" uuid="bbedad9e-1961-4f6a-99c9-7aff3bb944df"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

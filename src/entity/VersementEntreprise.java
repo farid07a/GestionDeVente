@@ -16,6 +16,7 @@ public class VersementEntreprise extends BaseEntity {
 
     private double total_credit;
     private double reste_credit;
+    private String numCheque;
 
     public VersementEntreprise() {
     }
@@ -27,7 +28,7 @@ public class VersementEntreprise extends BaseEntity {
     public VersementEntreprise(int id, Entreprise entreprise,
             double montant, LocalDate date_versement,
             String mode_paiement, String remarque,
-            double total_credit, double reste_credit) {
+            double total_credit, double reste_credit,String numCheque) {
 
         super(id);
 
@@ -38,6 +39,7 @@ public class VersementEntreprise extends BaseEntity {
         this.remarque = remarque;
         this.total_credit = total_credit;
         this.reste_credit = reste_credit;
+        this.numCheque = numCheque;
     }
 
     public Entreprise getEntreprise() {
@@ -95,4 +97,14 @@ public class VersementEntreprise extends BaseEntity {
     public void setReste_credit(double reste_credit) {
         this.reste_credit = reste_credit;
     }
+
+    public String getNumCheque() {
+        return numCheque;
+    }
+
+    public void setNumCheque(String numCheque) {
+        this.numCheque = numCheque;
+    }
+    
+    
 }

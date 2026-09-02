@@ -6,6 +6,7 @@ package material.design;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import javax.swing.BorderFactory;
@@ -58,8 +59,78 @@ public class designeTable {
             }
         });
     }
+public void setDesignTable(JTable tab, JScrollPane scrol) {
 
-    public void setDesignTable(JTable tab, JScrollPane scrol) {
+    TableCustom.apply(scrol, TableCustom.TableType.DEFAULT);
+
+    // Header Renderer - الخط عريض وبحجم أكبر (Bold + Size 15)
+    DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer();
+    headerRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+    headerRenderer.setForeground(Color.WHITE);
+    headerRenderer.setBackground(new Color(0, 119, 182));
+    headerRenderer.setFont(new Font("Segoe UI", Font.BOLD, 15)); // تم تأكيد Font.BOLD وتكبر الخط
+
+    // Cell Renderer
+    DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, 
+                boolean isSelected, boolean hasFocus, int row, int column) {
+
+            super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
+
+            setBorder(noFocusBorder);
+            setHorizontalAlignment(SwingConstants.CENTER);
+
+            if (isSelected) {
+                //setBackground(new Color(51,102,255));//new Color(178, 152, 254));
+                setBackground(new Color(178, 152, 254));
+                setForeground( Color.white);//(15, 23, 42));
+            } else {
+                setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 250, 252));
+                setForeground(new Color(51, 65, 85));
+            }
+
+            return this;
+        }
+    };
+
+    // Read Only
+    tab.setDefaultEditor(Object.class, null);
+
+    // Table Design & Row Height
+    tab.setRowHeight(33); // ارتفاع الأسطر منخفض
+    tab.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+
+    // Header Design
+    tab.getTableHeader().setFont(new Font("Times New Roman", Font.BOLD, 16)); // تعيين الخط العريض مباشرة لرأس الجدول
+    tab.getTableHeader().setPreferredSize(new Dimension(0, 32));
+    tab.getTableHeader().setReorderingAllowed(false);
+    tab.getTableHeader().setResizingAllowed(true);
+
+    // Apply Renderer على الأعمدة
+    for (int i = 0; i < tab.getColumnCount(); i++) {
+        tab.getTableHeader().getColumnModel().getColumn(i).setHeaderRenderer(headerRenderer);
+        tab.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+    }
+    
+
+    // Lines & Grid
+    tab.setShowHorizontalLines(true);
+    tab.setShowVerticalLines(false);
+    tab.setGridColor(new Color(241, 245, 249));
+    tab.setIntercellSpacing(new Dimension(0, 0));
+
+    // Scroll Design
+    scrol.setBorder(BorderFactory.createEmptyBorder());
+    scrol.setVerticalScrollBar(new ScrollBar());
+    scrol.getVerticalScrollBar().setBackground(Color.WHITE);
+    scrol.getViewport().setBackground(Color.WHITE);
+
+    JPanel corner = new JPanel();
+    corner.setBackground(new Color(0, 119, 182));
+    scrol.setCorner(JScrollPane.UPPER_RIGHT_CORNER, corner);
+}
+    public void setDesignTable2(JTable tab, JScrollPane scrol) {
 
         TableCustom.apply(scrol, TableCustom.TableType.DEFAULT);
 
@@ -106,8 +177,8 @@ public class designeTable {
         tab.setDefaultEditor(Object.class, null);
 
         // Table Design
-        tab.setRowHeight(35);
-        tab.setFont(new Font("Times New Roman", 1, 15));
+        tab.setRowHeight(33);
+        tab.setFont(new Font("Times New Roman", 0, 15));
         tab.setForeground( new Color(102,102,102)); //73, 80, 87));
    
         tab.getTableHeader().setFont(new Font("Times New Roman", 1, 14));
@@ -116,8 +187,8 @@ public class designeTable {
         tab.getTableHeader().setReorderingAllowed(false);
         tab.getTableHeader().setResizingAllowed(false);
 
-        tab.setSelectionBackground(new Color(230, 240, 255));
-        tab.setSelectionForeground(Color.BLACK);
+        tab.setSelectionBackground(new Color(51,102,255));//new Color(230, 240, 255));
+        tab.setSelectionForeground(Color.white);
 
         tab.setShowHorizontalLines(true);
         tab.setShowVerticalLines(false);
@@ -135,12 +206,12 @@ public class designeTable {
         
         
         Font customFont = new Font("Times New Roman", Font.BOLD, 14);
-    Font headerFont = new Font("Times New Roman", Font.BOLD, 18);
-     tab.setForeground(new Color(30, 41, 59)); // نص رمادي داكن واحترافي
-     tab.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+   // Font headerFont = new Font("Times New Roman", Font.BOLD, 18);
+   //  tab.setForeground(new Color(30, 41, 59)); // نص رمادي داكن واحترافي
+//     tab.setFont(new Font("Segoe UI", Font.PLAIN, 14));
   //  tab.setFont(customFont);
-  //  tab.setForeground(Color.BLACK);
-    tab.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
+    tab.setForeground(Color.BLACK);
+ //   tab.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 16));
     }
 
     public void setDesignTable1(JTable tab, JScrollPane scrol) {

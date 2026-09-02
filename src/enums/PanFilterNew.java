@@ -4,35 +4,29 @@
  */
 package enums;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.util.List;
-import javax.swing.ImageIcon;
+import datechooser.DateChooser;
 import javax.swing.JTable;
 import javax.swing.RowFilter;
 import javax.swing.table.TableRowSorter;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import material.design.TextField;
-import ui.card.panRound;
 
 import entity.Entreprise;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import material.design.ComboboxRoundNew;
 import material.design.SearchTextRound;
-import material.design.TextField;
 import material.design.button;
 import ui.card.TextFieldRound;
-import ui.card.panRound;
 
 public class PanFilterNew extends JPanel {
 
@@ -63,23 +57,27 @@ public class PanFilterNew extends JPanel {
     // =========================================================
     // CONSTRUCTOR
     // =========================================================
+    DateChooser dateChooser;
+
     public PanFilterNew() {
 
         setOpaque(false);
 
-        txtSearch = new SearchTextRound();
+        dateChooser = new datechooser.DateChooser();
 
+        txtSearch = new SearchTextRound();
         cbEntreprise = new ComboboxRoundNew<>();
         cbYear = new ComboboxRoundNew<>();
         cbMonth = new ComboboxRoundNew<>();
         txtDate = new TextFieldRound();
         btnFilter = new button();
 
+        dateChooser.setTextRefernce(txtDate);
         btnFilter.setIcon(filterAnnul);
         btnFilter.setColor2(Color.WHITE);
         btnFilter.setColor1(Color.WHITE);
         txtSearch.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        txtDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        //  txtDate.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 //        setLayout(new FlowLayout(
 //                FlowLayout.RIGHT,
 //                15,
@@ -95,8 +93,8 @@ public class PanFilterNew extends JPanel {
         gbc.gridx = 0;
         gbc.weightx = 0;
         add(btnFilter, gbc);
-        
-         gbc.gridx = 1;
+
+        gbc.gridx = 1;
         gbc.weightx = 1.0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtDate, gbc);
@@ -122,36 +120,55 @@ public class PanFilterNew extends JPanel {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         add(txtSearch, gbc);
 
-        txtSearch.setPreferredSize(new Dimension(200, 40));
-        txtSearch.setMinimumSize(new Dimension(200, 40));
+        txtSearch.setPreferredSize(new Dimension(120, 35));
+        txtSearch.setMinimumSize(new Dimension(120, 35));
+//        txtDate.setPreferredSize(new Dimension(80, 35));
+//        txtDate.setMinimumSize(new Dimension(80, 35));
 //        add(btnFilter);
 //        add(cbMonth);
 //        add(cbYear);
 //        add(cbEntreprise);
 //        add(txtSearch);
 
-    //    setColor1(Color.WHITE);
-
+        //    setColor1(Color.WHITE);
 //        txtSearch.setPreferredSize(
 //                new Dimension(180, 40)
 //        );
         cbEntreprise.setPreferredSize(
-                new Dimension(260, 40)
+                new Dimension(260, 37)
         );
-        cbEntreprise.setMinimumSize(new Dimension(200, 40));
+        cbEntreprise.setMinimumSize(new Dimension(260, 37));
 
-        cbYear.setPreferredSize(
-                new Dimension(150, 40)
-        );
-        cbYear.setMinimumSize(new Dimension(200, 40));
+        cbYear.setPreferredSize( new Dimension(200, 37) );
+        cbYear.setMinimumSize(new Dimension(200, 35));
 
-        cbMonth.setPreferredSize(
-                new Dimension(150, 40)
-        );
-        cbMonth.setMinimumSize(new Dimension(200, 40));
+        cbMonth.setPreferredSize( new Dimension(150, 37)  );    
+        cbMonth.setMinimumSize(new Dimension(200, 37));
+
+        txtDate.setPreferredSize(  new Dimension(120, 37) );        
+        txtDate.setMinimumSize(new Dimension(120, 37));
+        
+        txtDate.setBorder(null);
+        txtDate.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txtDate.setFont(new java.awt.Font("Times New Roman", 1, 16));
 
         initYearsCombo();
         initMonthsCombo();
+        txtDate.addActionListener(e -> {
+            dateChooser.showPopup();
+         
+            
+//            DateTimeFormatter input =
+//                    DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//
+//            DateTimeFormatter output =
+//                    DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//
+//            LocalDate date = LocalDate.parse(txtDate.getText(), input);
+//
+//            txtDate.setText(date.format(output));
+        });
+       
 
         initListeners();
     }
@@ -168,12 +185,11 @@ public class PanFilterNew extends JPanel {
     public String getMonth() {
         return cbMonth.getSelectedItem().toString();
     }
-    
-    public String getDate(){
-    
+
+    public String getDate() {
+
         return txtDate.getText();
     }
-    
 
     // =========================================================
     // SET TABLE
@@ -241,6 +257,26 @@ public class PanFilterNew extends JPanel {
             }
         });
 
+        txtDate.getDocument().addDocumentListener(
+                new DocumentListener() {
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+               
+                applyFilter();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                applyFilter();
+            }
+        });
+
         // زر Filter / Clear
         btnFilter.addActionListener(e -> {
 
@@ -267,6 +303,11 @@ public class PanFilterNew extends JPanel {
         }
 
         final String search
+                = txtSearch.getText()
+                        .trim()
+                        .toLowerCase();
+        
+        final String date
                 = txtSearch.getText()
                         .trim()
                         .toLowerCase();
@@ -484,7 +525,7 @@ public class PanFilterNew extends JPanel {
 
         cbMonth.removeAllItems();
 
-        cbMonth.addItem("كل الشهور");
+       cbMonth.addItem("كل الشهور");
 
         String[] months = {
             "جانفي",

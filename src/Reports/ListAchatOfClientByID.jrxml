@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="60911953-7f1b-4e8d-abe9-a60d5c3a706c">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="263"/>
 	<parameter name="CLIENT_ID" class="java.lang.String"/>
 	<parameter name="FName" class="java.lang.String"/>
 	<parameter name="Date_Achat" class="java.lang.String"/>
@@ -105,7 +105,7 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 	<columnHeader>
 		<band height="35" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="162" height="35" uuid="24704292-d3a0-47ec-8c1b-f83e4e06fd03"/>
+				<reportElement mode="Opaque" x="0" y="0" width="162" height="35" backcolor="#CCCCCC" uuid="24704292-d3a0-47ec-8c1b-f83e4e06fd03"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -118,7 +118,7 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 				<text><![CDATA[Designation]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="350" y="0" width="112" height="35" uuid="e8de560f-827c-46e9-ad64-8b6442dcf622"/>
+				<reportElement mode="Opaque" x="350" y="0" width="112" height="35" backcolor="#CCCCCC" uuid="e8de560f-827c-46e9-ad64-8b6442dcf622"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -131,7 +131,7 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 				<text><![CDATA[prix_total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="272" y="0" width="78" height="35" uuid="3c4f2908-439a-4169-86d6-f6af460e7e42"/>
+				<reportElement mode="Opaque" x="272" y="0" width="78" height="35" backcolor="#CCCCCC" uuid="3c4f2908-439a-4169-86d6-f6af460e7e42"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -144,7 +144,7 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 				<text><![CDATA[qty]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="162" y="0" width="110" height="35" uuid="9a8da72f-6038-4f9d-bd4f-90fe71999dec"/>
+				<reportElement mode="Opaque" x="162" y="0" width="110" height="35" backcolor="#CCCCCC" uuid="9a8da72f-6038-4f9d-bd4f-90fe71999dec"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -157,7 +157,7 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 				<text><![CDATA[prix_unitaire]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="462" y="0" width="93" height="35" uuid="a1c3d6e5-467d-4d3b-8081-7a8cddfb959b"/>
+				<reportElement mode="Opaque" x="462" y="0" width="93" height="35" backcolor="#CCCCCC" uuid="a1c3d6e5-467d-4d3b-8081-7a8cddfb959b"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -240,14 +240,8 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 			</textField>
 		</band>
 	</detail>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="54" splitType="Stretch"/>
-	</pageFooter>
 	<summary>
-		<band height="48" splitType="Stretch">
+		<band height="485" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="0" width="73" height="34" uuid="ebee789b-02d3-486c-9b5a-0573d8cd75ff"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
@@ -276,6 +270,13 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="44" y="316" width="162" height="27" uuid="226cad8b-7879-48f3-af62-673ede4a68d8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>

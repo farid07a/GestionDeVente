@@ -4,6 +4,7 @@
  */
 package frame;
 
+import DialogFram.Exite;
 import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
@@ -14,6 +15,7 @@ import entity.Nomber;
 import entity.VersementEntreprise;
 import enums.ModePaiement;
 import home.HomeForm;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,6 +31,7 @@ public class EtatInitialForm extends javax.swing.JDialog {
     EntrepriseDAOImpl entrepriseDAOImpl;
     HomeForm homeForm; 
     VersementEntrepriseDAOImpl versementEntrepriseDAOImpl;
+    Exite exite; 
     public EtatInitialForm(java.awt.Frame parent, boolean modal) {
        this.homeForm = (HomeForm) parent;
         initComponents();
@@ -41,6 +44,7 @@ public class EtatInitialForm extends javax.swing.JDialog {
        connection = DatabaseConnection.getInstance().getConnection();
        entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
        versementEntrepriseDAOImpl = new VersementEntrepriseDAOImpl(connection);
+       exite = new Exite(this, homeForm);
         setEntrepriseInCom();
        combEntreprise.setSelectedIndex(-1);
        
@@ -91,11 +95,15 @@ public class EtatInitialForm extends javax.swing.JDialog {
         jLabel7 = new javax.swing.JLabel();
         textMontantVersement = new ui.card.TextFieldPrice();
         jLabel12 = new javax.swing.JLabel();
-        radioChequ = new material.design.RadioButtonCustomAR();
-        radioCart = new material.design.RadioButtonCustomAR();
-        radioEsp = new material.design.RadioButtonCustomAR();
         jLabel8 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        txtNumCheque = new material.design.TextField();
+        pan_radioEsp = new ui.card.pan_gradiant();
+        radioEsp = new material.design.RadioButtonCustomAR();
+        pan_radioCart = new ui.card.pan_gradiant();
+        radioCart = new material.design.RadioButtonCustomAR();
+        pan_radioChequ = new ui.card.pan_gradiant();
+        radioChequ = new material.design.RadioButtonCustomAR();
         btn_save = new material.design.buttonRounder();
         btn_annuler = new material.design.buttonRounder();
         panRound7 = new ui.card.panRound();
@@ -109,8 +117,10 @@ public class EtatInitialForm extends javax.swing.JDialog {
         combEntreprise = new material.design.ComboboxRoundNew();
         jLabel4 = new javax.swing.JLabel();
 
+        dateChooser1.setForeground(new java.awt.Color(51, 153, 255));
         dateChooser1.setTextRefernce(txtDateDeb);
 
+        dateChooser2.setForeground(new java.awt.Color(51, 153, 255));
         dateChooser2.setTextRefernce(txtDateFin);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -119,7 +129,8 @@ public class EtatInitialForm extends javax.swing.JDialog {
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 26)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 102));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("دفــعــة إسـتـثـنـائــيــة");
 
@@ -145,27 +156,30 @@ public class EtatInitialForm extends javax.swing.JDialog {
 
         jLabel12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-portefeuille-35.png"))); // NOI18N
 
-        radioChequ.setBackground(new java.awt.Color(51, 204, 0));
-        radioChequ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cheque-de-paiement.png"))); // NOI18N
-        radioChequ.setText("صك بريدي");
-        radioChequ.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        radioChequ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        radioChequ.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        radioChequ.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioChequActionPerformed(evt);
+        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(0, 51, 204));
+        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel8.setText("طريـقـة الـدفـع ");
+
+        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel5.setText("دج");
+
+        txtNumCheque.setForeground(new java.awt.Color(0, 0, 102));
+        txtNumCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtNumCheque.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        txtNumCheque.setLabelText("رقم الحساب البريدي");
+        txtNumCheque.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumChequeKeyTyped(evt);
             }
         });
 
-        radioCart.setBackground(new java.awt.Color(51, 204, 0));
-        radioCart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-carte-bancaire-40.png"))); // NOI18N
-        radioCart.setText("بطاقة");
-        radioCart.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        radioCart.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        radioCart.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        radioCart.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                radioCartActionPerformed(evt);
+        pan_radioEsp.setColor1(new java.awt.Color(193, 255, 193));
+        pan_radioEsp.setColor2(new java.awt.Color(193, 255, 193));
+        pan_radioEsp.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pan_radioEspMouseClicked(evt);
             }
         });
 
@@ -181,44 +195,124 @@ public class EtatInitialForm extends javax.swing.JDialog {
             }
         });
 
-        jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 51, 204));
-        jLabel8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel8.setText("طريـقـة الـدفـع ");
+        javax.swing.GroupLayout pan_radioEspLayout = new javax.swing.GroupLayout(pan_radioEsp);
+        pan_radioEsp.setLayout(pan_radioEspLayout);
+        pan_radioEspLayout.setHorizontalGroup(
+            pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioEspLayout.createSequentialGroup()
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        pan_radioEspLayout.setVerticalGroup(
+            pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pan_radioEspLayout.createSequentialGroup()
+                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 6, Short.MAX_VALUE))
+        );
 
-        jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel5.setText("دج");
+        pan_radioCart.setColor1(new java.awt.Color(189, 189, 255));
+        pan_radioCart.setColor2(new java.awt.Color(189, 189, 255));
+        pan_radioCart.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pan_radioCartMouseClicked(evt);
+            }
+        });
+
+        radioCart.setBackground(new java.awt.Color(51, 204, 0));
+        radioCart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-carte-bancaire-40.png"))); // NOI18N
+        radioCart.setText("بطاقة");
+        radioCart.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        radioCart.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        radioCart.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioCart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioCartActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pan_radioCartLayout = new javax.swing.GroupLayout(pan_radioCart);
+        pan_radioCart.setLayout(pan_radioCartLayout);
+        pan_radioCartLayout.setHorizontalGroup(
+            pan_radioCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(radioCart, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+        );
+        pan_radioCartLayout.setVerticalGroup(
+            pan_radioCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioCartLayout.createSequentialGroup()
+                .addGap(0, 6, Short.MAX_VALUE)
+                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        pan_radioChequ.setColor1(new java.awt.Color(255, 235, 204));
+        pan_radioChequ.setColor2(new java.awt.Color(255, 235, 204));
+        pan_radioChequ.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                pan_radioChequMouseClicked(evt);
+            }
+        });
+
+        radioChequ.setBackground(new java.awt.Color(51, 204, 0));
+        radioChequ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cheque-de-paiement.png"))); // NOI18N
+        radioChequ.setText("صك بريدي");
+        radioChequ.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        radioChequ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        radioChequ.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioChequ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioChequActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pan_radioChequLayout = new javax.swing.GroupLayout(pan_radioChequ);
+        pan_radioChequ.setLayout(pan_radioChequLayout);
+        pan_radioChequLayout.setHorizontalGroup(
+            pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioChequLayout.createSequentialGroup()
+                .addComponent(radioChequ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pan_radioChequLayout.setVerticalGroup(
+            pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioChequLayout.createSequentialGroup()
+                .addGap(0, 6, Short.MAX_VALUE)
+                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout panRound2Layout = new javax.swing.GroupLayout(panRound2);
         panRound2.setLayout(panRound2Layout);
         panRound2Layout.setHorizontalGroup(
             panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41))
             .addGroup(panRound2Layout.createSequentialGroup()
                 .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panRound2Layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel8))
-                    .addGroup(panRound2Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, panRound2Layout.createSequentialGroup()
+                        .addGap(97, 97, 97)
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(panRound2Layout.createSequentialGroup()
-                                .addGap(0, 258, Short.MAX_VALUE)
-                                .addComponent(jLabel12)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel7))
-                            .addComponent(textMontantVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 377, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(21, Short.MAX_VALUE))
+                        .addComponent(textMontantVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(panRound2Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel12)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel7)))
+                .addGap(15, 15, 15))
+            .addGroup(panRound2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(txtNumCheque, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panRound2Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(pan_radioChequ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pan_radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(pan_radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(44, 44, 44))
+                    .addGroup(panRound2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel8)
+                        .addGap(19, 19, 19))))
         );
         panRound2Layout.setVerticalGroup(
             panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -229,16 +323,21 @@ public class EtatInitialForm extends javax.swing.JDialog {
                     .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(textMontantVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(textMontantVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panRound2Layout.createSequentialGroup()
+                        .addComponent(jLabel8)
+                        .addGap(13, 13, 13)
+                        .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(pan_radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pan_radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(pan_radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(panRound2Layout.createSequentialGroup()
+                        .addComponent(txtNumCheque, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(2, 2, 2)))
+                .addContainerGap(39, Short.MAX_VALUE))
         );
 
         btn_save.setBackground(new java.awt.Color(22, 163, 74));
@@ -293,8 +392,8 @@ public class EtatInitialForm extends javax.swing.JDialog {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound7Layout.createSequentialGroup()
                         .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(TxtCreditRest, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(42, 42, 42))
+                        .addComponent(TxtCreditRest, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(86, 86, 86))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound7Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addGap(22, 22, 22))))
@@ -343,57 +442,62 @@ public class EtatInitialForm extends javax.swing.JDialog {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(40, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 182, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(combEntreprise, javax.swing.GroupLayout.PREFERRED_SIZE, 391, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(panRound2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(panRound7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(6, 6, 6)
-                                .addComponent(txtDateFin, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel6)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txtDateFin, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel6))
+                                    .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGap(18, 18, 18)
-                                .addComponent(txtDateDeb, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel3)))
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(txtDateDeb, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel3)))))
                         .addGap(20, 20, 20))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(35, 35, 35)
-                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(109, 109, 109))))
+                    .addComponent(panRound2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panRound7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(combEntreprise, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(29, 29, 29)
+                .addGap(10, 10, 10)
                 .addComponent(panRound2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(10, 10, 10)
                 .addComponent(panRound7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtDateDeb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel6)
-                    .addComponent(txtDateFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(txtDateDeb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDateFin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(30, 30, 30)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addGap(30, 30, 30))
         );
 
         getContentPane().add(jPanel1, "card2");
@@ -406,7 +510,9 @@ public class EtatInitialForm extends javax.swing.JDialog {
     }//GEN-LAST:event_textMontantVersementActionPerformed
 
     private void radioChequActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioChequActionPerformed
-        // TODO add your handling code here:
+      if (radioChequ.isSelected()) {
+            txtNumCheque.requestFocusInWindow();
+        }
     }//GEN-LAST:event_radioChequActionPerformed
 
     private void radioCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioCartActionPerformed
@@ -419,20 +525,37 @@ public class EtatInitialForm extends javax.swing.JDialog {
 
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
     double montant = new Nomber().getNbDouble(textMontantVersement.getText());
+    if(combEntreprise.getSelectedIndex()==-1 &&  montant<=0 ){
+            exite.showMessageDialog("تـنـبـيه", "الـرجـاء إدخـال مـبـلـغ الـدفـعـة و إخـتـيـار الـشركـة");
+            return;
+    }
+    if(combEntreprise.getSelectedIndex()==-1 ){
+            exite.showMessageDialog("تـنـبـيه", "الـرجـاء  إخـتـيـار الـشركـة");
+            return;
+    }
+    if(  montant<=0 ){
+            exite.showMessageDialog("تـنـبـيه", "الـرجـاء إدخـال مـبـلـغ الـدفـعـة ");
+            return;
+    }
+     if(radioChequ.isSelected() && txtNumCheque.getText().isEmpty()){
+            exite.showMessageDialog("تـنـبـيه", "الرجاء إدخال رقم الصـك البريدي");
+            return;
+        }
         if (combEntreprise.getSelectedIndex() != -1 && montant > 0) {
             String nomEntreprise = combEntreprise.getSelectedItem().toString();
             Entreprise entreprise = entrepriseDAOImpl.getEntrepriseParName(nomEntreprise);
 
             MessageDialog messageDialog = new MessageDialog(this);
             messageDialog.showMessagetoDialog("حــفـظ", "هـل أنت متـأكـد مـن عـمـلـية الحـفـظ");
-            if (messageDialog.getMessageType() == MessageDialog.MessageType.OK) {
+            if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
 
                 double Credit = new Nomber().getNbDouble(TxtCreditRest.getText());
                 ModePaiement mode_paiement = getModePaiement();
                 String  remarq = txtDateDeb.getText() + " "+ txtDateFin.getText();
+                String numCheque=txtNumCheque.getText();
                 VersementEntreprise versementEntreprise = 
                         new VersementEntreprise(0, entreprise, montant, LocalDate.now(), mode_paiement.toString(),
-                                remarq , montant,Credit );
+                                remarq , montant,Credit,numCheque);
                 
                 versementEntrepriseDAOImpl.save(versementEntreprise);              
                 this.homeForm.getPanVersement().setVersmentOnTab();
@@ -461,6 +584,40 @@ public class EtatInitialForm extends javax.swing.JDialog {
     private void txtDateFinActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDateFinActionPerformed
        dateChooser2.showPopup();  
     }//GEN-LAST:event_txtDateFinActionPerformed
+
+    private void pan_radioEspMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_radioEspMouseClicked
+        if(radioEsp.isSelected()){
+            radioEsp.setSelected(false);
+        }else{
+            radioEsp.setSelected(true);
+
+        }
+    }//GEN-LAST:event_pan_radioEspMouseClicked
+
+    private void pan_radioCartMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_radioCartMouseClicked
+        if(radioCart.isSelected()){
+            radioCart.setSelected(false);
+        }else{
+            radioCart.setSelected(true);
+
+        }
+    }//GEN-LAST:event_pan_radioCartMouseClicked
+
+    private void pan_radioChequMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pan_radioChequMouseClicked
+        if(radioEsp.isSelected()){
+            radioEsp.setSelected(false);
+            txtNumCheque.requestFocus();
+        }else{
+            radioEsp.setSelected(true);
+
+        }
+    }//GEN-LAST:event_pan_radioChequMouseClicked
+
+    private void txtNumChequeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumChequeKeyTyped
+       if (!Character.isDigit(evt.getKeyChar())) {
+        evt.consume();
+    }
+    }//GEN-LAST:event_txtNumChequeKeyTyped
 
     /**
      * @param args the command line arguments
@@ -524,11 +681,15 @@ public class EtatInitialForm extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private ui.card.panRound panRound2;
     private ui.card.panRound panRound7;
+    private ui.card.pan_gradiant pan_radioCart;
+    private ui.card.pan_gradiant pan_radioChequ;
+    private ui.card.pan_gradiant pan_radioEsp;
     private material.design.RadioButtonCustomAR radioCart;
     private material.design.RadioButtonCustomAR radioChequ;
     private material.design.RadioButtonCustomAR radioEsp;
     private ui.card.TextFieldPrice textMontantVersement;
     private material.design.TextField txtDateDeb;
     private material.design.TextField txtDateFin;
+    private material.design.TextField txtNumCheque;
     // End of variables declaration//GEN-END:variables
 }

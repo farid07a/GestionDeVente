@@ -104,6 +104,16 @@ public class Exite extends javax.swing.JDialog {
         startAnimator(true);
         setVisible(true);
     }
+    
+    public void showMessageDialog(String title, String message) {
+        dialogue.setGlassPane(glass);
+        glass.setVisible(true);
+        lbTitle.setText(title);
+        txt.setText(message);
+        setLocationRelativeTo(dialogue);
+        startAnimator(true);
+        setVisible(true);
+    }
 
     public void closeMessage() {
         startAnimator(false);
@@ -149,7 +159,7 @@ public class Exite extends javax.swing.JDialog {
         lbTitle.setText("Message Title");
 
         txt.setEditable(false);
-        txt.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        txt.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txt.setForeground(new java.awt.Color(76, 76, 76));
         txt.setText("Message Text\nSimple");
         txt.setFocusable(false);

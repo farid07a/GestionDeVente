@@ -28,6 +28,8 @@ public class AddClient extends javax.swing.JDialog {
 
     Connection connection;
     HomeForm homeForm;
+    ClientDAOImpl clientDAOImpl;
+    Exite exite;
 
     public AddClient(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -35,6 +37,8 @@ public class AddClient extends javax.swing.JDialog {
         initComponents();
         setLocationRelativeTo(this.homeForm);
         connection = DatabaseConnection.getInstance().getConnection();
+        clientDAOImpl = new ClientDAOImpl(connection);
+        exite= new Exite(this, homeForm);
         setInfoEntrepriseOnCombox();
         matricul.requestFocus();
     }
@@ -188,7 +192,7 @@ public class AddClient extends javax.swing.JDialog {
         jLabel6.setBackground(new java.awt.Color(0, 0, 0));
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(102, 102, 102));
-        jLabel6.setText(" رقم التعريف الوضيفي");
+        jLabel6.setText(" رقم التعريف الوظيفي");
 
         matricul.setBorder(null);
         matricul.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -205,7 +209,7 @@ public class AddClient extends javax.swing.JDialog {
         });
 
         jLabel7.setBackground(new java.awt.Color(43, 43, 140));
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("إضافة زبون ");
@@ -284,7 +288,7 @@ public class AddClient extends javax.swing.JDialog {
                         .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(30, 30, 30)
                         .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 29, Short.MAX_VALUE))
+                .addGap(0, 32, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -354,7 +358,7 @@ public class AddClient extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         if (nom.getText().isEmpty() || prenom.getText().isEmpty()) {
-            new Exite(this, homeForm).showMessage("خــطـأ", "تأكد من ادخال المـعلـومـات");
+            exite.showMessageDialog("تنبيه", "تأكد من ادخال المـعلـومـات خاصة الرقم الوظيفي والاسم و اللقب");
             return;
         }
         Entreprise entreprise = null;
@@ -362,11 +366,18 @@ public class AddClient extends javax.swing.JDialog {
             String nomEntreprise = com_entrep.getSelectedItem().toString();
             entreprise = new EntrepriseDAOImpl(connection).getEntrepriseParName(nomEntreprise);
         }
-        Client client = new Client(0, nom.getText(), prenom.getText(), matricul.getText(), tel.getText(), adress.getText(), entreprise);
 
-        if (new ClientDAOImpl(connection).save(client) > 0) {
+        Client clientexist=clientDAOImpl.getClientByMatricul(matricul.getText());
+         if (clientexist!=null) {
+            exite.showMessageDialog("تنبيه", "تأكد من الرقم الوظيفي فهو موجود سابقا ");
+            return;
+        }
+         
+        Client client = new Client(0, nom.getText(), prenom.getText(), matricul.getText(), tel.getText(), adress.getText(), entreprise);
+         
+        if (clientDAOImpl.save(client) > 0) {
             this.dispose();
-            new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "نم اضافةالعلامـةالتجارية بنجاح ");
+            new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "نم اضافةالـزبـون  بنجاح ");
             homeForm.getPan_client().setClientsOnTab();
 
         }

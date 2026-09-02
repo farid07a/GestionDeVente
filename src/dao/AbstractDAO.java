@@ -42,8 +42,17 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
             return ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DAOException("Erreur lors de l'enregistrement dans la table " + getTableName(), e);
-        }
+
+    e.printStackTrace();
+
+    throw new DAOException(
+            "Erreur lors de l'enregistrement dans la table "
+            + getTableName()
+            + " : "
+            + e.getMessage(),
+            e
+    );
+}
 
     }
 
@@ -64,18 +73,18 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
 
     @Override
     public int delete(Integer id) {
-
         String sql = "DELETE FROM " + getTableName() + " WHERE id=?";
 
         try ( PreparedStatement ps = connection.prepareStatement(sql)) {
-
             ps.setInt(1, id);
-
-            return ps.executeUpdate();
+            return  ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DAOException("Erreur lors de l'enregistrement dans la table " + getTableName(), e);
+            System.out.println("Erreur lors de l'enregistrement dans la table " + getTableName() +"\n"+ e.getMessage());
+            return 0;
         }
+         
+       
 
     }
 

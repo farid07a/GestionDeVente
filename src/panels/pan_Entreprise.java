@@ -11,15 +11,19 @@ import Reports.PrintingService;
 import Reports.ReportNames;
 import config.DatabaseConnection;
 import dao.impl.EntrepriseDAOImpl;
-import entity.Client;
+import dao.impl.VersementEntrepriseDAOImpl;
 import entity.Entreprise;
+import entity.VersementEntreprise;
 import frame.AddCompany;
+import frame.AllVersementCreditVent;
 import frame.ModifyCompany;
+import frame.VersementEntrepriseForme;
 import home.HomeForm;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import material.design.designeTable;
@@ -29,25 +33,28 @@ public class pan_Entreprise extends javax.swing.JPanel {
     HomeForm homeForm;
     Connection connection;
     EntrepriseDAOImpl entrepriseDAOImpl;
+    VersementEntrepriseDAOImpl versementEntrepriseDAOImpl;
     PrintingService service_print = new PrintingService();
     Map<String, Object> params = new HashMap<>();
-  ValidationMessageDialog   validationMessageDialog;
-  MessageDialog messageDialog;
-  Exite exite;
+    ValidationMessageDialog validationMessageDialog;
+    MessageDialog messageDialog;
+    Exite exite;
+
     public pan_Entreprise(HomeForm homeForm) {
         this.homeForm = homeForm;
         initComponents();
         connection = DatabaseConnection.getInstance().getConnection();
         entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
-        validationMessageDialog= new ValidationMessageDialog(homeForm);
-        exite= new Exite(homeForm);
-        messageDialog= new MessageDialog(homeForm);
-        
+        versementEntrepriseDAOImpl= new VersementEntrepriseDAOImpl(connection);
+        validationMessageDialog = new ValidationMessageDialog(homeForm);
+        exite = new Exite(homeForm);
+        messageDialog = new MessageDialog(homeForm);
+
         new designeTable().SearchTable(tab, txt_search);
         new designeTable().setDesignTable(tab, jScrollPane2);
         TableColumn column = tab.getColumnModel().getColumn(0);
         tab.getColumnModel().removeColumn(column);
-        
+
         setEntreprisesOnTab();
 
         print();
@@ -57,37 +64,40 @@ public class pan_Entreprise extends javax.swing.JPanel {
     private void print() {
         btnImp.addPopupItem("قـائـمـة  الـشـركـات", e -> {
             //ListEnterprises
-        service_print.printReport(ReportNames.LIST_ENTERPRISES, null);
+            service_print.printReport(ReportNames.LIST_ENTERPRISES, null);
         });
-        
+
         btnImp.addPopupItem("قـائـمـة مـدفـوعـات كل الـشـركـات", e -> {
             params = new HashMap<>();
             //ALL_VERSEMENT_ENTERPRISES
             service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISES, null);
         });
-        
-/*********************************************************/
+
+        /**
+         * ******************************************************
+         */
         btnImp.addPopupItem("قـائـمـة زبائن الشركة", e -> {
-            
-            if (tab.getSelectedRow() == -1){
-             exite.showMessage("تنبيه", "الرجاء اختيار الشركة");
-             return;
-            } 
-                int row = tab.getSelectedRow();
-                int id = (int) tab.getModel().getValueAt(row, 0);
-                Entreprise entreprise = entrepriseDAOImpl.findById(id);
-                params.put("ENTERPRISE_ID", entreprise.getId());
-                if (!entreprise.getNom_fr().isEmpty()) {
-                    params.put("ENTERPRISE_NAME_FR", entreprise.getNom_fr());
-                } else {
-                    params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
-                }
-                service_print.printReport(ReportNames.LIST_OF_CLIENT_BY_ID_ENTERPRISE, params);
-            
+
+            if (tab.getSelectedRow() == -1) {
+                exite.showMessage("تنبيه", "الرجاء اختيار الشركة");
+                return;
+            }
+            int row = tab.getSelectedRow();
+            int id = (int) tab.getModel().getValueAt(row, 0);
+            Entreprise entreprise = entrepriseDAOImpl.findById(id);
+            params.put("ENTERPRISE_ID", entreprise.getId());
+            if (!entreprise.getNom_fr().isEmpty()) {
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_fr());
+            } else {
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
+            }
+            service_print.printReport(ReportNames.LIST_OF_CLIENT_BY_ID_ENTERPRISE, params);
+
         });
-        /**********************************************************************/
-        
-        
+        /**
+         * *******************************************************************
+         */
+
     }
 
     public void setEntreprisesOnTab() {
@@ -104,10 +114,12 @@ public class pan_Entreprise extends javax.swing.JPanel {
             String des = entreprise.getDesc();
             String email = entreprise.getEmail();
 
-            model.addRow(new Object[]{id, tel, email, adress, des, nom_fr,
+            model.insertRow(0, new Object[]{id, tel, email, adress, des, nom_fr,
                 nom});
+//            model.addRow(new Object[]{id, tel, email, adress, des, nom_fr,
+//                nom});
         }
-        lab_nbClient.setText(entreprises.size() + "");
+        lab_nbVersement.setText(entreprises.size() + "");
     }
 
     /**
@@ -125,16 +137,19 @@ public class pan_Entreprise extends javax.swing.JPanel {
         btnSupprim = new material.design.buttonRounder();
         btnModf1 = new material.design.buttonRounder();
         btnImp = new material.design.buttonMenu();
+        btnModf3 = new material.design.buttonRounder();
         jPanel1 = new javax.swing.JPanel();
         panRound4 = new ui.card.panRound();
         tableScrollButton1 = new ui.table.TableScrollButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         tab = new javax.swing.JTable();
         txt_search = new material.design.SearchTextRound();
+        panButtom = new javax.swing.JPanel();
         panRound1 = new ui.card.panRound();
         jLabel1 = new javax.swing.JLabel();
-        lab_nbClient = new javax.swing.JLabel();
-        panButtom = new javax.swing.JPanel();
+        lab_nbVersement = new javax.swing.JLabel();
+        btnModf2 = new material.design.buttonRounder();
+        buttonRounder1 = new material.design.buttonRounder();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
@@ -190,8 +205,8 @@ public class pan_Entreprise extends javax.swing.JPanel {
 
         btnModf1.setBackground(new java.awt.Color(17, 152, 185));
         btnModf1.setForeground(new java.awt.Color(255, 255, 255));
-        btnModf1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-search-64.png"))); // NOI18N
-        btnModf1.setText("بحث");
+        btnModf1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/validation-du-billet (1).png"))); // NOI18N
+        btnModf1.setText(" مدفوعات الـشـركــة   ");
         btnModf1.setActionCommand("");
         btnModf1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btnModf1.setMaximumSize(new java.awt.Dimension(0, 74));
@@ -208,6 +223,26 @@ public class pan_Entreprise extends javax.swing.JPanel {
         btnImp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-print-48.png"))); // NOI18N
         btnImp.setText("طــباعـة التـقـاريــر");
         btnImp.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        btnImp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImpActionPerformed(evt);
+            }
+        });
+
+        btnModf3.setBackground(new java.awt.Color(17, 152, 185));
+        btnModf3.setForeground(new java.awt.Color(255, 255, 255));
+        btnModf3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-search-64.png"))); // NOI18N
+        btnModf3.setText("بحث");
+        btnModf3.setActionCommand("");
+        btnModf3.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        btnModf3.setMaximumSize(new java.awt.Dimension(0, 74));
+        btnModf3.setMinimumSize(new java.awt.Dimension(0, 74));
+        btnModf3.setPreferredSize(new java.awt.Dimension(0, 74));
+        btnModf3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModf3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panTopLayout = new javax.swing.GroupLayout(panTop);
         panTop.setLayout(panTopLayout);
@@ -216,15 +251,20 @@ public class pan_Entreprise extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
                 .addGap(99, 99, 99)
                 .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 357, Short.MAX_VALUE)
+                .addGap(42, 42, 42)
+                .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
                 .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(45, 45, 45)
-                .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(15, 15, 15)
+                .addGap(144, 144, 144)
                 .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
                 .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
+            .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
+                    .addContainerGap(800, Short.MAX_VALUE)
+                    .addComponent(btnModf3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(320, 320, 320)))
         );
         panTopLayout.setVerticalGroup(
             panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,10 +273,16 @@ public class pan_Entreprise extends javax.swing.JPanel {
                 .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(9, 9, 9))
+            .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
+                    .addContainerGap(14, Short.MAX_VALUE)
+                    .addComponent(btnModf3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap()))
         );
 
         add(panTop);
@@ -254,7 +300,7 @@ public class pan_Entreprise extends javax.swing.JPanel {
 
             },
             new String [] {
-                "id", "البريد الالكتروني", "الهاتف", "العنوان", "Des", " entreprise", "الشركة"
+                "id", "البريد الالكتروني", "الهاتف", "العنوان", "NIF", "اسم الشركة بالفرنسية", "الشركة"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -265,9 +311,21 @@ public class pan_Entreprise extends javax.swing.JPanel {
                 return canEdit [columnIndex];
             }
         });
+        tab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tabMouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(tab);
 
         tableScrollButton1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
+
+        txt_search.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_searchKeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout panRound4Layout = new javax.swing.GroupLayout(panRound4);
         panRound4.setLayout(panRound4Layout);
@@ -285,44 +343,11 @@ public class pan_Entreprise extends javax.swing.JPanel {
         panRound4Layout.setVerticalGroup(
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound4Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 184, Short.MAX_VALUE)
+                .addGap(5, 5, 5)
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
                 .addGap(15, 15, 15))
-        );
-
-        panRound1.setBackground(new java.awt.Color(255, 255, 255));
-        panRound1.setColor1(new java.awt.Color(255, 255, 255));
-
-        jLabel1.setFont(new java.awt.Font("Cairo", 1, 15)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 204, 0));
-        jLabel1.setText("عــدد الشركات : ");
-
-        lab_nbClient.setFont(new java.awt.Font("Cairo", 1, 15)); // NOI18N
-        lab_nbClient.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        lab_nbClient.setText("00");
-
-        javax.swing.GroupLayout panRound1Layout = new javax.swing.GroupLayout(panRound1);
-        panRound1.setLayout(panRound1Layout);
-        panRound1Layout.setHorizontalGroup(
-            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lab_nbClient, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(109, 109, 109))
-        );
-        panRound1Layout.setVerticalGroup(
-            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound1Layout.createSequentialGroup()
-                .addGroup(panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound1Layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addComponent(jLabel1))
-                    .addComponent(lab_nbClient))
-                .addGap(0, 12, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -331,11 +356,7 @@ public class pan_Entreprise extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(100, 100, 100)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 263, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(15, 15, 15))
         );
         jPanel1Layout.setVerticalGroup(
@@ -343,9 +364,7 @@ public class pan_Entreprise extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(10, 10, 10))
         );
 
         add(jPanel1);
@@ -354,15 +373,84 @@ public class pan_Entreprise extends javax.swing.JPanel {
         panButtom.setMaximumSize(new java.awt.Dimension(32767, 50));
         panButtom.setMinimumSize(new java.awt.Dimension(100, 50));
 
+        panRound1.setBackground(new java.awt.Color(255, 255, 255));
+        panRound1.setColor1(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel1.setText("عــدد الشركات : ");
+
+        lab_nbVersement.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        lab_nbVersement.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lab_nbVersement.setText("00");
+
+        javax.swing.GroupLayout panRound1Layout = new javax.swing.GroupLayout(panRound1);
+        panRound1.setLayout(panRound1Layout);
+        panRound1Layout.setHorizontalGroup(
+            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lab_nbVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1)
+                .addGap(134, 134, 134))
+        );
+        panRound1Layout.setVerticalGroup(
+            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound1Layout.createSequentialGroup()
+                .addGroup(panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lab_nbVersement, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 47, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
+        btnModf2.setBackground(new java.awt.Color(51, 151, 151));
+        btnModf2.setForeground(new java.awt.Color(255, 255, 255));
+        btnModf2.setText("مـلـخـص مدفوعات الـشـركــات & الـديــون & الـمـبـيــعــات  ");
+        btnModf2.setActionCommand("");
+        btnModf2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        btnModf2.setMaximumSize(new java.awt.Dimension(0, 74));
+        btnModf2.setMinimumSize(new java.awt.Dimension(0, 74));
+        btnModf2.setPreferredSize(new java.awt.Dimension(0, 74));
+        btnModf2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModf2ActionPerformed(evt);
+            }
+        });
+
+        buttonRounder1.setBackground(new java.awt.Color(255, 153, 0));
+        buttonRounder1.setForeground(new java.awt.Color(255, 255, 255));
+        buttonRounder1.setText("فـاتورة ديـون الشركة");
+        buttonRounder1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        buttonRounder1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRounder1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panButtomLayout = new javax.swing.GroupLayout(panButtom);
         panButtom.setLayout(panButtomLayout);
         panButtomLayout.setHorizontalGroup(
             panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1241, Short.MAX_VALUE)
+            .addGroup(panButtomLayout.createSequentialGroup()
+                .addGap(97, 97, 97)
+                .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                .addComponent(btnModf2, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(26, 26, 26)
+                .addComponent(buttonRounder1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(243, 243, 243))
         );
         panButtomLayout.setVerticalGroup(
             panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addGroup(panButtomLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnModf2, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonRounder1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(panButtom);
@@ -374,7 +462,8 @@ public class pan_Entreprise extends javax.swing.JPanel {
 
     private void btnModfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModfActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Entreprise entreprise = entrepriseDAOImpl.findById(id);
             new ModifyCompany(this.homeForm, true, entreprise).setVisible(true);
@@ -384,25 +473,80 @@ public class pan_Entreprise extends javax.swing.JPanel {
 
     private void btnSupprimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupprimActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Entreprise entreprise = entrepriseDAOImpl.findById(id);
             messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحــذف", "هـل أنت متـأكـد مـن عـمـلـية الـحــذف");
             if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
-            if (entrepriseDAOImpl.delete(id) > 0) {
-                setEntreprisesOnTab();
-               validationMessageDialog.showMessage("حـذف", "تم حذف الشركة بنجاح");
-            } else {
-                new Exite(homeForm).showMessage("خــطـأ", "لا يمكنك حذف الشركة");
-            }
+                if (entrepriseDAOImpl.delete(id) > 0) {
+                    setEntreprisesOnTab();
+                    validationMessageDialog.showMessage("حـذف", "تم حذف الشركة بنجاح");
+                } else {
+                    new Exite(homeForm).showMessage("خــطـأ", "لا يمكنك حذف الشركة");
+                }
             }
         }
     }//GEN-LAST:event_btnSupprimActionPerformed
 
     private void btnModf1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModf1ActionPerformed
-        txt_search.requestFocusInWindow();
-        txt_search.selectAll();
+        if (tab.getSelectedRow() != -1) {
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
+            int id = (int) tab.getModel().getValueAt(row, 0);
+             System.out.println("ID = " + id);
+            Entreprise entreprise =  entrepriseDAOImpl.findById(id);
+            new VersementEntrepriseForme(this.homeForm, true, entreprise).setVisible(true);
+        }
+                                       
     }//GEN-LAST:event_btnModf1ActionPerformed
+    private int lastRow = -1;
+    private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
+        if (!SwingUtilities.isLeftMouseButton(evt)) {
+            return;
+        }
+
+        int row = tab.rowAtPoint(evt.getPoint());
+
+        if (row == -1) {
+            tab.clearSelection();
+            lastRow = -1;
+            return;
+        }
+
+        if (lastRow == row) {
+            tab.clearSelection();
+            lastRow = -1;
+        } else {
+            tab.setRowSelectionInterval(row, row);
+            lastRow = row;
+        }
+    }//GEN-LAST:event_tabMouseReleased
+
+    private void buttonRounder1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRounder1ActionPerformed
+        if (tab.getSelectedRow() != -1) {
+             int viewRow = tab.getSelectedRow();
+    int row = tab.convertRowIndexToModel(viewRow);}
+    }//GEN-LAST:event_buttonRounder1ActionPerformed
+
+    private void btnImpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImpActionPerformed
+        if (tab.getSelectedRow() != -1) {
+             int viewRow = tab.getSelectedRow();
+    int row = tab.convertRowIndexToModel(viewRow);}
+    }//GEN-LAST:event_btnImpActionPerformed
+
+    private void btnModf2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModf2ActionPerformed
+              new AllVersementCreditVent(homeForm, true).setVisible(true);
+
+    }//GEN-LAST:event_btnModf2ActionPerformed
+
+    private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
+         lab_nbVersement.setText(tab.getRowCount()+"");
+    }//GEN-LAST:event_txt_searchKeyReleased
+
+    private void btnModf3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModf3ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnModf3ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -410,11 +554,14 @@ public class pan_Entreprise extends javax.swing.JPanel {
     private material.design.buttonMenu btnImp;
     private material.design.buttonRounder btnModf;
     private material.design.buttonRounder btnModf1;
+    private material.design.buttonRounder btnModf2;
+    private material.design.buttonRounder btnModf3;
     private material.design.buttonRounder btnSupprim;
+    private material.design.buttonRounder buttonRounder1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JLabel lab_nbClient;
+    private javax.swing.JLabel lab_nbVersement;
     private javax.swing.JPanel panButtom;
     private ui.card.panRound panRound1;
     private ui.card.panRound panRound4;

@@ -100,6 +100,8 @@ public class ModifyProduit extends javax.swing.JDialog {
         btnSave = new material.design.buttonRounder();
         jLabel7 = new javax.swing.JLabel();
         txt_catego_aut = new ui.autosuggestextefield.AutoSuggestTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -224,7 +226,7 @@ public class ModifyProduit extends javax.swing.JDialog {
         });
 
         jLabel7.setBackground(new java.awt.Color(43, 43, 140));
-        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 22)); // NOI18N
         jLabel7.setForeground(new java.awt.Color(255, 255, 255));
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel7.setText("تــعــديــل المــنــتـــج ");
@@ -244,6 +246,14 @@ public class ModifyProduit extends javax.swing.JDialog {
             }
         });
 
+        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel8.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel8.setText("*");
+
+        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel9.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel9.setText("*");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -252,7 +262,9 @@ public class ModifyProduit extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(176, 176, 176)
                 .addComponent(jLabel2)
-                .addGap(220, 220, 220)
+                .addGap(207, 207, 207)
+                .addComponent(jLabel9)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
@@ -266,7 +278,9 @@ public class ModifyProduit extends javax.swing.JDialog {
                 .addGap(253, 253, 253)
                 .addComponent(txt_qt, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(175, 175, 175)
+                .addGap(162, 162, 162)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel4)
                 .addGap(185, 185, 185)
                 .addComponent(jLabel3))
@@ -285,11 +299,13 @@ public class ModifyProduit extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9)
+                .addGap(6, 6, 6)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel1))
-                .addGap(7, 7, 7)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel9)))
+                .addGap(0, 0, 0)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
@@ -297,15 +313,17 @@ public class ModifyProduit extends javax.swing.JDialog {
                     .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9)
                 .addComponent(jLabel5)
-                .addGap(6, 6, 6)
+                .addGap(0, 0, 0)
                 .addComponent(txt_qt, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(1, 1, 1)
-                        .addComponent(jLabel4))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel8)))
                     .addComponent(jLabel3))
-                .addGap(6, 6, 6)
+                .addGap(0, 0, 0)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txt_prixVent, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(txt_prix_achat, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -343,8 +361,8 @@ public class ModifyProduit extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
 
-        if (txt_nom.getText().isEmpty()) {
-            new Exite(this, homeForm).showMessage("خــطـأ", "تأكد من ادخال المـعلـومـات");
+        if (txt_nom.getText().isEmpty() || txt_prixVent.getText().isEmpty()) {
+            new Exite(this, homeForm).showMessageDialog("خــطـأ", "تأكد من ادخال المـعلـومـات");
             return;
         }
 
@@ -397,7 +415,7 @@ public class ModifyProduit extends javax.swing.JDialog {
 
     private void txt_qtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_qtKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            txt_prixVent.requestFocusInWindow();
+            txt_prix_achat.requestFocusInWindow();
         }
     }//GEN-LAST:event_txt_qtKeyPressed
 
@@ -408,16 +426,6 @@ public class ModifyProduit extends javax.swing.JDialog {
     }//GEN-LAST:event_txt_prix_achatKeyPressed
 
     private void txt_prix_achatKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_prix_achatKeyReleased
-                char c = evt.getKeyChar();
-    if (Character.isDigit(c)) {
-        return;
-    }
-    if (c == '.' && !txt_prix_achat.getText().contains(".")) {
-        return;
-    }
-    evt.consume();
-     double value =nomber.getNbDouble(txt_prix_achat.getText());
-    txt_prix_achat.setText(formatter.format(value));
 
     }//GEN-LAST:event_txt_prix_achatKeyReleased
 
@@ -433,8 +441,7 @@ public class ModifyProduit extends javax.swing.JDialog {
     }
 
     evt.consume();
-        double value =nomber.getNbDouble( txt_prixVent.getText());
-     txt_prixVent.setText(formatter.format(value));
+     txt_prixVent.setText(formatter.format(txt_prixVent.getText()));
     }//GEN-LAST:event_txt_prixVentKeyTyped
 
     private void txt_qtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_qtKeyTyped
@@ -452,8 +459,8 @@ public class ModifyProduit extends javax.swing.JDialog {
         return;
     }
     evt.consume();
-     double value =nomber.getNbDouble(txt_prix_achat.getText());
-    txt_prix_achat.setText(formatter.format(value));
+  //   double value =nomber.getNbDouble(txt_prix_achat.getText());
+    txt_prix_achat.setText(formatter.format(txt_prix_achat.getText()));
 
     }//GEN-LAST:event_txt_prix_achatKeyTyped
 
@@ -517,6 +524,8 @@ public class ModifyProduit extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private ui.autosuggestextefield.AutoSuggestTextField txt_catego_aut;
     private ui.card.TextFieldRound txt_nom;

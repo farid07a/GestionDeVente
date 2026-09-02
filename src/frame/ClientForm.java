@@ -33,6 +33,7 @@ public class ClientForm extends javax.swing.JDialog {
         connection = DatabaseConnection.getInstance().getConnection();
         new designeTable().setDesignTable(tab, jScrollPane2);
         new designeTable().SearchTable(tab, txt_search);
+        tab.removeColumn(tab.getColumnModel().getColumn(0));
 
         setClientsOnTab();
     }
@@ -55,7 +56,7 @@ public class ClientForm extends javax.swing.JDialog {
                 nom_entreprise = client.getEntreprise().getNom_ar();
             }
             model.addRow(new Object[]{id, tel, adress, nom_entreprise, prenom,
-                 nom, client.getMatricule()});
+                nom, client.getMatricule()});
         }
 
     }
@@ -141,10 +142,11 @@ public class ClientForm extends javax.swing.JDialog {
                 .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(tableScrollButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 387, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(22, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 26)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 102));
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setText("الـــزبـــــائــــن");
 
@@ -155,17 +157,17 @@ public class ClientForm extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(277, 277, 277))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(257, 257, 257)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, 452, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -179,25 +181,27 @@ public class ClientForm extends javax.swing.JDialog {
     }//GEN-LAST:event_txt_searchActionPerformed
 
     private void tabMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseClicked
-       if (evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt)) {
-       int row = tab.getSelectedRow();
-        if (row != -1) {
-            int id = Integer.parseInt(tab.getModel().getValueAt(row, 0).toString());
-            Client client = new ClientDAOImpl(connection).findById(id);
-            this.nouvelle_Achat.getTxt_matricul().setText(client.getMatricule());
-            this.nouvelle_Achat.getTxt_nom().setText(client.getNom());
-            this.nouvelle_Achat.getTxt_prenom().setText(client.getPrenom());
-            this.nouvelle_Achat.getTxt_adress().setText(client.getNom());
-            this.nouvelle_Achat.getTxt_tel().setText(client.getTel());
-            Entreprise entreprise = client.getEntreprise();
-            if (entreprise != null) {
-                this.nouvelle_Achat.getCom_entreprice().setSelectedItem(entreprise.getNom_ar());
-            } else {
-                this.nouvelle_Achat.getCom_entreprice().setSelectedIndex(-1);
-            }
-            this.dispose();
-        }
+        if (evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt)) {
+
+            int row = tab.getSelectedRow();
+            if (row != -1) {
+                int selectedRow = tab.convertRowIndexToModel(row);
+                int id = Integer.parseInt(tab.getModel().getValueAt(selectedRow, 0).toString());
+                Client client = new ClientDAOImpl(connection).findById(id);
+                this.nouvelle_Achat.getTxt_matricul().setText(client.getMatricule());
+                this.nouvelle_Achat.getTxt_nom().setText(client.getNom());
+                this.nouvelle_Achat.getTxt_prenom().setText(client.getPrenom());
+                this.nouvelle_Achat.getTxt_adress().setText(client.getAdresse());
+                this.nouvelle_Achat.getTxt_tel().setText(client.getTel());
+                Entreprise entreprise = client.getEntreprise();
+                if (entreprise != null) {
+                    this.nouvelle_Achat.getCom_entreprice().setSelectedItem(entreprise.getNom_ar());
+                } else {
+                    this.nouvelle_Achat.getCom_entreprice().setSelectedIndex(-1);
                 }
+                this.dispose();
+            }
+        }
 
     }//GEN-LAST:event_tabMouseClicked
 

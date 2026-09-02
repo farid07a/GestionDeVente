@@ -9,8 +9,10 @@ package config;
  * @author pc
  */
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -30,8 +32,9 @@ public class DatabaseConnection {
 
     private void loadProperties() {
 
-        try (FileInputStream fis = new FileInputStream("resources/config.properties")) {
-
+    //    try (FileInputStream fis = new FileInputStream("resources/config.properties")) {
+try (InputStream fis = DatabaseConnection.class.getClassLoader()
+                    .getResourceAsStream("config/config.properties")) {
             properties.load(fis);
 
         } catch (IOException e) {
@@ -39,29 +42,68 @@ public class DatabaseConnection {
         }
 
     }
+private void connect() {
 
-    private void connect() {
+    try {
 
-        try {
+        Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
 
-            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+        String dbPath = properties.getProperty("db.path");
 
-            String url = "jdbc:ucanaccess://" + properties.getProperty("db.path");
+        File dbFile = new File(dbPath);
 
-            /*
-            String user = properties.getProperty("db.user");
-            String password = properties.getProperty("db.password");
+        System.out.println("================================");
+        System.out.println("DB PATH       : " + dbPath);
+        System.out.println("ABSOLUTE PATH : " + dbFile.getAbsolutePath());
+        System.out.println("EXISTS        : " + dbFile.exists());
+        System.out.println("================================");
 
-            connection = DriverManager.getConnection(url, user, password);
-            */
-
-            connection = DriverManager.getConnection(url);
-
-        } catch (ClassNotFoundException | SQLException e) {
-            throw new RuntimeException("Erreur de connexion à la base de données", e);
+        if (!dbFile.exists()) {
+            throw new RuntimeException(
+                    "La base de données est introuvable : "
+                    + dbFile.getAbsolutePath()
+            );
         }
 
+        String url = "jdbc:ucanaccess://" + dbFile.getAbsolutePath();
+
+        System.out.println("URL : " + url);
+
+        connection = DriverManager.getConnection(url);
+
+        System.out.println("✅ Connexion réussie");
+
+    } catch (ClassNotFoundException | SQLException e) {
+
+        e.printStackTrace();
+
+        throw new RuntimeException(
+                "Erreur de connexion à la base de données", e
+        );
     }
+}
+//    private void connect() {
+//
+//        try {
+//
+//            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+//
+//            String url = "jdbc:ucanaccess://" + properties.getProperty("db.path");
+//
+//            /*
+//            String user = properties.getProperty("db.user");
+//            String password = properties.getProperty("db.password");
+//
+//            connection = DriverManager.getConnection(url, user, password);
+//            */
+//
+//            connection = DriverManager.getConnection(url);
+//
+//        } catch (ClassNotFoundException | SQLException e) {
+//            throw new RuntimeException("Erreur de connexion à la base de données", e);
+//        }
+//
+//    }
 
     public static synchronized DatabaseConnection getInstance() {
 

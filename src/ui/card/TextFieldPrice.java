@@ -187,7 +187,7 @@ public class TextFieldPrice extends JTextField {
                 ? focusColor
                 : borderColor);
 
-        g2.setStroke(new BasicStroke(1.5f));
+        g2.setStroke(new BasicStroke(1f));
 
         g2.drawRoundRect(1,
                 1,

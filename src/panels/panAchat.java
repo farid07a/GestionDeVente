@@ -19,6 +19,7 @@ import entity.AchatDetail;
 import entity.Client;
 import entity.Entreprise;
 import frame.AchatDetaillForm;
+import frame.ConfirmationSupprim;
 import frame.Nouvelle_Achat;
 import home.HomeForm;
 import java.sql.Connection;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import material.design.designeTable;
@@ -41,128 +43,158 @@ public class panAchat extends javax.swing.JPanel {
 
     AchatDAOImpl achatDAOImpl;
     Connection connection;
-DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));   
-HomeForm homeForm;
+    DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
+    HomeForm homeForm;
     MessageDialog messageDialog;
     ValidationMessageDialog validationMessageDialog;
+    AchatDetailDAOImpl achatDetailDAOImpl;
+
     Exite exite;
- PrintingService service_print = new PrintingService();
- Map<String, Object> params = new HashMap<>();
-public panAchat(HomeForm homeForm) {
+    PrintingService service_print = new PrintingService();
+    Map<String, Object> params = new HashMap<>();
+
+    public panAchat(HomeForm homeForm) {
         initComponents();
-        
-        connection= DatabaseConnection.getInstance().getConnection();
+
+        connection = DatabaseConnection.getInstance().getConnection();
         achatDAOImpl = new AchatDAOImpl(connection);
-        this.homeForm=homeForm ;
-        
-        
+        achatDetailDAOImpl = new AchatDetailDAOImpl(connection);
+        this.homeForm = homeForm;
+
         validationMessageDialog = new ValidationMessageDialog(homeForm);
         messageDialog = new MessageDialog(homeForm);
         exite = new Exite(homeForm);
-        
+
         new designeTable().setDesignTable(tab, jScrollPane2);
         new designeTable().SearchTable(tab, txt_search);
-         TableColumn column = tab.getColumnModel().getColumn(0);
+        TableColumn column = tab.getColumnModel().getColumn(0);
         tab.getColumnModel().removeColumn(column);
 
         setInfoAchatInTab();
         SetInfoInCard();
         DefaultTableModel model = (DefaultTableModel) tab.getModel();
-        model.addTableModelListener(e -> {
-               SetInfoInCard();
-        });
-        
-       print();
-        
+//        model.addTableModelListener(e -> {
+//               SetInfoInCard();
+//        });
+
+        print();
+
     }
 
-
     public void print() {
-        PrintingService service_print = new PrintingService();
-        final Map<String, Object> params = new HashMap<>();
-        btnImp.addPopupItem("الـفـاتـورة", e -> {
-          
-        });
-        btnImp.addPopupItem("مـشـتـريـات الزبـون", e -> {
+//        PrintingService service_print = new PrintingService();
+//        btnImp.addPopupItem("الـفـاتـورة", e -> {
+//          if (tab.getSelectedRow() != -1) {
+//            int viewRow = tab.getSelectedRow();
+//            int row = tab.convertRowIndexToModel(viewRow);
+//          }
+//        });
+        btnImp.addPopupItem("فاتورة الزبون", e -> {
 
             if (tab.getSelectedRow() != -1) {
-                final Map<String, Object> params2 = new HashMap<>();
-                int row = tab.getSelectedRow();
+                int viewRow = tab.getSelectedRow();
+                int row = tab.convertRowIndexToModel(viewRow);
+                params = new HashMap<>();
                 int id = (int) tab.getModel().getValueAt(row, 0);
                 Achat achat = achatDAOImpl.findById(id);
                 Client client = achat.getClient();
-       params.put("CLIENT_ID", client.getId());
-        params.put("FName", client.getNom() + " " + client.getPrenom());
-        if (!client.getEntreprise().getNom_fr().isEmpty()) {
-            params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
-        } else {
-            params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
-        }
+                params = new HashMap<>();
+                params.put("ACHAT_ID", achat.getId());
+                params.put("FName", client.getNom() + " " + client.getPrenom());
+                if (!client.getEntreprise().getNom_fr().isEmpty()) {
+                    params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
+                } else {
+                    params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
+                }
 
-        service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID, params);
+                service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID_ACHAT, params);
+            }
+        });
+
+        btnImp.addPopupItem("مـشـتـريـات الزبـون", e -> {
+
+            if (tab.getSelectedRow() != -1) {
+                int viewRow = tab.getSelectedRow();
+                int row = tab.convertRowIndexToModel(viewRow);
+                params = new HashMap<>();
+                int id = (int) tab.getModel().getValueAt(row, 0);
+                Achat achat = achatDAOImpl.findById(id);
+                Client client = achat.getClient();
+                params.put("CLIENT_ID", client.getId());
+                params.put("FName", client.getNom() + " " + client.getPrenom());
+                if (!client.getEntreprise().getNom_fr().isEmpty()) {
+                    params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
+                } else {
+                    params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
+                }
+
+                service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID, params);
             }
         });
 
     }
 
+    public void SetInfoInCard() {
+        int rowsCount = tab.getModel().getRowCount();
+        if (rowsCount > 0) {
+            double prixTotal = 0;
+            for (int row = 0; row < rowsCount; row++) {
 
-      public void SetInfoInCard() {
-        int rowsCount = tab.getRowCount();
-        if(rowsCount > 0 ){
-        double prixTotal = 0;
-        for (int row = 0; row < rowsCount; row++) {
-            
-      int modelRow = tab.convertRowIndexToModel(row);
-            Object val =tab.getModel().getValueAt(modelRow, 2).toString();
-          String cleanValue = val.toString()
-                           .replace(",", "")          
-                           .replace(" ", "")         
-                           .replace("\u00A0", "")    
-                           .replaceAll("\\s+", "")    
-                           .trim();
-            double prix = Double.parseDouble(cleanValue);
-            prixTotal = prixTotal + prix;
-        }
-        labPrixTotal.setText(formatter.format(prixTotal));
-        labNbAchat.setText(rowsCount+"");
-        lab_nbTable.setText(rowsCount + "");
-        
-        List<Entreprise> entreprises = new EntrepriseDAOImpl(connection).findAll();
-        List<Client> clients = new ClientDAOImpl(connection).findAll();
-        labNbEntreprice.setText(entreprises.size()+"");
-        lanNbClient.setText(clients.size()+"");
-        
+                int modelRow = tab.convertRowIndexToModel(row);
+                Object val = tab.getModel().getValueAt(modelRow, 2).toString();
+                String cleanValue = val.toString()
+                        .replace(",", "")
+                        .replace(" ", "")
+                        .replace("\u00A0", "")
+                        .replaceAll("\\s+", "")
+                        .trim();
+                double prix = Double.parseDouble(cleanValue);
+                prixTotal = prixTotal + prix;
+            }
+            labPrixTotal.setText(formatter.format(prixTotal));
+            labNbAchat.setText(rowsCount + "");
+            lab_nbAchat.setText(rowsCount + "");
+
+            List<Entreprise> entreprises = new EntrepriseDAOImpl(connection).findAll();
+            List<Client> clients = new ClientDAOImpl(connection).findAll();
+            labNbEntreprice.setText(entreprises.size() + "");
+            lanNbClient.setText(clients.size() + "");
+
         }
     }
-      
-    public void setInfoAchatInTab(){
-         DefaultTableModel model = (DefaultTableModel) tab.getModel();
+
+    public void setInfoAchatInTab() {
+        DefaultTableModel model = (DefaultTableModel) tab.getModel();
         model.setRowCount(0);
-         List <Achat> achats = achatDAOImpl.findAll();
-         String nom_entreprise ="";
-        for (Achat achat: achats) {
+        List<Achat> achats = achatDAOImpl.findAll();
+        String nom_entreprise = "";
+        for (Achat achat : achats) {
             int id = achat.getId();
-            String matricul= achat.getClient().getMatricule();
+            String matricul = achat.getClient().getMatricule();
             String nom = achat.getClient().getNom();
             String prenom = achat.getClient().getPrenom();
-            
+
             double prixTotal = achat.getPrix_total();
-            
-            LocalDate date= achat.getDate_achat();
+
+            LocalDate date = achat.getDate_achat();
             Entreprise entreprice = achat.getClient().getEntreprise();
-          
-            nom_entreprise =" "; 
-          
-            if(entreprice!= null   ){
-                    nom_entreprise = entreprice.getNom_ar();
+
+            nom_entreprise = " ";
+
+            if (entreprice != null) {
+                nom_entreprise = entreprice.getNom_ar();
             }
-            model.addRow(new Object[]{id, date,formatter.format(prixTotal), 
-                nom_entreprise, prenom
-              + " "+ nom,matricul} ) ;
+            model.insertRow(0, new Object[]{id, date, formatter.format(prixTotal),
+                nom_entreprise, prenom + " " + nom, matricul});
+//            model.addRow(new Object[]{id, date,formatter.format(prixTotal), 
+//                nom_entreprise, prenom + " "+ nom,matricul} ) ;
         }
-        lab_nbTable.setText(achats.size()+"");
-     
+        lab_nbAchat.setText(achats.size() + "");
+
+        SetInfoInCard();
+
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -195,14 +227,14 @@ public panAchat(HomeForm homeForm) {
         jScrollPane2 = new javax.swing.JScrollPane();
         tab = new javax.swing.JTable();
         txt_search = new material.design.SearchTextRound();
-        panRound1 = new ui.card.panRound();
-        jLabel1 = new javax.swing.JLabel();
-        lab_nbTable = new javax.swing.JLabel();
-        button1 = new material.design.button();
+        bDetaill = new material.design.button();
         btnNewAchat = new material.design.buttonRounder();
         btnSupprim = new material.design.buttonRounder();
         btnImp = new material.design.buttonMenu();
         panButtom = new javax.swing.JPanel();
+        panRound1 = new ui.card.panRound();
+        jLabel1 = new javax.swing.JLabel();
+        lab_nbAchat = new javax.swing.JLabel();
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
@@ -212,7 +244,7 @@ public panAchat(HomeForm homeForm) {
         panTop.setPreferredSize(new java.awt.Dimension(100, 100));
 
         panRound3.setColor1(new java.awt.Color(255, 255, 255));
-        panRound3.setColor2(new java.awt.Color(254, 152, 254));
+        panRound3.setColor2(new java.awt.Color(249, 207, 249));
 
         jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/compagnies.png"))); // NOI18N
@@ -418,13 +450,24 @@ public panAchat(HomeForm homeForm) {
                 return canEdit [columnIndex];
             }
         });
+        tab.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                tabMouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(tab);
 
         tableScrollButton1.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
+        txt_search.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
         txt_search.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txt_searchActionPerformed(evt);
+            }
+        });
+        txt_search.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txt_searchKeyReleased(evt);
             }
         });
 
@@ -432,68 +475,36 @@ public panAchat(HomeForm homeForm) {
         panRound4.setLayout(panRound4Layout);
         panRound4Layout.setHorizontalGroup(
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound4Layout.createSequentialGroup()
+                .addContainerGap(284, Short.MAX_VALUE)
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(319, Short.MAX_VALUE))
             .addGroup(panRound4Layout.createSequentialGroup()
-                .addGap(16, 16, 16)
+                .addContainerGap()
                 .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(14, 14, 14))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(319, 319, 319))
         );
         panRound4Layout.setVerticalGroup(
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound4Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(txt_search, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(5, 5, 5)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
-                .addGap(20, 20, 20))
+                .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        panRound1.setBackground(new java.awt.Color(255, 255, 255));
-        panRound1.setColor1(new java.awt.Color(255, 255, 255));
-
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(51, 204, 0));
-        jLabel1.setText("العدد : ");
-
-        lab_nbTable.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        lab_nbTable.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lab_nbTable.setText("00");
-
-        javax.swing.GroupLayout panRound1Layout = new javax.swing.GroupLayout(panRound1);
-        panRound1.setLayout(panRound1Layout);
-        panRound1Layout.setHorizontalGroup(
-            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lab_nbTable, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jLabel1)
-                .addGap(127, 127, 127))
-        );
-        panRound1Layout.setVerticalGroup(
-            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lab_nbTable, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addContainerGap(9, Short.MAX_VALUE))
-        );
-
-        button1.setForeground(new java.awt.Color(255, 255, 255));
-        button1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-petits-caractères-48.png"))); // NOI18N
-        button1.setText("مـعـايـنـة عــمـلـية الـبـيـع");
-        button1.setColor1(new java.awt.Color(51, 153, 255));
-        button1.setColor2(new java.awt.Color(51, 153, 255));
-        button1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        button1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        button1.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        button1.addActionListener(new java.awt.event.ActionListener() {
+        bDetaill.setForeground(new java.awt.Color(255, 255, 255));
+        bDetaill.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-petits-caractères-48.png"))); // NOI18N
+        bDetaill.setText("مـعـايـنـة عــمـلـية الـبـيـع");
+        bDetaill.setColor1(new java.awt.Color(51, 153, 255));
+        bDetaill.setColor2(new java.awt.Color(51, 153, 255));
+        bDetaill.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        bDetaill.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        bDetaill.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        bDetaill.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button1ActionPerformed(evt);
+                bDetaillActionPerformed(evt);
             }
         });
 
@@ -535,19 +546,14 @@ public panAchat(HomeForm homeForm) {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
                 .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(bDetaill, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51))
             .addGroup(panCenterLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(20, 20, 20))))
+                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(20, 20, 20))
         );
         panCenterLayout.setVerticalGroup(
             panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -555,14 +561,12 @@ public panAchat(HomeForm homeForm) {
                 .addGap(15, 15, 15)
                 .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(bDetaill, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
-                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(5, 5, 5)
-                .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10))
         );
 
         add(panCenter);
@@ -572,15 +576,51 @@ public panAchat(HomeForm homeForm) {
         panButtom.setMinimumSize(new java.awt.Dimension(100, 50));
         panButtom.setPreferredSize(new java.awt.Dimension(100, 50));
 
+        panRound1.setBackground(new java.awt.Color(255, 255, 255));
+        panRound1.setColor1(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel1.setText("العدد : ");
+
+        lab_nbAchat.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        lab_nbAchat.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        lab_nbAchat.setText("00");
+
+        javax.swing.GroupLayout panRound1Layout = new javax.swing.GroupLayout(panRound1);
+        panRound1.setLayout(panRound1Layout);
+        panRound1Layout.setHorizontalGroup(
+            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lab_nbAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1)
+                .addGap(127, 127, 127))
+        );
+        panRound1Layout.setVerticalGroup(
+            panRound1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panRound1Layout.createSequentialGroup()
+                .addComponent(lab_nbAchat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(panRound1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout panButtomLayout = new javax.swing.GroupLayout(panButtom);
         panButtom.setLayout(panButtomLayout);
         panButtomLayout.setHorizontalGroup(
             panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 916, Short.MAX_VALUE)
+            .addGroup(panButtomLayout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(674, Short.MAX_VALUE))
         );
         panButtomLayout.setVerticalGroup(
             panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 50, Short.MAX_VALUE)
+            .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         add(panButtom);
@@ -590,16 +630,16 @@ public panAchat(HomeForm homeForm) {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchActionPerformed
 
-    private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
-        if (tab.getSelectedRow() != -1){
-            int row = tab.getSelectedRow();
-            int modelRow = tab.convertRowIndexToModel(row);
-            
-            int idAchat = (int) tab.getModel().getValueAt(modelRow, 0);
+    private void bDetaillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDetaillActionPerformed
+        if (tab.getSelectedRow() != -1) {
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
+
+            int idAchat = (int) tab.getModel().getValueAt(row, 0);
             Achat achat = new AchatDAOImpl(connection).findById(idAchat);
-            new AchatDetaillForm(this.homeForm, true, achat).setVisible(true);
+            new AchatDetaillForm(this.homeForm, false, achat).setVisible(true);
         }
-    }//GEN-LAST:event_button1ActionPerformed
+    }//GEN-LAST:event_bDetaillActionPerformed
 
     private void btnNewAchatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewAchatActionPerformed
         new Nouvelle_Achat(this.homeForm, true).setVisible(true);
@@ -607,28 +647,66 @@ public panAchat(HomeForm homeForm) {
 
     private void btnSupprimActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSupprimActionPerformed
         if (tab.getSelectedRow() != -1) {
-            int row = tab.getSelectedRow();
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             Achat achat = achatDAOImpl.findById(id);
             messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف عملـيـة الـبـيـع");
             if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
-                if (achatDAOImpl.delete(id) >0){   
-                validationMessageDialog.showMessage("حـذف", "تم حذف عـمـلـيـة الـبـيـع بنجاح");
-                setInfoAchatInTab();
-                }
-                else {
-                    exite.showMessage("خــطـأ", "لا يمكنك حـذف عـمـلـيـةالـبـيـع  ");
+                if (achatDAOImpl.delete(id) > 0) {
+                    validationMessageDialog.showMessage("حـذف", "تم حذف عـمـلـيـة الـبـيـع بنجاح");
+                    setInfoAchatInTab();
+                } else {
+                    boolean userExist = false;
+                    ConfirmationSupprim confirmationSupprim = new ConfirmationSupprim(homeForm, true);
+                    confirmationSupprim.setVisible(true);
+                    userExist = confirmationSupprim.isExistUser();
+                    if (userExist) {
+                        if (achatDetailDAOImpl.deleteByAchatId(id) > 0
+                                && achatDAOImpl.delete(id) > 0) {
+                            validationMessageDialog.showMessage("حـذف", "تم حذف عـمـلـيـة الـبـيـع بنجاح");
+                            setInfoAchatInTab();
+                        }
+                    } else {
+                        exite.showMessage("خــطـأ", "لا يمكنك حـذف عـمـلـيـةالـبـيـع  ");
+                    }
                 }
             }
         }
     }//GEN-LAST:event_btnSupprimActionPerformed
+    private int lastRow = -1;
+    private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
+        if (!SwingUtilities.isLeftMouseButton(evt)) {
+            return;
+        }
+
+        int row = tab.rowAtPoint(evt.getPoint());
+
+        if (row == -1) {
+            tab.clearSelection();
+            lastRow = -1;
+            return;
+        }
+
+        if (lastRow == row) {
+            tab.clearSelection();
+            lastRow = -1;
+        } else {
+            tab.setRowSelectionInterval(row, row);
+            lastRow = row;
+        }
+    }//GEN-LAST:event_tabMouseReleased
+
+    private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
+        lab_nbAchat.setText(tab.getRowCount() + "");
+    }//GEN-LAST:event_txt_searchKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private material.design.button bDetaill;
     private material.design.buttonMenu btnImp;
     private material.design.buttonRounder btnNewAchat;
     private material.design.buttonRounder btnSupprim;
-    private material.design.button button1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -643,7 +721,7 @@ public panAchat(HomeForm homeForm) {
     private javax.swing.JLabel labNbAchat;
     private javax.swing.JLabel labNbEntreprice;
     private javax.swing.JLabel labPrixTotal;
-    private javax.swing.JLabel lab_nbTable;
+    private javax.swing.JLabel lab_nbAchat;
     private javax.swing.JLabel lanNbClient;
     private javax.swing.JPanel panButtom;
     private javax.swing.JPanel panCenter;
