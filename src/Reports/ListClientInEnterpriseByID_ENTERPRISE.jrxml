@@ -2,9 +2,10 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9e11cf49-2bf7-4ac7-a8a7-ecf67abe6a08">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="228"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ENTERPRISE_ID" class="java.lang.String"/>
 	<parameter name="ENTERPRISE_NAME_FR" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[SELECT nom,prenom,matricule, Client.tel, Client.adresse ,Entreprise.nom_fr FROM ( Client INNER JOIN Entreprise ON Entreprise.id = Client.id_entreprise) WHERE  Entreprise.id = $P{ENTERPRISE_ID};]]>
 	</queryString>
@@ -56,7 +57,7 @@
 			</textField>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
 				<reportElement x="432" y="8" width="123" height="86" uuid="8aeb706b-9d05-49d0-aace-4143f6eb6711"/>
-				<imageExpression><![CDATA["GLogo_07.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</title>

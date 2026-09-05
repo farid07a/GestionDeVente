@@ -25,8 +25,9 @@ public class AddQt extends javax.swing.JDialog {
         this.homeForm = (HomeForm) parent;
         this.produit= produit ;
         connection = DatabaseConnection.getInstance().getConnection();
-        produitDAOImpl = new ProduitDAOImpl(connection);
+        produitDAOImpl = new ProduitDAOImpl(connection);      
         initComponents();
+        setLocationRelativeTo(this);
     }
 
     /**

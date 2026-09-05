@@ -2,29 +2,26 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="27a7c747-8cd6-4843-b8ce-0fb2224b3d19">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="255"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<parameter name="ENTERPRISE_ID" class="java.lang.String"/>
+	<parameter name="ENTERPRISE_NAME_FR" class="java.lang.String"/>
+	<parameter name="OLD_CREDITE" class="java.lang.Double"/>
 	<queryString>
-		<![CDATA[SELECT
-    E.id,
-    E.nom_ar,
-    E.nom_fr,
-    V.date_versement AS last_versement,
-    V.reste_credit
-FROM Entreprise AS E
-INNER JOIN Versement_Entreprise AS V
-    ON E.id = V.id_entreprise
-WHERE V.date_versement =
-(
-    SELECT MAX(V2.date_versement)
-    FROM Versement_Entreprise AS V2
-    WHERE V2.id_entreprise = E.id
+		<![CDATA[SELECT Client.nom & " " & Client.prenom AS FullName,Client.matricule,
+ Achat.prix_total, Achat.date_achat FROM Achat INNER JOIN Client ON Achat.id_client = Client.id 
+WHERE Client.id_entreprise = $P{ENTERPRISE_ID}
+AND Achat.id NOT IN (
+    SELECT id_achat FROM Client_Paye_Par_Entreprise WHERE id_achat IS NOT NULL
 );]]>
 	</queryString>
-	<field name="id" class="java.lang.Integer"/>
-	<field name="nom_ar" class="java.lang.String"/>
-	<field name="nom_fr" class="java.lang.String"/>
-	<field name="last_versement" class="java.sql.Timestamp"/>
-	<field name="reste_credit" class="java.lang.Double"/>
+	<field name="FullName" class="java.lang.String"/>
+	<field name="matricule" class="java.lang.String"/>
+	<field name="prix_total" class="java.lang.Double"/>
+	<field name="date_achat" class="java.sql.Timestamp"/>
+	<variable name="TOATL_ACHAT" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[$F{prix_total}]]></variableExpression>
+	</variable>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -46,7 +43,7 @@ WHERE V.date_versement =
 			</staticText>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
 				<reportElement x="432" y="10" width="123" height="86" uuid="50688c93-db8c-45c8-bd7e-57a025ba93f8"/>
-				<imageExpression><![CDATA["D:\\PRG\\GestionDeVente\\src\\icon\\GLogo_07.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="2" y="0" width="100" height="22" uuid="14d2d28e-7f52-40ab-8f9e-7a6bfb6a3d47"/>
@@ -55,6 +52,34 @@ WHERE V.date_versement =
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="0" y="115" width="444" height="30" uuid="31afecad-b4fb-4308-b139-b0f7cd8e5b48"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ENTERPRISE_NAME_FR}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="444" y="115" width="109" height="30" uuid="160f03ba-5104-4a78-be18-fd732fb90a9c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[الشركة المتعاقدة:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="2" y="115" width="116" height="30" uuid="5285af27-e33f-4b2e-9325-77fda474a035"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{OLD_CREDITE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="118" y="115" width="109" height="30" uuid="8605765c-9f6d-4a6b-91ad-0a1ed9b82281"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[دبون سابقة:]]></text>
+			</staticText>
 		</band>
 	</title>
 	<pageHeader>
@@ -64,14 +89,14 @@ WHERE V.date_versement =
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[قائمة الشركات]]></text>
+				<text><![CDATA[قائمة المبيعات الجديدة]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="39" splitType="Stretch">
 			<staticText>
-				<reportElement mode="Opaque" x="129" y="0" width="119" height="39" backcolor="#CCCCCC" uuid="5970a3ff-f1c5-4df9-9113-102e5022de23"/>
+				<reportElement mode="Opaque" x="129" y="0" width="109" height="39" backcolor="#CCCCCC" uuid="5970a3ff-f1c5-4df9-9113-102e5022de23"/>
 				<box>
 					<topPen lineWidth="1.25"/>
 					<leftPen lineWidth="1.25"/>
@@ -81,10 +106,10 @@ WHERE V.date_versement =
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[تاريخ اخر دفع]]></text>
+				<text><![CDATA[مبلغ الشراء]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="248" y="0" width="276" height="39" backcolor="#CCCCCC" uuid="4567f273-d24c-48d6-b7a0-c45adaff31c0"/>
+				<reportElement mode="Opaque" x="351" y="0" width="173" height="39" backcolor="#CCCCCC" uuid="4567f273-d24c-48d6-b7a0-c45adaff31c0"/>
 				<box>
 					<topPen lineWidth="1.25"/>
 					<leftPen lineWidth="1.25"/>
@@ -94,7 +119,7 @@ WHERE V.date_versement =
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[اسم الشركة]]></text>
+				<text><![CDATA[اسم و لقب الموظف]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="0" y="0" width="129" height="39" backcolor="#CCCCCC" uuid="09404013-b5a9-47f1-8e60-9dca5b9b78a6"/>
@@ -107,7 +132,7 @@ WHERE V.date_versement =
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[الديون المتبقية]]></text>
+				<text><![CDATA[تاريخ الشراء]]></text>
 			</staticText>
 			<staticText>
 				<reportElement mode="Opaque" x="524" y="0" width="31" height="39" backcolor="#CCCCCC" uuid="18728cff-30c2-4239-b1f0-8fb1a9e626be"/>
@@ -122,62 +147,23 @@ WHERE V.date_versement =
 				</textElement>
 				<text><![CDATA[N]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="238" y="0" width="113" height="39" backcolor="#CCCCCC" uuid="ec51a9f3-ad94-44ad-a730-853108472dd9"/>
+				<box>
+					<topPen lineWidth="1.25"/>
+					<leftPen lineWidth="1.25"/>
+					<bottomPen lineWidth="1.25"/>
+					<rightPen lineWidth="1.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[الرقم الوظيفي]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="41" splitType="Stretch">
-			<textField>
-				<reportElement x="248" y="0" width="135" height="41" uuid="28bb2903-38d9-4149-8d9a-1d66c6296528"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nom_fr}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="129" y="0" width="119" height="41" uuid="c323eb37-b796-4ffe-a494-3d839fa9c274"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{last_versement}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="0" width="129" height="41" uuid="c4549ed2-b14d-44f7-8833-fc5763bd16b2"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{reste_credit}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="383" y="0" width="141" height="41" uuid="5bf7e886-9cdf-4855-9904-2d1e885be9d9"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nom_ar}]]></textFieldExpression>
-			</textField>
 			<textField>
 				<reportElement x="524" y="0" width="31" height="41" uuid="96beaadf-5e9e-4733-81d7-8ffa5c5be524"/>
 				<box>
@@ -191,6 +177,58 @@ WHERE V.date_versement =
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement x="351" y="0" width="173" height="41" uuid="a75d3970-e687-4915-8290-c2279e65da30"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{FullName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="238" y="0" width="113" height="41" uuid="abcec3bc-44fb-4f5a-a4f4-a1551b66a188"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{matricule}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="129" y="0" width="109" height="41" uuid="1ec1db5d-9cbd-4fe4-af86-3237a6d56f71"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prix_total}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="129" height="41" uuid="0e9d7256-23a2-4d9b-beb6-dee153f6db36"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date_achat}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<summary>
@@ -203,19 +241,47 @@ WHERE V.date_versement =
 				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="351" y="2" width="130" height="20" uuid="36bc1a45-382f-4f8f-8508-bc83751b8cdf"/>
+				<reportElement x="351" y="0" width="130" height="24" uuid="36bc1a45-382f-4f8f-8508-bc83751b8cdf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="481" y="2" width="74" height="22" uuid="7ec588d7-4134-4978-bdd0-e586952e099a"/>
+				<reportElement x="481" y="0" width="74" height="24" uuid="7ec588d7-4134-4978-bdd0-e586952e099a"/>
 				<textElement verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[العدد الكلي:]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="2" y="0" width="127" height="24" uuid="1a6a126f-5e06-424b-9a8e-2312effeebd8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOATL_ACHAT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="129" y="0" width="133" height="24" uuid="c47c063e-f43b-49eb-81e8-e8271eb68283"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[المبلغ الكلي للمبيعات:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="128" y="26" width="145" height="24" uuid="9a675d59-d644-4e60-8f0e-1c844a17e340"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[المبلغ الاجمالي المستحق:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="1" y="26" width="127" height="24" uuid="56959b6c-8779-483a-a8d9-83453f5e5941"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{TOATL_ACHAT} + $P{OLD_CREDITE}]]></textFieldExpression>
+			</textField>
 		</band>
 	</summary>
 </jasperReport>

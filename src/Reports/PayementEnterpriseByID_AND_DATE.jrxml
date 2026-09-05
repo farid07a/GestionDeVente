@@ -6,6 +6,7 @@
 	<parameter name="ENTERPRISE_NAME_FR" class="java.lang.String"/>
 	<parameter name="ENTERPRISE_ID" class="java.lang.String"/>
 	<parameter name="DATE_VERSEMENT" class="java.util.Date"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[SELECT Entreprise.nom_ar , Entreprise.nom_fr ,Versement_Entreprise.montant, Versement_Entreprise.mode_paiement, Versement_Entreprise.date_versement 
 ,Versement_Entreprise.total_credit as old_credit,Versement_Entreprise.reste_credit
@@ -83,7 +84,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 			</textField>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
 				<reportElement x="432" y="18" width="123" height="86" uuid="051645a8-e0ef-4008-877e-1818e7226717"/>
-				<imageExpression><![CDATA["D:\\PRG\\GestionDeVente\\src\\icon\\GLogo_07.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</title>

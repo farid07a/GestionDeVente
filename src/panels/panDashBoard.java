@@ -84,10 +84,10 @@ public class panDashBoard extends javax.swing.JPanel {
     }
 
     public void setInfoInChartBar() {
-        chart.addLegend("مبيعات", new Color(135, 189, 245));//245, 189, 135));//135, 189, 245));
-        chart.addLegend("دفعات الشركة", new Color(100,199,100));//245, 189, 135));
+        chart.addLegend(" دفعات الشركة", new Color(135, 189, 245));//245, 189, 135));//135, 189, 245));
+        chart.addLegend("مبيعات", new Color(100,199,100));//245, 189, 135));
         chart.addLegend("ديون ", new Color(255,84,84));//189, 135, 245));
-         chart.addLegend("مبيعات بدون دفع", new Color(189, 135, 245));//189, 135, 245));
+    //     chart.addLegend("مبيعات بدون دفع", new Color(189, 135, 245));//189, 135, 245));
 
         List<Entreprise> entreprises = entrepriseDAOImpl.findAll();
 
@@ -99,8 +99,8 @@ public class panDashBoard extends javax.swing.JPanel {
 
             List<Achat> achats
                     = achatDAOImpl.getAchatByEntreprise(entreprise);
-            List<Achat> achatsNoPayee
-                    = achatDAOImpl.getAchatNotInTabVersementByEntreprise(entreprise);
+//            List<Achat> achatsNoPayee
+//                    = achatDAOImpl.getAchatNotInTabVersementByEntreprise(entreprise);
             VersementEntreprise lastCredit
                     = versementEntrepriseDAOImpl
                             .getLastVersementEntreprise(entreprise);
@@ -114,11 +114,11 @@ public class panDashBoard extends javax.swing.JPanel {
                     = achats.stream()
                             .mapToDouble(Achat::getPrix_total)
                             .sum();
-            
-            double sommeAchatNoPayee
-                    = achatsNoPayee.stream()
-                            .mapToDouble(Achat::getPrix_total)
-                            .sum();
+//            
+//            double sommeAchatNoPayee
+//                    = achatsNoPayee.stream()
+//                            .mapToDouble(Achat::getPrix_total)
+//                            .sum();
 
 
             double restCredit = 0;
@@ -137,8 +137,7 @@ public class panDashBoard extends javax.swing.JPanel {
                                 new double[]{
                                 sommeAchat,
                                 sommeVersemnt,
-                                restCredit,
-                                sommeAchatNoPayee
+                                restCredit
                             }
                     )
             );
@@ -157,8 +156,8 @@ public class panDashBoard extends javax.swing.JPanel {
 
             if (data != null) {
 
-                double versement = (double) data[2];
-                double achat = (double) data[3];
+                double versement = (double) data[3];
+                double achat = (double) data[2];
                 double credit = (double) data[4];
 
                 lblIncome.setText(

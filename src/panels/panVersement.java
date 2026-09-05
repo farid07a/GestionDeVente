@@ -18,7 +18,6 @@ import entity.Entreprise;
 import entity.Nomber;
 import entity.VersementEntreprise;
 import enums.TableFilter;
-import enums.excel;
 import frame.AllVersementCreditVent;
 import frame.DetaillVersementEntrepriceForm;
 import frame.EtatInitialForm;
@@ -1054,24 +1053,24 @@ public class panVersement extends javax.swing.JPanel {
     }//GEN-LAST:event_btnAdd1ActionPerformed
 
     private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
-        List<VersementEntreprise> list
-                = versementEntrepriseDAOImpl.findAll();
-
-        JFileChooser chooser = new JFileChooser();
-
-        chooser.setSelectedFile(new File("تقرير_دفعات_المؤسسات .xlsx"));
-
-        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-
-            try {
-                new excel().exportVersementEntreprise(list, chooser.getSelectedFile());
-
-                JOptionPane.showMessageDialog(null,
-                        "Le fichier Excel a été créé avec succès.");
-            } catch (Exception ex) {
-                Logger.getLogger(panVersement.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
+//        List<VersementEntreprise> list
+//                = versementEntrepriseDAOImpl.findAll();
+//
+//        JFileChooser chooser = new JFileChooser();
+//
+//        chooser.setSelectedFile(new File("تقرير_دفعات_المؤسسات .xlsx"));
+//
+//        if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+//
+//            try {
+//                new excel().exportVersementEntreprise(list, chooser.getSelectedFile());
+//
+//                JOptionPane.showMessageDialog(null,
+//                        "Le fichier Excel a été créé avec succès.");
+//            } catch (Exception ex) {
+//                Logger.getLogger(panVersement.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
     }//GEN-LAST:event_button1ActionPerformed
 
     private void btnAdd2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd2ActionPerformed

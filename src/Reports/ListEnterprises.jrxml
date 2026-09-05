@@ -3,6 +3,7 @@
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[SELECT * FROM Entreprise;]]>
 	</queryString>
@@ -41,7 +42,7 @@
 			</staticText>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
 				<reportElement x="432" y="10" width="123" height="86" uuid="a2668c05-918b-4a65-a9a3-3aa1b5f4e994"/>
-				<imageExpression><![CDATA["D:\\PRG\\GestionDeVente\\src\\icon\\GLogo_07.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -128,7 +129,7 @@
 	<detail>
 		<band height="35" splitType="Stretch">
 			<textField>
-				<reportElement x="444" y="0" width="80" height="35" uuid="385f7e52-e19a-4699-97d1-76d6526c9a97"/>
+				<reportElement x="355" y="0" width="169" height="35" uuid="385f7e52-e19a-4699-97d1-76d6526c9a97"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -139,19 +140,6 @@
 					<font size="11" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nom_ar}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="355" y="0" width="89" height="35" uuid="7110b852-fabf-4edb-b755-c11613e834ce"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="11" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{nom_fr}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement x="229" y="0" width="126" height="35" uuid="d0fac95c-03c4-456d-a492-0261efa5f162"/>

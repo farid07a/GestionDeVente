@@ -2,9 +2,10 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0c724bee-dae1-4ae0-a0c9-5e49b8203f4f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="257"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="ENTERPRISE_NAME_FR" class="java.lang.String"/>
 	<parameter name="ENTERPRISE_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[SELECT Entreprise.nom_ar , Entreprise.nom_fr ,Versement_Entreprise.montant, Versement_Entreprise.mode_paiement, Versement_Entreprise.date_versement 
 ,Versement_Entreprise.total_credit as old_credit,Versement_Entreprise.reste_credit
@@ -68,7 +69,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 			</staticText>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
 				<reportElement x="432" y="14" width="123" height="86" uuid="777a97c7-d2e0-4f6e-b552-5a490326235a"/>
-				<imageExpression><![CDATA["D:\\PRG\\GestionDeVente\\src\\icon\\GLogo_07.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 		</band>
 	</title>
@@ -118,7 +119,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 				<text><![CDATA[طريقة الدفع]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="324" y="0" width="102" height="47" backcolor="#CCCCCC" uuid="169e8c39-25ea-48ae-9423-6fe53087ef2e"/>
+				<reportElement mode="Opaque" x="324" y="0" width="89" height="47" backcolor="#CCCCCC" uuid="169e8c39-25ea-48ae-9423-6fe53087ef2e"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -144,7 +145,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 				<text><![CDATA[الديون المتبقية]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="426" y="0" width="92" height="47" backcolor="#CCCCCC" uuid="9b043c80-d018-4088-a71e-f9cb42dc12d9"/>
+				<reportElement mode="Opaque" x="413" y="0" width="105" height="47" backcolor="#CCCCCC" uuid="9b043c80-d018-4088-a71e-f9cb42dc12d9"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -187,7 +188,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 	<detail>
 		<band height="41" splitType="Stretch">
 			<textField>
-				<reportElement x="426" y="0" width="92" height="41" uuid="f0c5d062-706a-45d6-868b-0210995bdeed"/>
+				<reportElement x="413" y="0" width="105" height="41" uuid="f0c5d062-706a-45d6-868b-0210995bdeed"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -200,7 +201,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 				<textFieldExpression><![CDATA[$F{nom_ar}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="324" y="0" width="102" height="41" uuid="8f2a3d5f-1d53-47d7-88ee-779c59c9f787"/>
+				<reportElement x="324" y="0" width="89" height="41" uuid="8f2a3d5f-1d53-47d7-88ee-779c59c9f787"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>

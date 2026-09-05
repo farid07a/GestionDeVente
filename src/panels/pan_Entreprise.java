@@ -64,13 +64,14 @@ public class pan_Entreprise extends javax.swing.JPanel {
     private void print() {
         btnImp.addPopupItem("قـائـمـة  الـشـركـات", e -> {
             //ListEnterprises
-            service_print.printReport(ReportNames.LIST_ENTERPRISES, null);
+            params = new HashMap<>();
+            service_print.printReport(ReportNames.LIST_ENTERPRISES, params);
         });
 
         btnImp.addPopupItem("قـائـمـة مـدفـوعـات كل الـشـركـات", e -> {
             params = new HashMap<>();
             //ALL_VERSEMENT_ENTERPRISES
-            service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISES, null);
+            service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISES, params);
         });
 
         /**
@@ -86,10 +87,10 @@ public class pan_Entreprise extends javax.swing.JPanel {
             int id = (int) tab.getModel().getValueAt(row, 0);
             Entreprise entreprise = entrepriseDAOImpl.findById(id);
             params.put("ENTERPRISE_ID", entreprise.getId());
-            if (!entreprise.getNom_fr().isEmpty()) {
-                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_fr());
-            } else {
+            if (!entreprise.getNom_ar().isEmpty()) {
                 params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
+            } else {
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_fr());
             }
             service_print.printReport(ReportNames.LIST_OF_CLIENT_BY_ID_ENTERPRISE, params);
 

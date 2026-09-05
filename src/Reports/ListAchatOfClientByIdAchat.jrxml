@@ -2,12 +2,13 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="60911953-7f1b-4e8d-abe9-a60d5c3a706c">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="265"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="CLIENT_ID" class="java.lang.String"/>
 	<parameter name="FName" class="java.lang.String"/>
 	<parameter name="Date_Achat" class="java.lang.String"/>
 	<parameter name="ENTERPRISE_NAME_FR" class="java.lang.String"/>
 	<parameter name="ACHAT_ID" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[SELECT Client.nom,Client.prenom,Produit.designation,
         Achat_detaille.prix_unitaire,  Achat_detaille.qty,  Achat_detaille.prix_total,  Achat.date_achat
@@ -75,7 +76,7 @@ WHERE Achat.id = $P{ACHAT_ID}]]>
 			</textField>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
 				<reportElement x="432" y="12" width="123" height="86" uuid="f263e300-ec08-46e4-b791-fbf43d3e0510"/>
-				<imageExpression><![CDATA["D:\\PRG\\GestionDeVente\\src\\icon\\GLogo_07.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="162" y="56" width="242" height="42" uuid="707d439c-94cc-4718-a5d3-4fce9fbbbe5d"/>

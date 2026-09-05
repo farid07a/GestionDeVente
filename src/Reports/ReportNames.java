@@ -34,6 +34,14 @@ public final class ReportNames {
     public static final String VERSEMENT_ENTERPRISE_BY_ID_AND_DATE = "PayementEnterpriseByID_AND_DATE.jasper";
     public static final String ALL_VERSEMENT_ENTERPRISE_BY_DATE = "ListPayementEnterpriseByDate.jasper";
     public static final String ALL_VERSEMENT_ENTERPRISE_BY_YEAR = "listPayementEnterprisesByYear.jasper";
+    public static final String LAST_ALL_VERSEMENT_ENTERPRISES = "LastALLVersementEntreprises.jasper";
+    public static final String LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE = "ListAchatNotPayeeByIDEnterprise.jasper";
+    public static final String LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_DETAILS = "ListAchatNotPayeeByIDEnterprissDetails.jasper";
+    
+    public static final String LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_VERSEMENT_PLUS = "ListAchatNotPayeeByIDEnterpriseVersementPlus.jasper";
+    public static final String LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_DETAILS_VERSEMENT_PLUS = "ListAchatNotPayeeByIDEnterprissDetailsVersementPlus.jasper";
+    
+    
     //listPayementEnterprisesBy_Year
     //public static final String ALL_VERSEMENT_ENTERPRISE_BY_DATE = "ListPayementEnterpriseByDate.jasper";
 

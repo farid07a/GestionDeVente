@@ -298,7 +298,7 @@ public class VersementForm extends javax.swing.JDialog {
     public void initItems() {
         labTotalAchats.setText(0.00 + "");
         textMontantVersement.setText(0.00 + "");
-        radioEsp.setSelected(true);
+        radioChequ.setSelected(true);
         labCredit_avec_versment.setText(0.00 + "");
         labAug_avec_versment.setText(0.00 + "");
         labCreditLsatVersemnt.setText(0.00 + "");
@@ -840,21 +840,15 @@ public class VersementForm extends javax.swing.JDialog {
         pan_radioEsp.setLayout(pan_radioEspLayout);
         pan_radioEspLayout.setHorizontalGroup(
             pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioEspLayout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addComponent(radioEsp, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(radioEsp, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
         );
         pan_radioEspLayout.setVerticalGroup(
             pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_radioEspLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(radioEsp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
         );
 
         txtNumCheque.setForeground(new java.awt.Color(0, 0, 102));
         txtNumCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
-        txtNumCheque.setToolTipText("");
         txtNumCheque.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txtNumCheque.setLabelText("رقم الحساب البريدي");
         txtNumCheque.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -878,6 +872,7 @@ public class VersementForm extends javax.swing.JDialog {
 
         radioChequ.setBackground(new java.awt.Color(51, 204, 0));
         radioChequ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cheque-de-paiement.png"))); // NOI18N
+        radioChequ.setSelected(true);
         radioChequ.setText("صك بريدي");
         radioChequ.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         radioChequ.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -892,17 +887,13 @@ public class VersementForm extends javax.swing.JDialog {
         pan_radioChequ.setLayout(pan_radioChequLayout);
         pan_radioChequLayout.setHorizontalGroup(
             pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_radioChequLayout.createSequentialGroup()
-                .addGap(5, 5, 5)
-                .addComponent(radioChequ, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(radioChequ, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         pan_radioChequLayout.setVerticalGroup(
             pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pan_radioChequLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         textMontantVersement.setForeground(new java.awt.Color(0, 0, 0));
@@ -955,17 +946,11 @@ public class VersementForm extends javax.swing.JDialog {
         pan_radioCart.setLayout(pan_radioCartLayout);
         pan_radioCartLayout.setHorizontalGroup(
             pan_radioCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_radioCartLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(radioCart, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(radioCart, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
         );
         pan_radioCartLayout.setVerticalGroup(
             pan_radioCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_radioCartLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 42, Short.MAX_VALUE)
         );
 
         jLabel21.setBackground(new java.awt.Color(255, 255, 255));
@@ -1053,7 +1038,7 @@ public class VersementForm extends javax.swing.JDialog {
                 .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(panRound25Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(pan_radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(pan_radioChequ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pan_radioEsp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(pan_radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(txtNumCheque, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE))

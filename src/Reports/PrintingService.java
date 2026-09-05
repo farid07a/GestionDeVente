@@ -5,7 +5,6 @@
  */
 package Reports;
 
-
 import config.DatabaseConnection;
 import dao.impl.ClientDAOImpl;
 import entity.Client;
@@ -120,6 +119,16 @@ public class PrintingService {
 
             Connection connection = DatabaseConnection.getInstance().getConnection();
 
+            InputStream logoStream
+                    = getClass().getResourceAsStream("/icon/GLogo_07.jpg");
+
+            if (logoStream == null) {
+                throw new IllegalArgumentException(
+                        "Logo not found: /icon/logo.png"
+                );
+            }
+
+            parameters.put("LOGO", logoStream);
             JasperPrint print = JasperFillManager.fillReport(
                     reportStream,
                     parameters,
@@ -144,11 +153,13 @@ public class PrintingService {
 //        //params.put("CLIENT_ID", client.getId());
         params.put("CLIENT_ID", 4);
         params.put("FName", "Farid KHEBBACHE");
-        params.put("ENTERPRISE_NAME_FR","CILAS");
+        params.put("ENTERPRISE_NAME_FR", "CILAS");
 
         //service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID, params);
-/*******************************************************************************/
-        LocalDate specificDate = LocalDate.of(2026, 8,12);
+        /**
+         * ****************************************************************************
+         */
+        LocalDate specificDate = LocalDate.of(2026, 8, 12);
 //        
 //        
 //        params.put("Date_Achat", java.sql.Date.valueOf(specificDate));
@@ -164,7 +175,6 @@ public class PrintingService {
         /**
          * ***************************************************************************************
          */
-        
         // pour test
         params.put("CLIENT_ID", 4);
         params.put("ENTERPRISE_AFF", "CILAS");
@@ -172,7 +182,6 @@ public class PrintingService {
         params.put("FName", "Farid KHEBBACHE");
         //service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_YEAR, params);
 
-        
         /**
          * *********************************************************************
          */
@@ -182,49 +191,85 @@ public class PrintingService {
         params.put("ENTERPRISE_NAME_FR", "CILAS");
 //        params.put("YEAR", 2026);
 //        params.put("FName", "Farid KHEBBACHE");
-     //   service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISE_BY_ID, params);
-        
-        
-        /**********************************************************************/
-        
-        
+        //   service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISE_BY_ID, params);
+
+        /**
+         * *******************************************************************
+         */
         params = new HashMap<>();
         params.put("ENTERPRISE_ID", 2);
         params.put("ENTERPRISE_NAME_FR", "CILAS");
 //        params.put("YEAR", 2026);
 //        params.put("FName", "Farid KHEBBACHE");
-      //  service_print.printReport(ReportNames.LIST_OF_CLIENT_BY_ID_ENTERPRISE, params);
-        
-        /***********************************************************************/
-        
+        //  service_print.printReport(ReportNames.LIST_OF_CLIENT_BY_ID_ENTERPRISE, params);
+
+        /**
+         * ********************************************************************
+         */
         params = new HashMap<>();
         params.put("ENTERPRISE_ID", 2);
         params.put("ENTERPRISE_NAME_FR", "CILAS");
-        
+
         params.put("YEAR", 2026);
 //        params.put("FName", "Farid KHEBBACHE");
         //service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISE_BY_ID_AND_YEAR, params);
-        
-        /***********************************************************************/
+
+        /**
+         * ********************************************************************
+         */
         //VERSEMENT_ENTERPRISE_BY_ID_AND_DATE
         params = new HashMap<>();
-        specificDate = LocalDate.of(2026, 8,17);
+        specificDate = LocalDate.of(2026, 8, 17);
         params.put("ENTERPRISE_ID", 2);
         params.put("ENTERPRISE_NAME_FR", "CILAS");
         params.put("DATE_VERSEMENT", java.sql.Date.valueOf(specificDate));
 //        params.put("FName", "Farid KHEBBACHE");
-        //service_print.printReport(ReportNames.VERSEMENT_ENTERPRISE_BY_ID_AND_DATE, params);
-        
-        /***********************************************************************/
-        
+        //service_print.printReport(ReportNames.LIST_ENTERPRISES, params);
+
+        /**
+         * ********************************************************************
+         */
         params = new HashMap<>();
-        specificDate = LocalDate.of(2026, 8,14);
+        specificDate = LocalDate.of(2026, 8, 14);
 
         params.put("DATE_VERSEMENT", java.sql.Date.valueOf(specificDate));
 //        params.put("FName", "Farid KHEBBACHE");
 //        service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISE_BY_DATE, params);
+
+        /**
+         * ********************************************************************
+         */
+        params = new HashMap<>();
+        //service_print.printReport(ReportNames.LAST_ALL_VERSEMENT_ENTERPRISES, params);
+        /********************************************************************/
+        params = new HashMap<>();
+        params.put("ENTERPRISE_ID", 2);
+        params.put("ENTERPRISE_NAME_FR", "CILAS");
+        params.put("OLD_CREDITE", 1542.55);
+        //service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE, params);
         
         /***********************************************************************/
+        params = new HashMap<>();
+        params.put("ENTERPRISE_ID", 2);
+        params.put("ENTERPRISE_NAME_FR", "CILAS");
+        params.put("OLD_CREDITE", 1542.55);
+        //service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_DETAILS, params);
+        
+        /************************************************************************/
+        params = new HashMap<>();
+        params.put("ENTERPRISE_ID", 3);
+        params.put("ENTERPRISE_NAME_FR", "CILAS");
+        params.put("VERSEMENT_PLUS", 1542.55);
+        service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_VERSEMENT_PLUS, params);
+        
+        /************************************************************************/
+        
+        params = new HashMap<>();
+        params.put("ENTERPRISE_ID", 2);
+        params.put("ENTERPRISE_NAME_FR", "CILAS");
+        params.put("VERSEMENT_PLUS", 1542.55);
+        //service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_DETAILS, params);
+        
     }
 
 }

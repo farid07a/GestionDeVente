@@ -116,8 +116,8 @@ public class MessageDialog extends javax.swing.JDialog {
         txt.setText(message);
         setLocationRelativeTo(fram);
         startAnimator(true);
-        cmdOK.setText("Oui");
-        cmdCancel.setText("Non");
+        cmdOK.setText("نـعـم");
+        cmdCancel.setText("لا");
         setVisible(true);
     }
     
@@ -249,7 +249,7 @@ public class MessageDialog extends javax.swing.JDialog {
 
     private void cmdOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdOKActionPerformed
         
-        if(cmdOK.getText().equals("OK")|cmdOK.getText().equals("Oui")| cmdOK.getText().equals("نــعــم")  ){
+        if(cmdOK.getText().equals("OK")|cmdOK.getText().equals("Oui")| cmdOK.getText().equals("نـعـم")  ){
             messageType = MessageType.YES;
         }else{
             messageType = MessageType.CANCEL;

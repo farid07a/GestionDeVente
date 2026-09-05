@@ -83,11 +83,13 @@ public void setDesignTable(JTable tab, JScrollPane scrol) {
 
             if (isSelected) {
                 //setBackground(new Color(51,102,255));//new Color(178, 152, 254));
-                setBackground(new Color(178, 152, 254));
+                setBackground(new Color(4,164,246));//new Color(178, 152, 254));
                 setForeground( Color.white);//(15, 23, 42));
+                setFont(new Font("Times New Roman", Font.BOLD, 15));
             } else {
                 setBackground(row % 2 == 0 ? Color.WHITE : new Color(248, 250, 252));
-                setForeground(new Color(51, 65, 85));
+                setForeground(Color.BLACK);//new Color(51, 65, 85));
+                setFont(new Font("Times New Roman", Font.PLAIN, 15));
             }
 
             return this;
@@ -99,7 +101,7 @@ public void setDesignTable(JTable tab, JScrollPane scrol) {
 
     // Table Design & Row Height
     tab.setRowHeight(33); // ارتفاع الأسطر منخفض
-    tab.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+    tab.setFont(new Font("Times New Roman", Font.PLAIN, 15));
 
     // Header Design
     tab.getTableHeader().setFont(new Font("Times New Roman", Font.BOLD, 16)); // تعيين الخط العريض مباشرة لرأس الجدول

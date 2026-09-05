@@ -124,7 +124,7 @@ public class TableScrollButton extends JLayeredPane {
             shape = new Ellipse2D.Double(10, y, 40, 40); ////x,y
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, animate * 0.7f));
             
-           GradientPaint gc = new GradientPaint(0, 0, Color.decode("#000000"),0,getHeight(),Color.decode("#fbb100"));//#f1c96a
+           GradientPaint gc = new GradientPaint(0, 0, new Color(0, 119, 182),0,getHeight(),new Color(0, 119, 182));//#f1c96a
             g2.setPaint(gc);
             g2.fill(shape);
           

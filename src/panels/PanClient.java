@@ -7,8 +7,8 @@ package panels;
 import DialogFram.Exite;
 import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
-import ReportsF.PrintingService;
-import ReportsF.ReportNames;
+import Reports.PrintingService;
+import Reports.ReportNames;
 import config.DatabaseConnection;
 import dao.impl.ClientDAOImpl;
 import entity.Client;
@@ -58,7 +58,7 @@ public class PanClient extends javax.swing.JPanel {
 
     public void print() {
         PrintingService service_print = new PrintingService();
-        Map<String, Object> params1 = new HashMap<>();
+        
         btnImp.addPopupItem("قـائـمـة الـزبـائـن", e -> {
 //            Client client = clientDAOImpl.findById(5);
 //            params.put("CLIENT_ID", client.getId());
@@ -69,7 +69,8 @@ public class PanClient extends javax.swing.JPanel {
 //                params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
 //            }
 //
-//            service_print.printReport(ReportNames.CLIENT_LIST, params);
+            Map<String, Object> params1 = new HashMap<>();
+            service_print.printReport(ReportNames.CLIENT_LIST, params1);
 
         });
         

@@ -2,11 +2,12 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="60911953-7f1b-4e8d-abe9-a60d5c3a706c">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="232"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="CLIENT_ID" class="java.lang.String"/>
 	<parameter name="FName" class="java.lang.String"/>
 	<parameter name="YEAR" class="java.lang.Integer"/>
 	<parameter name="ENTERPRISE_AFF" class="java.lang.String"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
 	<queryString>
 		<![CDATA[SELECT Client.nom,
        Client.prenom,
@@ -95,7 +96,7 @@ WHERE Client.id = $P{CLIENT_ID}
 			</textField>
 			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
 				<reportElement x="432" y="14" width="123" height="86" uuid="3a207ff8-4389-47c7-9d70-57955bd7bbe1"/>
-				<imageExpression><![CDATA["D:\\PRG\\GestionDeVente\\src\\icon\\GLogo_07.jpg"]]></imageExpression>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
 			<staticText>
 				<reportElement x="162" y="46" width="242" height="43" uuid="9f205b35-0a36-452a-ab0d-9a2d6a0cca9b"/>

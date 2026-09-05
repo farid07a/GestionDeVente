@@ -39,7 +39,7 @@ public class EtatInitialForm extends javax.swing.JDialog {
         group.add(radioEsp);
         group.add(radioCart);
        group.add(radioChequ);
-       radioEsp.setSelected(true);
+       radioChequ.setSelected(true);
        setLocationRelativeTo(this.homeForm);
        connection = DatabaseConnection.getInstance().getConnection();
        entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
@@ -68,12 +68,8 @@ public class EtatInitialForm extends javax.swing.JDialog {
     public void setEntrepriseInCom() {
         List<Entreprise> entreprises = entrepriseDAOImpl.findAll();
         combEntreprise.removeAllItems();
-        for (Entreprise entreprise : entreprises) {
-            if(!entreprise.getNom_fr().isEmpty()){
-            combEntreprise.addItem(entreprise.getNom_fr());
-            }else{
-            combEntreprise.addItem(entreprise.getNom_ar());
-            }
+        for (Entreprise entreprise : entreprises) {        
+            combEntreprise.addItem(entreprise.getNom_ar());          
         }
 
     }
@@ -169,6 +165,11 @@ public class EtatInitialForm extends javax.swing.JDialog {
         txtNumCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtNumCheque.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txtNumCheque.setLabelText("رقم الحساب البريدي");
+        txtNumCheque.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNumChequeActionPerformed(evt);
+            }
+        });
         txtNumCheque.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
                 txtNumChequeKeyTyped(evt);
@@ -199,16 +200,11 @@ public class EtatInitialForm extends javax.swing.JDialog {
         pan_radioEsp.setLayout(pan_radioEspLayout);
         pan_radioEspLayout.setHorizontalGroup(
             pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioEspLayout.createSequentialGroup()
-                .addContainerGap(15, Short.MAX_VALUE)
-                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addComponent(radioEsp, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
         );
         pan_radioEspLayout.setVerticalGroup(
             pan_radioEspLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pan_radioEspLayout.createSequentialGroup()
-                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+            .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 42, Short.MAX_VALUE)
         );
 
         pan_radioCart.setColor1(new java.awt.Color(189, 189, 255));
@@ -239,9 +235,7 @@ public class EtatInitialForm extends javax.swing.JDialog {
         );
         pan_radioCartLayout.setVerticalGroup(
             pan_radioCartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioCartLayout.createSequentialGroup()
-                .addGap(0, 6, Short.MAX_VALUE)
-                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(radioCart, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 42, Short.MAX_VALUE)
         );
 
         pan_radioChequ.setColor1(new java.awt.Color(255, 235, 204));
@@ -268,15 +262,11 @@ public class EtatInitialForm extends javax.swing.JDialog {
         pan_radioChequ.setLayout(pan_radioChequLayout);
         pan_radioChequLayout.setHorizontalGroup(
             pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioChequLayout.createSequentialGroup()
-                .addComponent(radioChequ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(radioChequ, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         pan_radioChequLayout.setVerticalGroup(
             pan_radioChequLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pan_radioChequLayout.createSequentialGroup()
-                .addGap(0, 6, Short.MAX_VALUE)
-                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(radioChequ, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout panRound2Layout = new javax.swing.GroupLayout(panRound2);
@@ -614,10 +604,14 @@ public class EtatInitialForm extends javax.swing.JDialog {
     }//GEN-LAST:event_pan_radioChequMouseClicked
 
     private void txtNumChequeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumChequeKeyTyped
-       if (!Character.isDigit(evt.getKeyChar())) {
-        evt.consume();
-    }
+//       if (!Character.isDigit(evt.getKeyChar())) {
+//        evt.consume();
+//    }
     }//GEN-LAST:event_txtNumChequeKeyTyped
+
+    private void txtNumChequeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumChequeActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNumChequeActionPerformed
 
     /**
      * @param args the command line arguments

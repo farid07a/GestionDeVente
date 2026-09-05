@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="27a7c747-8cd6-4843-b8ce-0fb2224b3d19">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="3"/>
+	<parameter name="LOGO" class="java.io.InputStream"/>
+	<queryString>
+		<![CDATA[SELECT
+    E.id,
+    E.nom_ar,
+    E.nom_fr,
+    V.date_versement AS last_versement,
+    V.reste_credit
+FROM Entreprise AS E
+INNER JOIN Versement_Entreprise AS V
+    ON E.id = V.id_entreprise
+WHERE V.date_versement =
+(
+    SELECT MAX(V2.date_versement)
+    FROM Versement_Entreprise AS V2
+    WHERE V2.id_entreprise = E.id
+);]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer"/>
+	<field name="nom_ar" class="java.lang.String"/>
+	<field name="nom_fr" class="java.lang.String"/>
+	<field name="last_versement" class="java.sql.Timestamp"/>
+	<field name="reste_credit" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="145" splitType="Stretch">
+			<staticText>
+				<reportElement x="157" y="34" width="237" height="42" uuid="de558d8f-4a2a-4923-ab6f-5c8be77c29e8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[قرباز للاجهزة الكهرمنزلية]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="102" y="0" width="84" height="22" uuid="7697dec6-a993-4fea-ad5c-784e09c35fd4"/>
+				<textElement verticalAlignment="Middle">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[تاريخ الاصدار:]]></text>
+			</staticText>
+			<image scaleImage="FillFrame" hAlign="Left" vAlign="Middle">
+				<reportElement x="432" y="10" width="123" height="86" uuid="50688c93-db8c-45c8-bd7e-57a025ba93f8"/>
+				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
+			</image>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="2" y="0" width="100" height="22" uuid="14d2d28e-7f52-40ab-8f9e-7a6bfb6a3d47"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<staticText>
+				<reportElement x="139" y="0" width="281" height="35" uuid="afe083db-4599-47d7-89b0-1686193366ad"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[قائمة اخر الدفوعات]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="39" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="129" y="0" width="119" height="39" backcolor="#CCCCCC" uuid="5970a3ff-f1c5-4df9-9113-102e5022de23"/>
+				<box>
+					<topPen lineWidth="1.25"/>
+					<leftPen lineWidth="1.25"/>
+					<bottomPen lineWidth="1.25"/>
+					<rightPen lineWidth="1.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[تاريخ اخر دفع]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="248" y="0" width="276" height="39" backcolor="#CCCCCC" uuid="4567f273-d24c-48d6-b7a0-c45adaff31c0"/>
+				<box>
+					<topPen lineWidth="1.25"/>
+					<leftPen lineWidth="1.25"/>
+					<bottomPen lineWidth="1.25"/>
+					<rightPen lineWidth="1.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[اسم الشركة]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="0" y="0" width="129" height="39" backcolor="#CCCCCC" uuid="09404013-b5a9-47f1-8e60-9dca5b9b78a6"/>
+				<box>
+					<topPen lineWidth="1.25"/>
+					<leftPen lineWidth="1.25"/>
+					<bottomPen lineWidth="1.25"/>
+					<rightPen lineWidth="1.25"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[الديون المتبقية]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="524" y="0" width="31" height="39" backcolor="#CCCCCC" uuid="18728cff-30c2-4239-b1f0-8fb1a9e626be"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="41" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="129" y="0" width="119" height="41" uuid="c323eb37-b796-4ffe-a494-3d839fa9c274"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{last_versement}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="0" width="129" height="41" uuid="c4549ed2-b14d-44f7-8833-fc5763bd16b2"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reste_credit}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="248" y="0" width="276" height="41" uuid="5bf7e886-9cdf-4855-9904-2d1e885be9d9"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{nom_ar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="524" y="0" width="31" height="41" uuid="96beaadf-5e9e-4733-81d7-8ffa5c5be524"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="486" splitType="Stretch">
+			<staticText>
+				<reportElement x="24" y="340" width="162" height="27" uuid="81400dc6-bf3d-44fd-a8b6-8157fbded094"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="351" y="2" width="130" height="20" uuid="36bc1a45-382f-4f8f-8508-bc83751b8cdf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="481" y="2" width="74" height="22" uuid="7ec588d7-4134-4978-bdd0-e586952e099a"/>
+				<textElement verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[العدد الكلي:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

@@ -7,8 +7,8 @@ package panels;
 import DialogFram.Exite;
 import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
-import ReportsF.PrintingService;
-import ReportsF.ReportNames;
+import Reports.PrintingService;
+import Reports.ReportNames;
 import config.DatabaseConnection;
 import dao.impl.AchatDAOImpl;
 import dao.impl.AchatDetailDAOImpl;
@@ -490,8 +490,8 @@ public class panAchat extends javax.swing.JPanel {
                 .addGap(5, 5, 5)
                 .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 335, Short.MAX_VALUE)
+                .addGap(19, 19, 19))
         );
 
         bDetaill.setForeground(new java.awt.Color(255, 255, 255));
@@ -565,7 +565,7 @@ public class panAchat extends javax.swing.JPanel {
                     .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
-                .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
         );
 
