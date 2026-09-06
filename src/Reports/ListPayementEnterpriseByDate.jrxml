@@ -38,8 +38,11 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 				</textElement>
 				<text><![CDATA[تاريخ الاصدار:]]></text>
 			</staticText>
+			<rectangle radius="10">
+				<reportElement x="171" y="26" width="197" height="43" uuid="9dbd3f88-a06b-4d34-82b8-be0efa386941"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="163" y="32" width="208" height="42" uuid="2c96c514-a826-4062-b455-9a58f3aa395b"/>
+				<reportElement x="184" y="32" width="173" height="33" uuid="2c96c514-a826-4062-b455-9a58f3aa395b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true"/>
 				</textElement>
@@ -280,7 +283,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 		</band>
 	</detail>
 	<summary>
-		<band height="497" splitType="Stretch">
+		<band height="455" splitType="Stretch">
 			<staticText>
 				<reportElement x="502" y="0" width="53" height="20" uuid="837ccfdf-e69e-44dd-bb04-f08b9fbff294"/>
 				<textElement>
@@ -296,7 +299,7 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="54" y="326" width="162" height="27" uuid="6dc58c15-9d14-45d3-877a-2e6f78092779"/>
+				<reportElement x="41" y="307" width="162" height="27" uuid="6dc58c15-9d14-45d3-877a-2e6f78092779"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>

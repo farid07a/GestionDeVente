@@ -160,7 +160,7 @@ public class panVersement extends javax.swing.JPanel {
                 entreprise = entrepriseDAOImpl.getEntrepriseParName(nomEntreprise);
             }
             params.put("ENTERPRISE_ID", entreprise.getId());
-            params.put("ENTERPRISE_NAME_FR", (!entreprise.getNom_fr().isEmpty()) ? entreprise.getNom_fr() : entreprise.getNom_ar());
+            params.put("ENTERPRISE_NAME_FR", (!entreprise.getNom_ar().isEmpty()) ? entreprise.getNom_ar() : entreprise.getNom_fr());
             service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISE_BY_ID, params);
 
         });

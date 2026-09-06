@@ -34,8 +34,11 @@ AND Achat.id NOT IN (
 	</background>
 	<title>
 		<band height="145" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="178" y="31" width="197" height="43" uuid="7c21932b-4cb5-40b9-8176-5d9cddfaf295"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="157" y="34" width="237" height="42" uuid="de558d8f-4a2a-4923-ab6f-5c8be77c29e8"/>
+				<reportElement x="194" y="34" width="169" height="39" uuid="de558d8f-4a2a-4923-ab6f-5c8be77c29e8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true" isUnderline="true"/>
 				</textElement>

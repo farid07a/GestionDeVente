@@ -20,8 +20,11 @@
 	</background>
 	<title>
 		<band height="128" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="163" y="31" width="205" height="43" uuid="19b463bf-7bf2-468b-8da5-fd5f54d4f263"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="163" y="33" width="245" height="46" uuid="b44bdef4-586b-4fff-a39d-c6648ad5ae9f"/>
+				<reportElement x="184" y="36" width="169" height="32" uuid="b44bdef4-586b-4fff-a39d-c6648ad5ae9f"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>
@@ -74,7 +77,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true" isUnderline="true"/>
 				</textElement>
-				<text><![CDATA[قائمة المدفوعات]]></text>
+				<text><![CDATA[قائمة الزبائن]]></text>
 			</staticText>
 		</band>
 	</pageHeader>
@@ -148,9 +151,9 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="47" splitType="Stretch">
+		<band height="43" splitType="Stretch">
 			<textField>
-				<reportElement x="509" y="0" width="46" height="47" uuid="ca383a58-c845-4d1d-8bab-cc9efaa8d2fa"/>
+				<reportElement x="509" y="0" width="46" height="43" uuid="ca383a58-c845-4d1d-8bab-cc9efaa8d2fa"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -163,7 +166,7 @@
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="300" y="0" width="108" height="47" uuid="1be473e5-c9d6-49dc-bd77-1352879b62e3"/>
+				<reportElement x="300" y="0" width="108" height="43" uuid="1be473e5-c9d6-49dc-bd77-1352879b62e3"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -176,7 +179,7 @@
 				<textFieldExpression><![CDATA[$F{NOM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="408" y="0" width="101" height="47" uuid="25f956b2-7dea-4b3c-905b-b74c34ba324f"/>
+				<reportElement x="408" y="0" width="101" height="43" uuid="25f956b2-7dea-4b3c-905b-b74c34ba324f"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -189,7 +192,7 @@
 				<textFieldExpression><![CDATA[$F{PRENOM}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="151" y="0" width="149" height="47" uuid="a246cb53-61ae-48b5-8fc4-378641afea9d"/>
+				<reportElement x="151" y="0" width="149" height="43" uuid="a246cb53-61ae-48b5-8fc4-378641afea9d"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -202,7 +205,7 @@
 				<textFieldExpression><![CDATA[$F{matricule}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="0" width="151" height="47" uuid="5e85633d-cfbd-481b-8619-d709ce00314b"/>
+				<reportElement x="0" y="0" width="151" height="43" uuid="5e85633d-cfbd-481b-8619-d709ce00314b"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>

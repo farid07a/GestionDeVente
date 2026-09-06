@@ -31,8 +31,11 @@ WHERE V.date_versement =
 	</background>
 	<title>
 		<band height="145" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="162" y="34" width="219" height="57" uuid="ef52f329-54e9-45fd-8625-288a3d7f8451"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="157" y="34" width="237" height="42" uuid="de558d8f-4a2a-4923-ab6f-5c8be77c29e8"/>
+				<reportElement x="186" y="42" width="182" height="37" uuid="de558d8f-4a2a-4923-ab6f-5c8be77c29e8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true" isUnderline="true"/>
 				</textElement>

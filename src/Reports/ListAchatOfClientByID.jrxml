@@ -77,8 +77,11 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 				<reportElement x="432" y="12" width="123" height="86" uuid="f263e300-ec08-46e4-b791-fbf43d3e0510"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
+			<rectangle radius="10">
+				<reportElement x="171" y="37" width="197" height="43" uuid="527e7fe5-f37c-4269-addc-22a9c98550a1"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="162" y="56" width="242" height="42" uuid="707d439c-94cc-4718-a5d3-4fce9fbbbe5d"/>
+				<reportElement x="194" y="41" width="156" height="32" uuid="707d439c-94cc-4718-a5d3-4fce9fbbbe5d"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>

@@ -98,8 +98,11 @@ WHERE Client.id = $P{CLIENT_ID}
 				<reportElement x="432" y="14" width="123" height="86" uuid="3a207ff8-4389-47c7-9d70-57955bd7bbe1"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
+			<rectangle radius="10">
+				<reportElement x="179" y="33" width="197" height="43" uuid="60f8c781-4016-48ae-a6d3-caeeab6a28bd"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="162" y="46" width="242" height="43" uuid="9f205b35-0a36-452a-ab0d-9a2d6a0cca9b"/>
+				<reportElement x="194" y="40" width="168" height="31" uuid="9f205b35-0a36-452a-ab0d-9a2d6a0cca9b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>

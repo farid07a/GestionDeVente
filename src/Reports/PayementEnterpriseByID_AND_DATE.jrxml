@@ -40,12 +40,15 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 				</textElement>
 				<text><![CDATA[تاريخ الاصدار:]]></text>
 			</staticText>
+			<rectangle radius="10">
+				<reportElement x="186" y="24" width="197" height="43" uuid="a460e623-d1f5-4e65-8dc4-78ed9af6739b"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="163" y="31" width="239" height="29" uuid="2c96c514-a826-4062-b455-9a58f3aa395b"/>
+				<reportElement x="196" y="31" width="176" height="29" uuid="2c96c514-a826-4062-b455-9a58f3aa395b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true"/>
 				</textElement>
-				<text><![CDATA[قرباز جلال للاجهزة الكهرمنزلية  ]]></text>
+				<text><![CDATA[قرباز للاجهزة الكهرمنزلية  ]]></text>
 			</staticText>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement x="0" y="0" width="100" height="20" uuid="2a31edad-63e2-4e2e-a307-b57bdcdb0b44"/>

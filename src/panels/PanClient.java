@@ -85,9 +85,9 @@ public class PanClient extends javax.swing.JPanel {
                 params.put("CLIENT_ID", client.getId());
                 params.put("FName", client.getNom() + " " + client.getPrenom());
                 if (!client.getEntreprise().getNom_fr().isEmpty()) {
-                    params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
-                } else {
                     params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
+                } else {
+                    params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
                 }
 
                 service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID, params);

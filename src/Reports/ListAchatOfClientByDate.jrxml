@@ -91,8 +91,11 @@ WHERE Achat.date_achat = $P{Date_Achat}]]>
 				<reportElement x="432" y="7" width="123" height="86" uuid="5e7c89d7-f80f-452c-bf27-28a811b43c15"/>
 				<imageExpression><![CDATA[$P{LOGO}]]></imageExpression>
 			</image>
+			<rectangle radius="10">
+				<reportElement x="175" y="34" width="197" height="43" uuid="f6238f05-46fd-4b3a-8eca-5b14a94358c4"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="162" y="39" width="210" height="54" uuid="a4448200-3b41-49a3-9f41-3f8b47cb3e87"/>
+				<reportElement x="194" y="39" width="163" height="34" uuid="a4448200-3b41-49a3-9f41-3f8b47cb3e87"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>

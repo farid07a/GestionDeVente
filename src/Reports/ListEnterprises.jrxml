@@ -26,8 +26,11 @@
 				</textElement>
 				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
+			<rectangle radius="10">
+				<reportElement x="171" y="27" width="207" height="58" uuid="c0d6493f-0849-432d-aa3b-8228b91edbc0"/>
+			</rectangle>
 			<staticText>
-				<reportElement x="129" y="51" width="281" height="61" uuid="f34ce57c-624a-473c-aff3-5ab2fbfd4366"/>
+				<reportElement x="184" y="37" width="185" height="39" uuid="f34ce57c-624a-473c-aff3-5ab2fbfd4366"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="18" isBold="true" isUnderline="true"/>
 				</textElement>
