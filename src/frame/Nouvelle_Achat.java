@@ -15,6 +15,7 @@ import dao.impl.AchatDetailDAOImpl;
 import dao.impl.ClientDAOImpl;
 import dao.impl.EntrepriseDAOImpl;
 import dao.impl.ProduitDAOImpl;
+import dao.impl.UtilisateurDAOImp;
 import entity.Achat;
 import entity.AchatDetail;
 import entity.Categorie;
@@ -22,6 +23,7 @@ import entity.Client;
 import entity.Entreprise;
 import entity.Nomber;
 import entity.Produit;
+import entity.Utilisateur;
 import home.HomeForm;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -58,6 +60,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     ClientDAOImpl clientDAOImpl;
     ProduitDAOImpl produitDAOImpl;
     AchatDetailDAOImpl achatDetailDAOImpl;
+    UtilisateurDAOImp utilisateurDAOImp;
 
     DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
     MessageDialog messageDialog;
@@ -85,7 +88,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         clientDAOImpl = new ClientDAOImpl(connection);
         achatDetailDAOImpl = new AchatDetailDAOImpl(connection);
         produitDAOImpl = new ProduitDAOImpl(connection);
-        
+        utilisateurDAOImp= new UtilisateurDAOImp(connection);
         tabProduit.removeColumn(tabProduit.getColumnModel().getColumn(0));
        tabProduitAchat.removeColumn(tabProduitAchat.getColumnModel().getColumn(0));
     
@@ -108,6 +111,9 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 
         Clock Clock = new Clock();
         Clock.start(LabTime, labDate);
+        
+        Utilisateur utilisateur = utilisateurDAOImp.findById(homeForm.getIdUser());
+        jLabel23.setText((utilisateur !=null)? utilisateur.getNom() :  "");
         txt_matricul.requestFocus();
 //        
 //        tabProduitAchat.addMouseListener(new MouseAdapter() {
@@ -317,7 +323,6 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         tableScrollButton3 = new ui.table.TableScrollButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabProduit = new javax.swing.JTable();
-        BtnAdd1 = new material.design.buttonRounderC();
         btnAddProduit = new material.design.buttonRounderC();
         jLabel1 = new javax.swing.JLabel();
         pan_client = new ui.card.panRound();
@@ -345,6 +350,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         BtnSupp = new material.design.buttonRounderC();
         BtnSupp1 = new material.design.buttonRounderC();
         BtnSupp2 = new material.design.buttonRounderC();
+        BtnAdd1 = new material.design.buttonRounderC();
 
         jLabel2.setText("jLabel2");
 
@@ -438,22 +444,17 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(LabTime, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(33, 33, 33)
-                                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel22)))
-                        .addGap(23, 23, Short.MAX_VALUE))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(labDate, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                    .addComponent(jLabel23, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(LabTime, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
+                    .addComponent(labDate, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel22)
+                        .addContainerGap())))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -584,7 +585,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(0, 6, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(panPrix, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
@@ -617,7 +618,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 txt_searcPActionPerformed(evt);
             }
         });
-        jPanel2.add(txt_searcP, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 220, -1));
+        jPanel2.add(txt_searcP, new org.netbeans.lib.awtextra.AbsoluteConstraints(70, 30, 220, 30));
 
         tableScrollButton3.setLayout(new java.awt.CardLayout());
 
@@ -649,35 +650,23 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 
         tableScrollButton3.add(jScrollPane1, "card2");
 
-        jPanel2.add(tableScrollButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 410, 560));
+        jPanel2.add(tableScrollButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 410, 520));
 
-        BtnAdd1.setBackground(new java.awt.Color(43, 43, 140));
-        BtnAdd1.setForeground(new java.awt.Color(255, 255, 255));
-        BtnAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-ajouter-29.png"))); // NOI18N
-        BtnAdd1.setText("إضافة المنتج");
-        BtnAdd1.setBorderPainted(false);
-        BtnAdd1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        BtnAdd1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnAdd1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(BtnAdd1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 20, 121, 32));
-
-        btnAddProduit.setBackground(new java.awt.Color(204, 204, 204));
+        btnAddProduit.setBackground(new java.awt.Color(102, 204, 0));
         btnAddProduit.setForeground(new java.awt.Color(255, 255, 255));
         btnAddProduit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-ajouter-29.png"))); // NOI18N
+        btnAddProduit.setText("منتج جديد");
         btnAddProduit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAddProduitActionPerformed(evt);
             }
         });
-        jPanel2.add(btnAddProduit, new org.netbeans.lib.awtextra.AbsoluteConstraints(380, 0, 37, 30));
+        jPanel2.add(btnAddProduit, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 10, 110, 30));
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(102, 102, 255));
         jLabel1.setText("الــمنـــتــجـــات ( انقر مرتين للإضافة)");
-        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 0, 217, 19));
+        jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 10, 200, 19));
 
         pan_client.setColor1(new java.awt.Color(255, 255, 255));
         pan_client.setMaximumSize(new java.awt.Dimension(32767, 235));
@@ -702,7 +691,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(0, 0, 102));
         jLabel15.setText("الشركة");
-        pan_client.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 160, 40, -1));
+        pan_client.add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 160, 40, 30));
 
         jLabel16.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(102, 102, 102));
@@ -722,6 +711,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         txt_matricul.setBorder(null);
         txt_matricul.setForeground(new java.awt.Color(0, 102, 102));
         txt_matricul.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_matricul.setEnabled(false);
         txt_matricul.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txt_matricul.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -737,6 +727,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 
         txt_adress.setBorder(null);
         txt_adress.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_adress.setEnabled(false);
         txt_adress.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txt_adress.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -752,6 +743,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 
         txt_nom.setBorder(null);
         txt_nom.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_nom.setEnabled(false);
         txt_nom.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txt_nom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -767,6 +759,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 
         txt_prenom.setBorder(null);
         txt_prenom.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_prenom.setEnabled(false);
         txt_prenom.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txt_prenom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -782,6 +775,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 
         txt_tel.setBorder(null);
         txt_tel.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        txt_tel.setEnabled(false);
         txt_tel.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txt_tel.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -795,6 +789,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         });
         pan_client.add(txt_tel, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 110, 165, 32));
 
+        com_entreprice.setEnabled(false);
         com_entreprice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 com_entrepriceActionPerformed(evt);
@@ -805,20 +800,19 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 com_entrepriceKeyPressed(evt);
             }
         });
-        pan_client.add(com_entreprice, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, 370, 38));
+        pan_client.add(com_entreprice, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, 370, 50));
 
-        btn.setBackground(new java.awt.Color(51, 153, 0));
+        btn.setBackground(new java.awt.Color(102, 204, 0));
         btn.setForeground(new java.awt.Color(255, 255, 255));
-        btn.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-plus-64 (2).png"))); // NOI18N
-        btn.setText("إضافة الزبـون");
-        btn.setFont(new java.awt.Font("Times New Roman", 1, 15)); // NOI18N
+        btn.setText("الزبائن");
+        btn.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btn.setPreferredSize(new java.awt.Dimension(130, 70));
         btn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnActionPerformed(evt);
             }
         });
-        pan_client.add(btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 10, 100, 30));
+        pan_client.add(btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, 80, 30));
 
         panOrder.setColor1(new java.awt.Color(255, 255, 255));
 
@@ -940,6 +934,18 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 .addGap(23, 23, 23))
         );
 
+        BtnAdd1.setBackground(new java.awt.Color(43, 43, 140));
+        BtnAdd1.setForeground(new java.awt.Color(255, 255, 255));
+        BtnAdd1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-ajouter-29.png"))); // NOI18N
+        BtnAdd1.setText("إضافة المنتج");
+        BtnAdd1.setBorderPainted(false);
+        BtnAdd1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        BtnAdd1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAdd1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -951,21 +957,29 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                     .addComponent(panOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(pan_client, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(29, 29, 29)
+                        .addComponent(BtnAdd1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(pan_client, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(panOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                        .addComponent(BtnAdd1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel4Layout.createSequentialGroup()
+                            .addContainerGap()
+                            .addComponent(pan_client, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(panOrder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel1.add(jPanel4);
@@ -1030,7 +1044,9 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         }
         messageDialog.ShowConfirmMessageInDialog("حــفـظ", "هـل تريد حفظ عملية البيع ");
         if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
+           //JOptionPane.showConfirmDialog(null, "Yes");
             if (achatDAOImpl.save(achat) > 0) {
+                //JOptionPane.showConfirmDialog(null, "save");
                 System.out.println("save Achat");
                 Achat lastAchat = achatDAOImpl.getLast();
                 saveAchatDetaille(lastAchat, rowCont);

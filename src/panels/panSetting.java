@@ -4,10 +4,27 @@
  */
 package panels;
 
+import DialogFram.Exite;
+import DialogFram.ValidationMessageDialog;
 import entity.Utilisateur;
 import frame.AddUtilisateur;
 import frame.EntrepriseForm;
 import home.HomeForm;
+import com.sun.javafx.application.PlatformImpl;
+import frame.ArchiveSuppressionForm;
+import frame.EntreeSortieUtilisateurForm;
+import javafx.stage.DirectoryChooser;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -60,7 +77,6 @@ public class panSetting extends javax.swing.JPanel {
         });
 
         button9.setForeground(new java.awt.Color(255, 255, 255));
-        button9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-groupe-d'utilisateurs-64 (1).png"))); // NOI18N
         button9.setText("دخـول و خــروج المستخــدمــيـن");
         button9.setColor1(new java.awt.Color(250, 250, 250));
         button9.setColor2(new java.awt.Color(102, 102, 102));
@@ -113,6 +129,11 @@ public class panSetting extends javax.swing.JPanel {
         button2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         button2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button2ActionPerformed(evt);
+            }
+        });
 
         button3.setForeground(new java.awt.Color(255, 255, 255));
         button3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/network_873760.png"))); // NOI18N
@@ -123,6 +144,11 @@ public class panSetting extends javax.swing.JPanel {
         button3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         button3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button3ActionPerformed(evt);
+            }
+        });
 
         button4.setForeground(new java.awt.Color(255, 255, 255));
         button4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/foreign-language_8495095.png"))); // NOI18N
@@ -189,6 +215,7 @@ public class panSetting extends javax.swing.JPanel {
     }//GEN-LAST:event_button7ActionPerformed
 
     private void button9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button9ActionPerformed
+        new EntreeSortieUtilisateurForm(homeForm, true).setVisible(true);
     }//GEN-LAST:event_button9ActionPerformed
 
     private void button10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button10ActionPerformed
@@ -201,6 +228,56 @@ public class panSetting extends javax.swing.JPanel {
     private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
         new AddUtilisateur(homeForm, true).setVisible(true);
     }//GEN-LAST:event_button1ActionPerformed
+
+    private void button3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button3ActionPerformed
+
+    PlatformImpl.startup(() -> {
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+
+        directoryChooser.setTitle("اختيار مكان حفظ النسخة الاحتياطية");
+
+        File selectedDirectory = directoryChooser.showDialog(null);
+
+        if (selectedDirectory != null) {
+
+            String path = selectedDirectory.getAbsolutePath();
+
+            System.out.println("المسار المختار : " + path);
+
+            try {     
+                Path source = Paths.get("resources/StoreDBDJ.accdb");
+
+                String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
+                        .format(new Date());
+
+                String backupName = "StoreDBDJ_Backup_" + date + ".accdb";
+                Path destination = Paths.get(path, backupName);
+
+                Files.copy(
+                        source,
+                        destination,
+                        StandardCopyOption.REPLACE_EXISTING
+                );
+                new ValidationMessageDialog(homeForm).showMessage("النسخ الاحتياطي لقاعدة البيانات" ,
+                        "تم إنشاء النسخة الاحتياطية بنجاح\n" + "المكان:" + destination );
+
+            } catch (IOException ex) {
+
+               new Exite(homeForm).showMessage("خطأ","حدث خطأ أثناء إنشاء النسخة الاحتياطية :\n"  + ex.getMessage()  );
+
+                ex.printStackTrace();
+            }
+        }
+
+    });
+
+
+    }//GEN-LAST:event_button3ActionPerformed
+
+    private void button2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button2ActionPerformed
+      new ArchiveSuppressionForm(homeForm, true).setVisible(true);
+    }//GEN-LAST:event_button2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -552,7 +552,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="panFilter" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="tableScrollButton1" max="32767" attributes="0"/>
+                      <Component id="tableScrollButton1" pref="433" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -589,13 +589,14 @@
                           <Color blue="66" green="66" red="66" type="rgb"/>
                         </Property>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="8" rowCount="0">
+                          <Table columnCount="9" rowCount="0">
                             <Column editable="false" title="idEntreprise" type="java.lang.Object"/>
                             <Column editable="false" title="&#x627;&#x644;&#x645;&#x640;&#x644;&#x627;&#x62d;&#x640;&#x640;&#x636;&#x640;&#x640;&#x627;&#x62a;" type="java.lang.Object"/>
                             <Column editable="false" title="&#x627;&#x644;&#x62a;&#x627;&#x631;&#x64a;&#x62e;" type="java.lang.Object"/>
-                            <Column editable="false" title="&#x62f;&#x64a;&#x648;&#x646; &#x627;&#x644;&#x645;&#x62a;&#x628;&#x642;&#x64a;&#x629;" type="java.lang.Object"/>
-                            <Column editable="false" title="&#x62f;&#x64a;&#x648;&#x646; &#x627;&#x644;&#x632;&#x628;&#x627;&#x626;&#x646;" type="java.lang.Object"/>
-                            <Column editable="false" title="&#x627;&#x644;&#x645;&#x628;&#x644;&#x63a;" type="java.lang.Object"/>
+                            <Column editable="false" title="&#x627;&#x644;&#x632;&#x64a;&#x627;&#x62f;&#x629;" type="java.lang.Object"/>
+                            <Column editable="false" title="&#x627;&#x644;&#x62f;&#x64a;&#x646; &#x627;&#x644;&#x645;&#x62a;&#x628;&#x642;&#x64a;&#x629;" type="java.lang.Object"/>
+                            <Column editable="false" title="&#x645;&#x634;&#x62a;&#x631;&#x64a;&#x627;&#x62a; &#x627;&#x644;&#x632;&#x628;&#x627;&#x626;&#x646; " type="java.lang.Object"/>
+                            <Column editable="false" title="&#x627;&#x644;&#x645;&#x628;&#x644;&#x63a; &#x627;&#x644;&#x62f;&#x641;&#x639;&#x629;" type="java.lang.Object"/>
                             <Column editable="false" title="&#x646;&#x648;&#x639; &#x627;&#x644;&#x62f;&#x641;&#x639;" type="java.lang.Object"/>
                             <Column editable="false" title="&#x627;&#x644;&#x634;&#x631;&#x643;&#x629;" type="java.lang.Object"/>
                           </Table>
@@ -730,7 +731,7 @@
               </Border>
             </Property>
             <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
-              <Color id="Curseur par d&#xe9;faut"/>
+              <Color id="Hand Cursor"/>
             </Property>
           </Properties>
           <Events>
@@ -775,7 +776,7 @@
                   <Component id="pan_gradiant6" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="pan_gradiant5" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="button1" min="-2" pref="17" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -786,27 +787,24 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   <Component id="button1" min="-2" pref="13" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="19" max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jLabel7" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+              </Group>
+              <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="pan_gradiant5" alignment="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="pan_gradiant6" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="jLabel11" min="-2" pref="35" max="-2" attributes="0"/>
+                          <Component id="pan_gradiant1" max="32767" attributes="0"/>
+                          <Component id="LabNombre" alignment="1" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jLabel7" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                      <Component id="jLabel11" min="-2" pref="35" max="-2" attributes="0"/>
-                      <Component id="pan_gradiant1" max="32767" attributes="0"/>
-                      <Component id="LabNombre" alignment="1" max="32767" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                          <Component id="pan_gradiant5" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="pan_gradiant6" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
               </Group>
@@ -1009,7 +1007,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel18" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="labCredit" pref="70" max="32767" attributes="0"/>
+                      <Component id="labCredit" pref="58" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jLabel17" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>

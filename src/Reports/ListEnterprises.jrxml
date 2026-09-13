@@ -205,16 +205,16 @@
 		<band height="54" splitType="Stretch"/>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch">
+		<band height="35" splitType="Stretch">
 			<textField>
-				<reportElement x="402" y="0" width="77" height="32" uuid="470e8bda-3533-4c40-b365-abf46333beb4"/>
+				<reportElement x="402" y="0" width="77" height="35" uuid="470e8bda-3533-4c40-b365-abf46333beb4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="479" y="0" width="76" height="32" uuid="1eb3818b-cc3a-4a22-a97b-2af8dee891c1"/>
+				<reportElement x="479" y="0" width="76" height="35" uuid="1eb3818b-cc3a-4a22-a97b-2af8dee891c1"/>
 				<textElement>
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>

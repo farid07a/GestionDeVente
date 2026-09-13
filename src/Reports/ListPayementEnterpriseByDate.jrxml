@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="0c724bee-dae1-4ae0-a0c9-5e49b8203f4f">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="243"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="DATE_VERSEMENT" class="java.util.Date"/>
 	<parameter name="LOGO" class="java.io.InputStream"/>
 	<queryString>
@@ -282,29 +282,33 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 			</textField>
 		</band>
 	</detail>
-	<summary>
-		<band height="455" splitType="Stretch">
+	<lastPageFooter>
+		<band height="100">
 			<staticText>
-				<reportElement x="502" y="0" width="53" height="20" uuid="837ccfdf-e69e-44dd-bb04-f08b9fbff294"/>
+				<reportElement x="0" y="0" width="162" height="27" uuid="6dc58c15-9d14-45d3-877a-2e6f78092779"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement x="502" y="0" width="53" height="23" uuid="837ccfdf-e69e-44dd-bb04-f08b9fbff294"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[العدد الكلي:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="402" y="0" width="100" height="20" uuid="a90a44b5-6ba7-454a-aed9-6bf18bf38501"/>
+				<reportElement x="402" y="0" width="100" height="23" uuid="a90a44b5-6ba7-454a-aed9-6bf18bf38501"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="41" y="307" width="162" height="27" uuid="6dc58c15-9d14-45d3-877a-2e6f78092779"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true" isUnderline="true"/>
-				</textElement>
-				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>

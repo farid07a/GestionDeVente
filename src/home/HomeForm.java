@@ -2,10 +2,19 @@ package home;
 
 import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
+import config.DatabaseConnection;
+import dao.impl.EntreeSortieUtilisateurDAOImp;
+import dao.impl.UtilisateurDAOImp;
+import entity.EntreeSortieUtilisateur;
+import entity.Utilisateur;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import panels.panDashBoard;
 import panels.pan_Entreprise;
 import panels.PanClient;
@@ -34,8 +43,10 @@ public class HomeForm extends javax.swing.JFrame {
     panSetting panSetting;
     MessageDialog messageDialog;
     ValidationMessageDialog validationMessageDialog;
+
     public HomeForm() {
         // pan_produit = new pan_produit(this);
+        initComponents();
         pan_client = new PanClient(this);
         pan_Entreprise = new pan_Entreprise(this);
         pan_produit = new pan_produit(this);
@@ -46,7 +57,6 @@ public class HomeForm extends javax.swing.JFrame {
         panSetting = new panSetting(this);
         messageDialog = new MessageDialog(this);
         validationMessageDialog = new ValidationMessageDialog(this);
-        initComponents();
 
         setExtendedState(MAXIMIZED_BOTH);
         gbc.gridx = 0;
@@ -73,8 +83,7 @@ public class HomeForm extends javax.swing.JFrame {
                     case 4:
                         setForm(pan_produit_categorie);
                         pan_produit_categorie.getPan_produit().setProduitsOnTab();
-                       pan_produit_categorie.getPan_categorie().setCategoriesOnTab();
-
+                        pan_produit_categorie.getPan_categorie().setCategoriesOnTab();
 
                         break;
                     case 6:
@@ -95,6 +104,14 @@ public class HomeForm extends javax.swing.JFrame {
                     case 10:
                         messageDialog.ShowConfirmMessageInFrame("إغــلاق", "هـل تـريـد غـلاق الـبـرنـامـج");
                         if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
+                            Connection connection = DatabaseConnection.getInstance().getConnection();
+                            int id = Integer.parseInt(LabIdUser.getText());
+                            Utilisateur utilisateur = new UtilisateurDAOImp(connection).findById(id);
+                            EntreeSortieUtilisateurDAOImp entreeSortieUtilisateurDAOImp = new EntreeSortieUtilisateurDAOImp(connection);
+                            EntreeSortieUtilisateur esu = entreeSortieUtilisateurDAOImp.findLast();
+                            esu.setHeureSortie(LocalTime.now());
+                            entreeSortieUtilisateurDAOImp.update(esu);
+
                             dispose();
                         }
                         break;
@@ -103,23 +120,30 @@ public class HomeForm extends javax.swing.JFrame {
                 }
             }
         });
-        
-         Clock Clock = new Clock();
+
+        Clock Clock = new Clock();
         Clock.start(LabTime, labDate);
     }
 
-    public void setUser(String User) {
-        this.jLabel1.setText(User);
+    public void setIdUser(int iduser) {
+        LabIdUser.setText(iduser + "");
+    }
+
+    public int getIdUser() {
+        return Integer.parseInt(LabIdUser.getText());
+    }
+
+    public void setNomUserInlab(String User) {
+        LabNomUeser.setText(User);
     }
 
     public JLabel getjLabel20() {
         return jLabel20;
     }
 
-    public String getUser() {
-        return this.jLabel1.getText();
-    }
-
+////    public String getUser() {
+////        return this.LabNomUeser.getText();
+////    }
     public void setForm(Component com) {
         body.removeAll();
         body.add(com);
@@ -166,11 +190,20 @@ public class HomeForm extends javax.swing.JFrame {
         jLabel20 = new javax.swing.JLabel();
         LabTime = new javax.swing.JLabel();
         jLabel22 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        LabNomUeser = new javax.swing.JLabel();
+        LabIdUser = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setMinimumSize(new java.awt.Dimension(900, 600));
+        setMinimumSize(new java.awt.Dimension(1000, 700));
         setPreferredSize(new java.awt.Dimension(900, 600));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
         getContentPane().setLayout(new java.awt.CardLayout());
 
         background.setBackground(new java.awt.Color(245, 245, 245));
@@ -183,7 +216,7 @@ public class HomeForm extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1082, Short.MAX_VALUE)
+            .addGap(0, 1124, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -234,9 +267,12 @@ public class HomeForm extends javax.swing.JFrame {
         jLabel22.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel22.setText("V1.0.0");
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("المستخدم");
+        LabNomUeser.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        LabNomUeser.setForeground(new java.awt.Color(255, 255, 255));
+        LabNomUeser.setText("المستخدم");
+
+        LabIdUser.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        LabIdUser.setText("0");
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -251,22 +287,26 @@ public class HomeForm extends javax.swing.JFrame {
                 .addGap(5, 5, 5)
                 .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 535, Short.MAX_VALUE)
+                .addComponent(LabNomUeser, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(LabIdUser, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(528, 528, 528)
                 .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(labDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jLabel22)
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addGap(0, 2, Short.MAX_VALUE)
-                .addComponent(LabTime, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(labDate, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel20, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(LabTime, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(LabNomUeser, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(LabIdUser, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         panButton.add(jPanel5, "card2");
@@ -278,6 +318,20 @@ public class HomeForm extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+
+    }//GEN-LAST:event_formWindowClosed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Connection connection = DatabaseConnection.getInstance().getConnection();
+        int id = Integer.parseInt(LabIdUser.getText());
+        Utilisateur utilisateur = new UtilisateurDAOImp(connection).findById(id);
+        EntreeSortieUtilisateurDAOImp entreeSortieUtilisateurDAOImp = new EntreeSortieUtilisateurDAOImp(connection);
+        EntreeSortieUtilisateur esu = entreeSortieUtilisateurDAOImp.findLast();
+        esu.setHeureSortie(LocalTime.now());
+        entreeSortieUtilisateurDAOImp.update(esu);
+    }//GEN-LAST:event_formWindowClosing
 
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -318,21 +372,21 @@ public class HomeForm extends javax.swing.JFrame {
         //</editor-fold>
         //</editor-fold>
 
-    
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-              // new splashscreen.SplashScreen(null, true).setVisible(true);
-               new HomeForm().setVisible(true);
+                // new splashscreen.SplashScreen(null, true).setVisible(true);
+                new HomeForm().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel LabIdUser;
+    private javax.swing.JLabel LabNomUeser;
     private javax.swing.JLabel LabTime;
     private javax.swing.JPanel background;
     private javax.swing.JPanel body;
     private ui.menufr.customMenu customMenu1;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel9;

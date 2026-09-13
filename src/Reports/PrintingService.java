@@ -30,7 +30,7 @@ import net.sf.jasperreports.view.JasperViewer;
  */
 public class PrintingService {
 
-    private static final String REPORTS_PATH = "/reports/";
+    private static final String REPORTS_PATH = "/Reports/";
 
     public PrintingService() {
 
@@ -127,8 +127,11 @@ public class PrintingService {
                         "Logo not found: /icon/logo.png"
                 );
             }
-
+            
+            
+            System.out.println("Logo icon is existing .... ");
             parameters.put("LOGO", logoStream);
+            System.out.println("Put in paramaters");
             JasperPrint print = JasperFillManager.fillReport(
                     reportStream,
                     parameters,

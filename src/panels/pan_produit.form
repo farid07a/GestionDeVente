@@ -43,13 +43,13 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
+                  <EmptySpace pref="100" max="32767" attributes="0"/>
                   <Component id="btnSupprim" min="-2" pref="113" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="32767" attributes="0"/>
                   <Component id="btnNewAchat" min="-2" pref="117" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                  <Component id="btnModf2" pref="112" max="32767" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace pref="28" max="32767" attributes="0"/>
+                  <Component id="btnModf2" min="-2" pref="118" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="btnModf1" min="-2" pref="96" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="btnModf" min="-2" pref="123" max="-2" attributes="0"/>
@@ -193,7 +193,7 @@
         <Component class="material.design.buttonRounder" name="btnModf2">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="b9" green="98" red="11" type="rgb"/>
+              <Color blue="33" green="cc" red="0" type="rgb"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
@@ -302,14 +302,12 @@
                           <Color blue="66" green="66" red="66" type="rgb"/>
                         </Property>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                          <Table columnCount="8" rowCount="0">
+                          <Table columnCount="6" rowCount="0">
                             <Column editable="false" title="id" type="java.lang.Object"/>
                             <Column editable="false" title="&#x633;&#x639;&#x631; &#x627;&#x644;&#x628;&#x64a;&#x639;" type="java.lang.Object"/>
                             <Column editable="false" title="&#x633;&#x639;&#x631; &#x627;&#x644;&#x634;&#x631;&#x627;&#x621;" type="java.lang.Object"/>
-                            <Column editable="false" title="&#x627;&#x644;&#x639;&#x62f;&#x62f;" type="java.lang.Object"/>
-                            <Column editable="false" title="ref" type="java.lang.Object"/>
-                            <Column editable="false" title="&#x627;&#x644;&#x646;&#x648;&#x639;" type="java.lang.Object"/>
-                            <Column editable="false" title="&#x627;&#x644;&#x639;&#x644;&#x627;&#x645;&#x629; &#x627;&#x644;&#x62a;&#x62c;&#x627;&#x631;&#x64a;&#x629; " type="java.lang.Object"/>
+                            <Column editable="false" title="&#x627;&#x644;&#x643;&#x645;&#x64a;&#x629;" type="java.lang.Object"/>
+                            <Column editable="false" title="&#x627;&#x644;&#x646;&#x648;&#x639;&#x64a;&#x629;" type="java.lang.Object"/>
                             <Column editable="false" title="&#x627;&#x633;&#x645; &#x627;&#x644;&#x645;&#x646;&#x62a;&#x62c;/desig" type="java.lang.Object"/>
                           </Table>
                         </Property>

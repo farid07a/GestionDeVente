@@ -5,6 +5,7 @@
 package frame;
 
 import DialogFram.Exite;
+import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.ClientDAOImpl;
@@ -26,6 +27,7 @@ public class ModifyClient extends javax.swing.JDialog {
     Connection connection;
     HomeForm homeForm;
     Client client;
+    MessageDialog messageDialog;
 
     public ModifyClient(java.awt.Frame parent, boolean modal, Client client) {
         super(parent, modal);
@@ -34,7 +36,7 @@ public class ModifyClient extends javax.swing.JDialog {
 
         initComponents();
         setLocationRelativeTo(this.homeForm);
-
+        messageDialog = new MessageDialog(this);
         connection = DatabaseConnection.getInstance().getConnection();
         InitUI();
 
@@ -366,11 +368,14 @@ public class ModifyClient extends javax.swing.JDialog {
         client.setAdresse(adress.getText());
         client.setEntreprise(entreprise);
 
-        if (new ClientDAOImpl(connection).update(client) > 0) {
-            this.dispose();
-            new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "نم تعديل معلومات الزبون بنجاح ");
-            homeForm.getPan_client().setClientsOnTab();
+        messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـتـعـديـل", "هـل أنت متـأكـد الـتـعـديـل");
+        if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
+            if (new ClientDAOImpl(connection).update(client) > 0) {
+                this.dispose();
+                new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "نم تعديل معلومات الزبون بنجاح ");
+                homeForm.getPan_client().setClientsOnTab();
 
+            }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

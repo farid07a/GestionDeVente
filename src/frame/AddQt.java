@@ -25,9 +25,12 @@ public class AddQt extends javax.swing.JDialog {
         this.homeForm = (HomeForm) parent;
         this.produit= produit ;
         connection = DatabaseConnection.getInstance().getConnection();
-        produitDAOImpl = new ProduitDAOImpl(connection);      
+        produitDAOImpl = new ProduitDAOImpl(connection);  
         initComponents();
         setLocationRelativeTo(this);
+        txtNomPro.setText(produit.getDesignation());
+        txtCatego.setText(produit.getCategorie().getNomCategorie());
+
     }
 
     /**
@@ -47,8 +50,8 @@ public class AddQt extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         btnSave = new material.design.buttonRounder();
         btnCancel = new material.design.buttonRounder();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        txtCatego = new javax.swing.JLabel();
+        txtNomPro = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -120,15 +123,15 @@ public class AddQt extends javax.swing.JDialog {
         });
         jPanel1.add(btnCancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 250, 120, 30));
 
-        jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(43, 43, 140));
-        jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 300, 30));
+        txtCatego.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        txtCatego.setForeground(new java.awt.Color(43, 43, 140));
+        txtCatego.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jPanel1.add(txtCatego, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 80, 300, 30));
 
-        jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(43, 43, 140));
-        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 50, 300, 30));
+        txtNomPro.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        txtNomPro.setForeground(new java.awt.Color(43, 43, 140));
+        txtNomPro.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        jPanel1.add(txtNomPro, new org.netbeans.lib.awtextra.AbsoluteConstraints(17, 50, 300, 30));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -163,7 +166,7 @@ public class AddQt extends javax.swing.JDialog {
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         int Qt= Integer.parseInt( txt_qt.getText());
         int newQt = produit.getQty()+Qt;
-        produit.setQty(Qt);
+        produit.setQty(newQt);
         if(produitDAOImpl.update(produit)>0){
             System.out.println("update QtProduit");
             this.dispose();
@@ -224,11 +227,11 @@ public class AddQt extends javax.swing.JDialog {
     private material.design.buttonRounder btnSave;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel txtCatego;
+    private javax.swing.JLabel txtNomPro;
     private ui.card.TextFieldRound txt_qt;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,0 +1,11 @@
+Achat{id=1, client=Client{id=2, nom=basma, prenom=benaissa, matricule=124568, tel=0213546, adresse=branise, entreprise=Entreprise{id=3, nom_ar=سيلاس, nom_fr=cilas, desc=des, adresse=branis, tel=033 452578  , email=cilas@gmail.com}}, prix_total=100.0, date_achat=2026-10-02} : 02-10-2026
+Utilisateur{id=6, nom=admin, motPass=Admin} : 02-10-2026
+Client{id=20, nom=clinetSuppression, prenom=clinetSuppression, matricule=145266, tel=1452, adresse=clinetSuppression, entreprise=Entreprise{id=14, nom_ar=شركة جلال, nom_fr=djalal, desc=7845, adresse=Djamourah, tel=47854785477, email=djalal@gmail.com}} : 02-10-2026
+Produit{id=27, reference=cicm, designation=testSuprission, marque=cicm, categorie=Categorie{id=25, nomCategorie=cicm, description=cicm}, qty=10, prix_achat=1200.0, prix_vente=1500.0} : 02-10-2026
+Categorie{id=29, nomCategorie=testSuppression, description=testSuppression} : 02-10-2026
+Produit{id=28, reference=كندور, designation=مكسور, marque=كندور, categorie=Categorie{id=7, nomCategorie=كندور, description=}, qty=2, prix_achat=2000.0, prix_vente=2500.0} : 02-10-2026
+Client{id=19, nom=قصي , prenom=بن عيسى, matricule=, tel=1452, adresse=ouled said, entreprise=Entreprise{id=2, nom_ar=مصنع سيلاس لإنتاج الإسمنت, nom_fr=Usine CILAS Biskra, desc=96587452, adresse=Djamourah, tel=8888888, email=cilas@gmail.com}} : 12-09-2026
+Client{id=16, nom=محمد, prenom=محمد, matricule=5454545, tel=1245785, adresse=باتنة, entreprise=Entreprise{id=11, nom_ar=شركة قديلة للمياه المعدنية, nom_fr=Société Guedila des Eaux Minérales, desc=142578, adresse=قديلة, tel=0666223311, email=}} : 12-09-2026
+Client{id=14, nom=علي, prenom=بن علي, matricule=78951, tel=, adresse=, entreprise=Entreprise{id=12, nom_ar=مصنع الآجر العصري عموري, nom_fr=SARL Biskria Briqueterie, desc=4788, adresse=branis, tel=033261547, email=amouri@gmail.com}} : 12-09-2026
+Client{id=12, nom=عمار, prenom=بن عيسى, matricule=5468254, tel=0770123564, adresse=برانيس, entreprise=Entreprise{id=10, nom_ar=مصنع البسكرية للإسمنت, nom_fr=Société BISKRIA CIMENT, desc=14578, adresse=BRANIS, tel=033265485, email=cimant@gmail.com}} : 12-09-2026
+Client{id=11, nom=فريد, prenom=خباش, matricule=120035568, tel=0660232546, adresse=قديللة , entreprise=Entreprise{id=11, nom_ar=شركة قديلة للمياه المعدنية, nom_fr=Société Guedila des Eaux Minérales, desc=142578, adresse=قديلة, tel=0666223311, email=}} : 12-09-2026

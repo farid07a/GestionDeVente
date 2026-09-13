@@ -298,8 +298,19 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 			</textField>
 		</band>
 	</detail>
+	<lastPageFooter>
+		<band height="100">
+			<staticText>
+				<reportElement x="48" y="0" width="162" height="27" uuid="bbedad9e-1961-4f6a-99c9-7aff3bb944df"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
 	<summary>
-		<band height="484" splitType="Stretch">
+		<band height="60" splitType="Stretch">
 			<staticText>
 				<reportElement mode="Opaque" x="134" y="0" width="76" height="28" backcolor="#009999" uuid="24ea36dc-fe52-4b82-b524-ef343d9680c9"/>
 				<textElement textAlignment="Right">
@@ -329,40 +340,33 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Opaque" x="502" y="32" width="53" height="27" backcolor="#009999" uuid="9b981d88-1a77-4a76-933c-1b4e50289bce"/>
+				<reportElement mode="Opaque" x="502" y="32" width="53" height="28" backcolor="#009999" uuid="9b981d88-1a77-4a76-933c-1b4e50289bce"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[كل الديون:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Opaque" x="134" y="32" width="76" height="27" backcolor="#009999" uuid="33e4ad65-754f-4e12-9f22-f927db369ea1"/>
+				<reportElement mode="Opaque" x="134" y="32" width="76" height="28" backcolor="#009999" uuid="33e4ad65-754f-4e12-9f22-f927db369ea1"/>
 				<textElement textAlignment="Right">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[كل المدفوعات:]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Opaque" x="0" y="32" width="134" height="27" backcolor="#009999" uuid="6cea3195-484e-46a2-8a28-4157ece3bde1"/>
+				<reportElement mode="Opaque" x="0" y="32" width="134" height="28" backcolor="#009999" uuid="6cea3195-484e-46a2-8a28-4157ece3bde1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{ALL_VERSEMENT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Opaque" x="397" y="32" width="105" height="27" backcolor="#009999" uuid="0841306a-914a-4fbc-9157-ca56c931919e"/>
+				<reportElement mode="Opaque" x="397" y="32" width="105" height="28" backcolor="#009999" uuid="0841306a-914a-4fbc-9157-ca56c931919e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{ALL_CREDIT}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="44" y="360" width="162" height="27" uuid="bbedad9e-1961-4f6a-99c9-7aff3bb944df"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true" isUnderline="true"/>
-				</textElement>
-				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>

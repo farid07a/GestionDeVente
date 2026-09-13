@@ -9,6 +9,7 @@ import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.CategorieDAOImpl;
+import entity.ArchiveSuppression;
 import entity.Categorie;
 import frame.AddCategory;
 import frame.ModifyCategory;
@@ -322,8 +323,10 @@ public class pan_categorie extends javax.swing.JPanel {
             messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف الـنـوعـيـة");
             if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
                 if (categorieDAOImpl.delete(id) > 0) {
-                    setCategoriesOnTab();
+                    new ArchiveSuppression().archiver(categorie);
                     new ValidationMessageDialog(homeForm).showMessage("حـذف", "تم حذف الـنـوعـيـة بنجاح");
+                    setCategoriesOnTab();
+
                 } else {
                     new Exite(homeForm).showMessage("خــطـأ", "لا يمكنك حذف الـنـوعـية");
                 }

@@ -3,13 +3,17 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
 package frame;
-
 import config.DatabaseConnection;
+import dao.impl.EntreeSortieUtilisateurDAOImp;
 import dao.impl.UtilisateurDAOImp;
+import entity.EntreeSortieUtilisateur;
 import entity.Utilisateur;
-import home.HomeForm;
+import home.HomeForm;                   
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,12 +22,14 @@ import java.sql.Connection;
 public class Login extends javax.swing.JDialog {
 
     UtilisateurDAOImp utilisateurDAOImp; 
+    EntreeSortieUtilisateurDAOImp entreeSortieUtilisateurDAOImp;
     Connection connection;
     public Login(java.awt.Frame parent, boolean modal) {
         super(parent, modal);       
         initComponents();
         connection= DatabaseConnection.getInstance().getConnection();
        utilisateurDAOImp   = new UtilisateurDAOImp(connection);
+       entreeSortieUtilisateurDAOImp = new EntreeSortieUtilisateurDAOImp(connection);
         this.setLocationRelativeTo(null);
     }
 
@@ -154,26 +160,47 @@ public class Login extends javax.swing.JDialog {
         String nom = txtUser.getText();
         String motPass = new String(txtMotPass.getPassword());
         Utilisateur utilisateur  = utilisateurDAOImp.getUtilisateurParNomMotPass(nom , motPass);
+      
         if(utilisateur !=null ){
            this.dispose();
-            new splashscreen.SplashScreen(null, true).setVisible(true);
-          HomeForm homeForm=  new HomeForm() ;
-                homeForm.setVisible(true);
-                homeForm.setUser(nom);
+            // JOptionPane.showMessageDialog(null, "user : "+utilisateur.toString()); 
+        //new splashscreen.SplashScreen(null, true).setVisible(true);
+         EntreeSortieUtilisateur entreeSortieUtilisateur= 
+                 new EntreeSortieUtilisateur(0, utilisateur, LocalDate.now(), LocalTime.now(),null);
+          if(entreeSortieUtilisateurDAOImp.save(entreeSortieUtilisateur)>0){
+              System.out.println("save entreeSortieUtilisateur ");
+          }
+         HomeForm homeForm=  new HomeForm() ;
+          homeForm.setIdUser(utilisateur.getId());
+          homeForm.setNomUserInlab("المستخدم : " +utilisateur.getNom());  
+          homeForm.setVisible(true);
+          
+                
         }else{
             LabError.setText("خـطأ في اسـم المستخدم أو كلمة المرور");
         }
         
     }//GEN-LAST:event_buttonRounder1ActionPerformed
-
+    
     private void txtMotPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMotPassActionPerformed
-         String nom = txtUser.getText();
+          String nom = txtUser.getText();
         String motPass = new String(txtMotPass.getPassword());
         Utilisateur utilisateur  = utilisateurDAOImp.getUtilisateurParNomMotPass(nom , motPass);
+      
         if(utilisateur !=null ){
-            this.dispose();
-            new splashscreen.SplashScreen(null, true).setVisible(true);
-            new HomeForm().setVisible(true);
+           this.dispose();
+        //new splashscreen.SplashScreen(null, true).setVisible(true);
+         EntreeSortieUtilisateur entreeSortieUtilisateur= 
+                 new EntreeSortieUtilisateur(0, utilisateur, LocalDate.now(), LocalTime.now(),null);
+          if(entreeSortieUtilisateurDAOImp.save(entreeSortieUtilisateur)>0){
+              System.out.println("save entreeSortieUtilisateur ");
+          }
+         HomeForm homeForm=  new HomeForm() ;
+          homeForm.setIdUser(utilisateur.getId());
+          homeForm.setNomUserInlab("المستخدم : " +utilisateur.getNom());  
+          homeForm.setVisible(true);
+          
+                
         }else{
             LabError.setText("خـطأ في اسـم المستخدم أو كلمة المرور");
         }

@@ -266,45 +266,46 @@ FROM Entreprise INNER JOIN Versement_Entreprise ON Entreprise.id = Versement_Ent
 		<band height="45" splitType="Stretch"/>
 	</columnFooter>
 	<pageFooter>
-		<band height="54" splitType="Stretch"/>
+		<band height="100" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="0" width="162" height="27" uuid="09e6aa95-e2a3-4a82-97ed-16f1f5f5b5b8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
+		</band>
 	</pageFooter>
 	<summary>
-		<band height="305" splitType="Stretch">
+		<band height="22" splitType="Stretch">
 			<staticText>
-				<reportElement x="502" y="0" width="53" height="20" uuid="a562ab64-3e25-4240-a1b3-70256f64a127"/>
+				<reportElement x="502" y="0" width="53" height="22" uuid="a562ab64-3e25-4240-a1b3-70256f64a127"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[العدد الكلي:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="436" y="0" width="66" height="20" uuid="5f526ece-99d1-43bc-9c6c-bc274ff13e62"/>
+				<reportElement x="436" y="0" width="66" height="22" uuid="5f526ece-99d1-43bc-9c6c-bc274ff13e62"/>
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="116" y="0" width="84" height="20" uuid="018d02dd-0f34-438b-8f7c-044ac9ff3aea"/>
+				<reportElement x="116" y="0" width="84" height="22" uuid="018d02dd-0f34-438b-8f7c-044ac9ff3aea"/>
 				<textElement>
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[الديون المتبقية:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="0" y="0" width="116" height="20" uuid="b7b3526c-d5a3-4154-8be7-e507d2e56afd"/>
+				<reportElement x="0" y="0" width="116" height="22" uuid="b7b3526c-d5a3-4154-8be7-e507d2e56afd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_RESTE_CREDIT}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="49" y="158" width="162" height="27" uuid="09e6aa95-e2a3-4a82-97ed-16f1f5f5b5b8"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true" isUnderline="true"/>
-				</textElement>
-				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>

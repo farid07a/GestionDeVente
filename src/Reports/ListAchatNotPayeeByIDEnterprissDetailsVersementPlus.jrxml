@@ -213,7 +213,7 @@ AND Achat.id NOT IN (
 					<rightPen lineWidth="1.0"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font size="10" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
@@ -297,15 +297,19 @@ AND Achat.id NOT IN (
 			</textField>
 		</band>
 	</detail>
-	<summary>
-		<band height="486" splitType="Stretch">
+	<lastPageFooter>
+		<band height="100">
 			<staticText>
-				<reportElement x="24" y="340" width="162" height="27" uuid="81400dc6-bf3d-44fd-a8b6-8157fbded094"/>
+				<reportElement x="0" y="0" width="162" height="27" uuid="81400dc6-bf3d-44fd-a8b6-8157fbded094"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
 			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="50" splitType="Stretch">
 			<textField>
 				<reportElement x="351" y="0" width="130" height="24" uuid="36bc1a45-382f-4f8f-8508-bc83751b8cdf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -335,14 +339,14 @@ AND Achat.id NOT IN (
 				<textFieldExpression><![CDATA[$V{TOTAL_ACHAT}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="2" y="24" width="127" height="24" uuid="4b5a3fee-1ba5-4b63-a373-b4a55a89d761"/>
+				<reportElement x="2" y="24" width="127" height="26" uuid="4b5a3fee-1ba5-4b63-a373-b4a55a89d761"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TOTAL_ACHAT} - $P{VERSEMENT_PLUS}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="129" y="24" width="145" height="24" uuid="0508d79c-0d6f-4bd2-9db5-e97b9d3495d4"/>
+				<reportElement x="129" y="24" width="145" height="26" uuid="0508d79c-0d6f-4bd2-9db5-e97b9d3495d4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>

@@ -43,7 +43,7 @@ public class ClientDAOImpl extends AbstractDAO<Client> {
         ps.setString(5, entity.getAdresse());
       //  ps.setInt(6, entity.getEntreprise().getId());
       if (entity.getEntreprise() == null) {
-            ps.setNull(6, java.sql.Types.INTEGER);
+            ps.setNull(6, java.sql.Types.INTEGER);//for what ?
         } else {
             ps.setInt(6, entity.getEntreprise().getId());
         }

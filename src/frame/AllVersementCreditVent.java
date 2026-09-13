@@ -81,6 +81,7 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
         double sommeVersement = 0.0;
         double credit = 0.0;
         double sommeAchat=0.0;
+        double sommeAchatNoPay=0.0;
         List<Entreprise> Entreprises = entrepriseDAOImpl.findAll();
         for (Entreprise entreprise : Entreprises) {
             sommeVersement = 0.0;
@@ -95,17 +96,29 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
             
             VersementEntreprise lastVersement = versementEntrepriseDAOImpl.getLastVersementEntreprise(entreprise);
 
-            credit = (lastVersement != null && lastVersement.getReste_credit() > 0) ? lastVersement.getReste_credit() : 0.0;
+            credit = (lastVersement != null) ? lastVersement.getReste_credit() : 0.0;
             List<Achat> achats = achatDAOImpl.getAchatByEntreprise(entreprise);
+           
+           List<Achat> achatsNoPayee =  achatDAOImpl.getAchatNotInTabVersementByEntreprise(entreprise);
             if (achats != null) {
                 sommeAchat = achats.stream()
                     .mapToDouble(Achat::getPrix_total)
                     .sum();
             }
-            model.insertRow(0, new Object[]{entreprise.getId(), 
-                formatter.format(credit),
+            if (achatsNoPayee != null) {
+                sommeAchatNoPay = achatsNoPayee.stream()
+                    .mapToDouble(Achat::getPrix_total)
+                    .sum();
+            }
+            
+            double MontantCredit= (credit>=0)? sommeAchatNoPay+credit : sommeAchatNoPay ;
+                    model.insertRow(0, new Object[]{entreprise.getId(), 
+                formatter.format(MontantCredit),
+                (credit<0)? " + "+formatter.format( credit*-1 ) : formatter.format( credit ),
+                formatter.format(sommeAchatNoPay),
                 formatter.format(sommeAchat),
-                formatter.format(sommeVersement),entreprise.getNom_ar()});
+                formatter.format(sommeVersement),
+                entreprise.getNom_ar()});
             TotalVersement = TotalVersement + sommeVersement;
             TotalCredit = TotalCredit + credit;
             TotalAchat = TotalAchat+sommeAchat;
@@ -126,11 +139,6 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        panRound5 = new ui.card.panRound();
-        LabAugmentations2 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel18 = new javax.swing.JLabel();
         panRound6 = new ui.card.panRound();
         jLabel7 = new javax.swing.JLabel();
         LabAllCreditRest = new javax.swing.JLabel();
@@ -157,59 +165,6 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
         getContentPane().setLayout(new java.awt.CardLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-
-        panRound5.setColor1(new java.awt.Color(255, 255, 255));
-        panRound5.setColor2(new java.awt.Color(224, 248, 237));
-
-        LabAugmentations2.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
-        LabAugmentations2.setForeground(new java.awt.Color(0, 102, 0));
-        LabAugmentations2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        LabAugmentations2.setText("0.00");
-
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-dollar-bag-48.png"))); // NOI18N
-
-        jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 102, 0));
-        jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel6.setText(" الزيـادات ");
-
-        jLabel18.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        jLabel18.setForeground(new java.awt.Color(0, 102, 0));
-        jLabel18.setText("دج");
-
-        javax.swing.GroupLayout panRound5Layout = new javax.swing.GroupLayout(panRound5);
-        panRound5.setLayout(panRound5Layout);
-        panRound5Layout.setHorizontalGroup(
-            panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
-                        .addGap(16, 16, 16))
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addComponent(jLabel18)
-                        .addGap(0, 0, 0)
-                        .addComponent(LabAugmentations2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-        );
-        panRound5Layout.setVerticalGroup(
-            panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound5Layout.createSequentialGroup()
-                .addGroup(panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(panRound5Layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(panRound5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(LabAugmentations2)
-                            .addComponent(jLabel18))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(13, Short.MAX_VALUE))
-        );
 
         panRound6.setColor1(new java.awt.Color(255, 255, 255));
         panRound6.setColor2(new java.awt.Color(255, 237, 231));
@@ -329,7 +284,7 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 51, 153));
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel3.setText(" الـمــبيــعــات");
+        jLabel3.setText("مشتريات الشركات");
 
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(0, 51, 153));
@@ -375,7 +330,7 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
 
             },
             new String [] {
-                "id", "الديون", "اجمالي المبيعات الشركة", "اجمالي المدفوعات", "الشركة"
+                "id", "ديون الشركة", "دين/زيادة", "مشتريات الشركة الغيرمدفوعة", " مشتريات الشركة", "اجمالي المدفوعات", "الشركة"
             }
         ));
         tab.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -414,28 +369,27 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
                         .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(panRound5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(75, 75, 75)
                 .addComponent(panRound6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addGap(45, 45, 45)
                 .addComponent(panRound2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(12, 12, 12)
-                .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(46, 46, 46)
+                .addComponent(panRound1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(134, 134, 134))
             .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 1029, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(20, 20, 20)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(panRound1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panRound2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panRound6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panRound5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(panRound6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(txt_searc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(tableScrollButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 335, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -516,18 +470,14 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LabAchatTotal;
     private javax.swing.JLabel LabAllCreditRest;
-    private javax.swing.JLabel LabAugmentations2;
     private javax.swing.JLabel LabMontanTotal;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
@@ -535,7 +485,6 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
     private javax.swing.JScrollPane jScrollPane1;
     private ui.card.panRound panRound1;
     private ui.card.panRound panRound2;
-    private ui.card.panRound panRound5;
     private ui.card.panRound panRound6;
     private javax.swing.JTable tab;
     private ui.table.TableScrollButton tableScrollButton1;

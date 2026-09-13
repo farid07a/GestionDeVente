@@ -5,6 +5,7 @@
 package frame;
 
 import DialogFram.Exite;
+import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.EntrepriseDAOImpl;
@@ -23,7 +24,7 @@ public class ModifyCompany extends javax.swing.JDialog {
     Connection connection;
     HomeForm homeForm;
     Entreprise entreprise;
-
+    MessageDialog messageDialog;
     public ModifyCompany(java.awt.Frame parent, boolean modal, Entreprise entreprise) {
         super(parent,modal);
         this.homeForm = (HomeForm) parent;
@@ -32,6 +33,7 @@ public class ModifyCompany extends javax.swing.JDialog {
         setLocationRelativeTo(this.homeForm);
 
         connection = DatabaseConnection.getInstance().getConnection();
+        messageDialog = new MessageDialog(this);
         InitUI();
         matricul.requestFocus();
     }
@@ -352,10 +354,13 @@ public class ModifyCompany extends javax.swing.JDialog {
         entreprise.setTel(tel.getText());
         entreprise.setEmail(email.getText());
 
+         messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـتـعـديـل", "هـل أنت متـأكـد الـتـعـديـل");
+        if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
         if (new EntrepriseDAOImpl(connection).update(entreprise) > 0) {
             homeForm.getPan_Entreprise().setEntreprisesOnTab();
             this.dispose();
             new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "نم تعديل الشركة بنجاح ");
+        }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

@@ -5,6 +5,7 @@
 package frame;
 
 import DialogFram.Exite;
+import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.CategorieDAOImpl;
@@ -22,6 +23,7 @@ public class ModifyCategory extends javax.swing.JDialog {
     Connection connection;
     HomeForm homeForm;
     Categorie categorie;
+    MessageDialog messageDialog;
 
     public ModifyCategory(java.awt.Frame parent, boolean modal, Categorie categorie) {
         super(parent, modal);
@@ -30,10 +32,12 @@ public class ModifyCategory extends javax.swing.JDialog {
         setLocationRelativeTo(this.homeForm);
         this.categorie = categorie;
         connection = DatabaseConnection.getInstance().getConnection();
+        messageDialog = new MessageDialog(this);
+
         setCategorie();
 
         txt_nom.requestFocusInWindow();
-        
+
     }
 
     public void setCategorie() {
@@ -196,11 +200,14 @@ public class ModifyCategory extends javax.swing.JDialog {
         categorie.setNomCategorie(txt_nom.getText());
         categorie.setDescription(txt_nomfr.getText());
 
-        if (categorieDAOImpl.update(categorie) > 0) {
-            this.dispose();
-            new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "نم إضافةالـنـوعـيـة بنجاح ");
-            homeForm.getPan_categorie().setCategoriesOnTab();
+        messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـتـعـديـل", "هـل أنت متـأكـد مـن النوعية");
+        if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
+            if (categorieDAOImpl.update(categorie) > 0) {
+                this.dispose();
+                new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "نم تعديل الـنـوعـيـة بنجاح");
+                homeForm.getPan_categorie().setCategoriesOnTab();
 
+            }
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

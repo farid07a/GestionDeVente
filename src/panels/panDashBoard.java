@@ -99,8 +99,8 @@ public class panDashBoard extends javax.swing.JPanel {
 
             List<Achat> achats
                     = achatDAOImpl.getAchatByEntreprise(entreprise);
-//            List<Achat> achatsNoPayee
-//                    = achatDAOImpl.getAchatNotInTabVersementByEntreprise(entreprise);
+            List<Achat> achatsNoPayee
+                    = achatDAOImpl.getAchatNotInTabVersementByEntreprise(entreprise);
             VersementEntreprise lastCredit
                     = versementEntrepriseDAOImpl
                             .getLastVersementEntreprise(entreprise);
@@ -114,19 +114,19 @@ public class panDashBoard extends javax.swing.JPanel {
                     = achats.stream()
                             .mapToDouble(Achat::getPrix_total)
                             .sum();
-//            
-//            double sommeAchatNoPayee
-//                    = achatsNoPayee.stream()
-//                            .mapToDouble(Achat::getPrix_total)
-//                            .sum();
+            
+            double sommeAchatNoPayee
+                    = achatsNoPayee.stream()
+                            .mapToDouble(Achat::getPrix_total)
+                            .sum();
 
 
             double restCredit = 0;
 
-            if (lastCredit != null) {
-                restCredit = lastCredit.getReste_credit();
-                if(restCredit <0){
-                
+            if (lastCredit != null  ) {
+               
+                if(lastCredit.getReste_credit() > 0){
+                  restCredit = lastCredit.getReste_credit()+sommeAchatNoPayee;
                 }
             }
 

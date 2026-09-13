@@ -243,11 +243,11 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         totalAchat.setForeground(new java.awt.Color(0, 0, 153));
         totalAchat.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         totalAchat.setText("0.00");
-        jPanel1.add(totalAchat, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 590, 40, 40));
+        jPanel1.add(totalAchat, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 590, 140, 40));
 
         jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel8.setText("المجموع :");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(240, 590, 110, 40));
+        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 590, 120, 40));
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel3.setText("دج");

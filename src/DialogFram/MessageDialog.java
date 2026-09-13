@@ -116,7 +116,7 @@ public class MessageDialog extends javax.swing.JDialog {
         txt.setText(message);
         setLocationRelativeTo(fram);
         startAnimator(true);
-        cmdOK.setText("نـعـم");
+        cmdOK.setText("نعم");
         cmdCancel.setText("لا");
         setVisible(true);
     }
@@ -170,7 +170,7 @@ public class MessageDialog extends javax.swing.JDialog {
         });
 
         cmdOK.setForeground(new java.awt.Color(255, 255, 255));
-        cmdOK.setText("نــعــم");
+        cmdOK.setText("نعم");
         cmdOK.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         cmdOK.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -179,7 +179,6 @@ public class MessageDialog extends javax.swing.JDialog {
         });
 
         lbIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-point-d'interrogation-emoji-48.png"))); // NOI18N
 
         lbTitle.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         lbTitle.setForeground(new java.awt.Color(245, 71, 71));
@@ -248,17 +247,16 @@ public class MessageDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_cmdCancelActionPerformed
 
     private void cmdOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmdOKActionPerformed
-        
-        if(cmdOK.getText().equals("OK")|cmdOK.getText().equals("Oui")| cmdOK.getText().equals("نـعـم")  ){
-            messageType = MessageType.YES;
+       
+        if( cmdOK.getText().equals("OK")|| cmdOK.getText().equals("Oui")|| cmdOK.getText().equals("نعم")  ){
+            messageType = MessageType.YES;       
         }else{
             messageType = MessageType.CANCEL;
         }
         closeMessage();
     }//GEN-LAST:event_cmdOKActionPerformed
 
-    
-    
+  
     public static enum MessageType {
         CANCEL, OK,YES
     }

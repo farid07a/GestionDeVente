@@ -36,6 +36,7 @@ public class ModifyProduit extends javax.swing.JDialog {
     MessageDialog messageDialog;
     DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));    
     Nomber nomber =new Nomber() ;
+    CategorieDAOImpl categorieDAOImpl; 
     public ModifyProduit(java.awt.Frame parent, boolean modal, Produit produit) {
         super(parent, modal);
         this.homeForm = (HomeForm) parent;
@@ -46,9 +47,10 @@ public class ModifyProduit extends javax.swing.JDialog {
         messageDialog = new MessageDialog(this);
         this.produit = produit;
         connection = DatabaseConnection.getInstance().getConnection();
+        categorieDAOImpl = new  CategorieDAOImpl(connection);
         InitUI();
-
-        txt_nom.requestFocusInWindow();
+        System.out.println("produit catego :"+produit.getCategorie().getNomCategorie()); 
+       txt_nom.requestFocusInWindow();
         txt_catego_aut.setText(produit.getCategorie().getNomCategorie());
 
     }
@@ -65,7 +67,7 @@ public class ModifyProduit extends javax.swing.JDialog {
     }
 
     public void setInfoCategirieOnCombox() {
-        List<Categorie> categories = new CategorieDAOImpl(connection).findAll();
+        List<Categorie> categories = categorieDAOImpl.findAll();
         if (categories != null) {
             List<String> categoryNames = new ArrayList<>();
 
@@ -102,6 +104,8 @@ public class ModifyProduit extends javax.swing.JDialog {
         txt_catego_aut = new ui.autosuggestextefield.AutoSuggestTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -254,6 +258,14 @@ public class ModifyProduit extends javax.swing.JDialog {
         jLabel9.setForeground(new java.awt.Color(255, 0, 0));
         jLabel9.setText("*");
 
+        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel10.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel10.setText("*");
+
+        jLabel11.setFont(new java.awt.Font("Segoe UI", 0, 16)); // NOI18N
+        jLabel11.setForeground(new java.awt.Color(255, 0, 0));
+        jLabel11.setText("*");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -264,15 +276,17 @@ public class ModifyProduit extends javax.swing.JDialog {
                 .addComponent(jLabel2)
                 .addGap(207, 207, 207)
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
                 .addComponent(txt_catego_aut, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(20, 20, 20)
                 .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(447, 447, 447)
+                .addGap(434, 434, 434)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 7, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(253, 253, 253)
@@ -294,25 +308,34 @@ public class ModifyProduit extends javax.swing.JDialog {
                 .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40)
                 .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addContainerGap(165, Short.MAX_VALUE)
+                    .addComponent(jLabel10)
+                    .addGap(348, 348, 348)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(jLabel9)))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel9)
+                    .addComponent(jLabel2))
                 .addGap(0, 0, 0)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(txt_catego_aut, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(9, 9, 9)
-                .addComponent(jLabel5)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(1, 1, 1)
+                                .addComponent(txt_catego_aut, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txt_nom, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel5))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(1, 1, 1)))
                 .addGap(0, 0, 0)
                 .addComponent(txt_qt, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
@@ -332,6 +355,11 @@ public class ModifyProduit extends javax.swing.JDialog {
                     .addComponent(btnCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(30, 30, 30))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGap(41, 41, 41)
+                    .addComponent(jLabel10)
+                    .addContainerGap(301, Short.MAX_VALUE)))
         );
 
         getContentPane().add(jPanel1, "card2");
@@ -361,7 +389,7 @@ public class ModifyProduit extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
 
-        if (txt_nom.getText().isEmpty() || txt_prixVent.getText().isEmpty()) {
+        if (txt_nom.getText().isEmpty() || txt_catego_aut.getText().isEmpty()|| txt_prixVent.getText().isEmpty()) {
             new Exite(this, homeForm).showMessageDialog("خــطـأ", "تأكد من ادخال المـعلـومـات");
             return;
         }
@@ -372,8 +400,12 @@ public class ModifyProduit extends javax.swing.JDialog {
 
         if (!txt_catego_aut.getText().isEmpty()) {
             txt_categ = txt_catego_aut.getText();
-            categorie = new CategorieDAOImpl(connection).getCategorierParName(txt_categ);
-
+            categorie = categorieDAOImpl.getCategorierParName(txt_categ);
+             if(categorie==null){
+                categorie = new Categorie(0, txt_categ, "");
+                categorieDAOImpl.save(categorie);
+                categorie = categorieDAOImpl.getCategorierParName(txt_categ);
+            }
         }
         int qt = Integer.parseInt(txt_qt.getText());
         double prix_achat =nomber.getNbDouble(txt_prix_achat.getText());
@@ -386,15 +418,15 @@ public class ModifyProduit extends javax.swing.JDialog {
         produit.setPrix_vente(prix_vent);
         produit.setQty(qt);
 
-        //   messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـتـعـديـل", "هـل أنت متـأكـد مـن تـعـديـل المــنـتـج");
-        //    if (messageDialog.getMessageType() == MessageDialog.MessageType.OK) {
+           messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـتـعـديـل", "هـل أنت متـأكـد مـن تـعـديـل المــنـتـج");
+            if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
         if (new ProduitDAOImpl(connection).update(produit) > 0) {
             this.dispose();
             validationMessageDialog.showMessage("تـعـديــل", "نم تعديل معلومات المنتح بنجاح");
             homeForm.getPan_produit().setProduitsOnTab();
 
         }
-        //    }
+           }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void txt_catego_autActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_catego_autActionPerformed
@@ -519,6 +551,8 @@ public class ModifyProduit extends javax.swing.JDialog {
     private material.design.buttonRounder btnCancel;
     private material.design.buttonRounder btnSave;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

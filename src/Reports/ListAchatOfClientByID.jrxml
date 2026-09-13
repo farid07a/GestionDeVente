@@ -90,9 +90,9 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 		</band>
 	</title>
 	<pageHeader>
-		<band height="43" splitType="Stretch">
+		<band height="40" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="0" width="555" height="43" uuid="0520b8e1-6c91-497d-8204-050e94fe83e7"/>
+				<reportElement x="0" y="0" width="555" height="40" uuid="0520b8e1-6c91-497d-8204-050e94fe83e7"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -244,43 +244,50 @@ WHERE Client.id = $P{CLIENT_ID}]]>
 			</textField>
 		</band>
 	</detail>
-	<summary>
-		<band height="485" splitType="Stretch">
+	<pageFooter>
+		<band height="83"/>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="100">
 			<staticText>
-				<reportElement x="0" y="0" width="73" height="34" uuid="ebee789b-02d3-486c-9b5a-0573d8cd75ff"/>
+				<reportElement x="0" y="0" width="171" height="34" uuid="226cad8b-7879-48f3-af62-673ede4a68d8"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="37" splitType="Immediate">
+			<staticText>
+				<reportElement x="0" y="0" width="73" height="37" uuid="ebee789b-02d3-486c-9b5a-0573d8cd75ff"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Somme:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="443" y="0" width="45" height="34" uuid="766cd71c-fb06-4adb-bfab-9159ed69d0c2"/>
+				<reportElement x="443" y="0" width="45" height="37" uuid="766cd71c-fb06-4adb-bfab-9159ed69d0c2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="73" y="0" width="121" height="34" uuid="f4bcf19d-24b8-4b61-9133-fa26d666f365"/>
+				<reportElement x="73" y="0" width="121" height="37" uuid="f4bcf19d-24b8-4b61-9133-fa26d666f365"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TotalPrice}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="488" y="0" width="67" height="34" uuid="472d36cb-17de-4330-8eb3-5de89a2a4c74"/>
+				<reportElement x="488" y="0" width="67" height="37" uuid="472d36cb-17de-4330-8eb3-5de89a2a4c74"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="44" y="316" width="162" height="27" uuid="226cad8b-7879-48f3-af62-673ede4a68d8"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true" isUnderline="true"/>
-				</textElement>
-				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>

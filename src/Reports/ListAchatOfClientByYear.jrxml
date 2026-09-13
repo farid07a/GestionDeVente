@@ -239,43 +239,47 @@ WHERE Client.id = $P{CLIENT_ID}
 			</textField>
 		</band>
 	</detail>
-	<summary>
-		<band height="451" splitType="Stretch">
+	<lastPageFooter>
+		<band height="100">
 			<staticText>
-				<reportElement x="0" y="0" width="73" height="34" uuid="ebee789b-02d3-486c-9b5a-0573d8cd75ff"/>
+				<reportElement x="0" y="0" width="162" height="27" uuid="d5b8966f-d9af-4731-a572-7d36dbace197"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
+			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="36" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="73" height="36" uuid="ebee789b-02d3-486c-9b5a-0573d8cd75ff"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Somme:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="443" y="0" width="45" height="34" uuid="766cd71c-fb06-4adb-bfab-9159ed69d0c2"/>
+				<reportElement x="443" y="0" width="45" height="36" uuid="766cd71c-fb06-4adb-bfab-9159ed69d0c2"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="73" y="0" width="121" height="34" uuid="f4bcf19d-24b8-4b61-9133-fa26d666f365"/>
+				<reportElement x="73" y="0" width="121" height="36" uuid="f4bcf19d-24b8-4b61-9133-fa26d666f365"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{TotalPrice}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="488" y="0" width="67" height="34" uuid="472d36cb-17de-4330-8eb3-5de89a2a4c74"/>
+				<reportElement x="488" y="0" width="67" height="36" uuid="472d36cb-17de-4330-8eb3-5de89a2a4c74"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
-			<staticText>
-				<reportElement x="53" y="299" width="162" height="27" uuid="d5b8966f-d9af-4731-a572-7d36dbace197"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font size="16" isBold="true" isUnderline="true"/>
-				</textElement>
-				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
-			</staticText>
 		</band>
 	</summary>
 </jasperReport>

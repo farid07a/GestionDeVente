@@ -176,9 +176,6 @@
               <Font name="Times New Roman" size="16" style="1"/>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnImpActionPerformed"/>
-          </Events>
         </Component>
       </SubComponents>
     </Container>

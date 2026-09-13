@@ -9,6 +9,7 @@ import DialogFram.MessageDialog;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.ProduitDAOImpl;
+import entity.ArchiveSuppression;
 import entity.Categorie;
 import entity.Produit;
 import frame.AddProduit;
@@ -21,6 +22,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -80,8 +82,7 @@ public class pan_produit extends javax.swing.JPanel {
             model.insertRow(0, new Object[]{id,
                 formatter.format(prix_vent),
                 formatter.format(prix_ache),
-                qt, refernce, marque,
-                marque, desg});
+                qt, categorie.getNomCategorie(), desg});
 //            model.addRow(new Object[]{id, prix_vent, prix_ache, qt, refernce, marque,
 //                marque, desg});
         }
@@ -183,7 +184,7 @@ public class pan_produit extends javax.swing.JPanel {
             }
         });
 
-        btnModf2.setBackground(new java.awt.Color(17, 152, 185));
+        btnModf2.setBackground(new java.awt.Color(0, 204, 51));
         btnModf2.setForeground(new java.awt.Color(255, 255, 255));
         btnModf2.setText("زيادة عدد المنتجات ");
         btnModf2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
@@ -198,13 +199,13 @@ public class pan_produit extends javax.swing.JPanel {
         panTopLayout.setHorizontalGroup(
             panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
-                .addGap(100, 100, 100)
+                .addContainerGap(100, Short.MAX_VALUE)
                 .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 113, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addGap(18, 18, Short.MAX_VALUE)
                 .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(btnModf2, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addComponent(btnModf2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -243,11 +244,11 @@ public class pan_produit extends javax.swing.JPanel {
 
             },
             new String [] {
-                "id", "سعر البيع", "سعر الشراء", "العدد", "ref", "النوع", "العلامة التجارية ", "اسم المنتج/desig"
+                "id", "سعر البيع", "سعر الشراء", "الكمية", "النوعية", "اسم المنتج/desig"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -382,6 +383,7 @@ public class pan_produit extends javax.swing.JPanel {
             messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف المنتج");
             if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
                 if (produitDAOImpl.delete(id) > 0) {
+                   new ArchiveSuppression().archiver(produit);
                     validationMessageDialog.showMessage("خــطـأ", "تم حذف المنتج بنجاح");
                     setProduitsOnTab();
                 } else {
@@ -395,7 +397,7 @@ public class pan_produit extends javax.swing.JPanel {
         if (tab.getSelectedRow() != -1) {
             int viewRow = tab.getSelectedRow();
             int row = tab.convertRowIndexToModel(viewRow);
-            int id = (int) tab.getModel().getValueAt(row, 0);
+            int id = (int) tab.getModel().getValueAt(row, 0);  
             Produit produit = produitDAOImpl.findById(id);
             new ModifyProduit(this.homeForm, true, produit).setVisible(true);
 

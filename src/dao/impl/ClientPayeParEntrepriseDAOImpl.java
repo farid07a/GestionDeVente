@@ -82,6 +82,7 @@ public class ClientPayeParEntrepriseDAOImpl extends AbstractDAO<ClientPayeParEnt
         }
         return clientPayeParEntreprises ;
     }
+
      public ClientPayeParEntreprise  getClientPayeeParVersementByAchat(Achat achat) {
         ClientPayeParEntreprise  clientPayeParEntreprise =null;
         try {
@@ -96,6 +97,23 @@ public class ClientPayeParEntrepriseDAOImpl extends AbstractDAO<ClientPayeParEnt
             e.printStackTrace();
         }
         return clientPayeParEntreprise ;
+    }
+     
+     public int deleteVersementEntreprise(int idVersement) {
+
+        String query = "DELETE FROM " +getTableName()+"  WHERE id_versement = ?";
+
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, idVersement);
+
+            return ps.executeUpdate();
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+
+        }
+        return 0;
     }
 
 }

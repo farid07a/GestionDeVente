@@ -287,6 +287,8 @@ public class AddUtilisateur extends javax.swing.JDialog {
         if (utilisateurDAOImp.save(utilisateur) > 0) {
             new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "تم إضافة المستخدم بنجاح ");
             setUtilisqteurInTab();
+          txtNom.setText("");
+          txtMotPass.setText("");
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 

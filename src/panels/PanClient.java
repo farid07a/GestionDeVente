@@ -11,6 +11,7 @@ import Reports.PrintingService;
 import Reports.ReportNames;
 import config.DatabaseConnection;
 import dao.impl.ClientDAOImpl;
+import entity.ArchiveSuppression;
 import entity.Client;
 import frame.AddClient;
 import frame.ModifyClient;
@@ -58,18 +59,17 @@ public class PanClient extends javax.swing.JPanel {
 
     public void print() {
         PrintingService service_print = new PrintingService();
-        
+        Map<String, Object> params1 = new HashMap<>();
         btnImp.addPopupItem("قـائـمـة الـزبـائـن", e -> {
 //            Client client = clientDAOImpl.findById(5);
-//            params.put("CLIENT_ID", client.getId());
-//            params.put("FName", client.getNom());
-//            if (!client.getEntreprise().getNom_fr().isEmpty()) {
-//                params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
+//            params1.put("CLIENT_ID", client.getId());
+//            params1.put("FName", client.getNom());
+//            if (!client.getEntreprise().getNom_ar().isEmpty()) {
+//                params1.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
 //            } else {
-//                params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
+//                params1.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
 //            }
-//
-            Map<String, Object> params1 = new HashMap<>();
+
             service_print.printReport(ReportNames.CLIENT_LIST, params1);
 
         });
@@ -84,7 +84,7 @@ public class PanClient extends javax.swing.JPanel {
                 Client client = clientDAOImpl.findById(id);
                 params.put("CLIENT_ID", client.getId());
                 params.put("FName", client.getNom() + " " + client.getPrenom());
-                if (!client.getEntreprise().getNom_fr().isEmpty()) {
+                if (!client.getEntreprise().getNom_ar().isEmpty()) {
                     params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
                 } else {
                     params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
@@ -210,11 +210,6 @@ public class PanClient extends javax.swing.JPanel {
         btnImp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-print-48.png"))); // NOI18N
         btnImp.setText("طــباعـة التـقـاريــر");
         btnImp.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        btnImp.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnImpActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout panTopLayout = new javax.swing.GroupLayout(panTop);
         panTop.setLayout(panTopLayout);
@@ -407,6 +402,7 @@ public class PanClient extends javax.swing.JPanel {
 
             if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
                 if (clientDAOImpl.delete(id) > 0) {
+                    new ArchiveSuppression().archiver(client);
                     new ValidationMessageDialog(homeForm).showMessage("حـذف", "تم حذف المنتج بنجاح");
                     setClientsOnTab();
 
@@ -459,10 +455,6 @@ public class PanClient extends javax.swing.JPanel {
             lastRow = row;
         }
     }//GEN-LAST:event_tabMouseReleased
-
-    private void btnImpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImpActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnImpActionPerformed
 
     private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
         lab_nbClient.setText(tab.getRowCount()+"");

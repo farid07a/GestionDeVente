@@ -10,12 +10,15 @@ import DialogFram.ValidationMessageDialog;
 import Reports.PrintingService;
 import Reports.ReportNames;
 import config.DatabaseConnection;
+import dao.impl.AchatDAOImpl;
 import dao.impl.EntrepriseDAOImpl;
 import dao.impl.VersementEntrepriseDAOImpl;
+import entity.Achat;
 import entity.Entreprise;
 import entity.VersementEntreprise;
 import frame.AddCompany;
 import frame.AllVersementCreditVent;
+import frame.FactureEntrepriseForm;
 import frame.ModifyCompany;
 import frame.VersementEntrepriseForme;
 import home.HomeForm;
@@ -23,6 +26,7 @@ import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
@@ -39,13 +43,15 @@ public class pan_Entreprise extends javax.swing.JPanel {
     ValidationMessageDialog validationMessageDialog;
     MessageDialog messageDialog;
     Exite exite;
+    AchatDAOImpl achatDAOImpl;
 
     public pan_Entreprise(HomeForm homeForm) {
         this.homeForm = homeForm;
         initComponents();
         connection = DatabaseConnection.getInstance().getConnection();
         entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
-        versementEntrepriseDAOImpl= new VersementEntrepriseDAOImpl(connection);
+        achatDAOImpl = new AchatDAOImpl(connection);
+        versementEntrepriseDAOImpl = new VersementEntrepriseDAOImpl(connection);
         validationMessageDialog = new ValidationMessageDialog(homeForm);
         exite = new Exite(homeForm);
         messageDialog = new MessageDialog(homeForm);
@@ -87,17 +93,76 @@ public class pan_Entreprise extends javax.swing.JPanel {
             int id = (int) tab.getModel().getValueAt(row, 0);
             Entreprise entreprise = entrepriseDAOImpl.findById(id);
             params.put("ENTERPRISE_ID", entreprise.getId());
-            if (!entreprise.getNom_ar().isEmpty()) {
-                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
-            } else {
+            if (!entreprise.getNom_fr().isEmpty()) {
                 params.put("ENTERPRISE_NAME_FR", entreprise.getNom_fr());
+            } else {
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
             }
             service_print.printReport(ReportNames.LIST_OF_CLIENT_BY_ID_ENTERPRISE, params);
 
         });
-        /**
-         * *******************************************************************
-         */
+
+        btnImp.addPopupItem("قـائـمـة  آخر دفعات الشركاتًٌ", e -> {
+
+            params = new HashMap<>();
+            //lAST_VERSEMENT_ENTERPRISES
+            service_print.printReport(ReportNames.LAST_ALL_VERSEMENT_ENTERPRISES, params);
+        });
+        btnImp.addPopupItem("ديون الشركةًٌ", e -> {
+
+            if (tab.getSelectedRow() == -1) {
+                exite.showMessage("تنبيه", "الرجاء اختيار الشركة");
+                return;
+            }
+            double lastcredit = 0;
+            int row = tab.getSelectedRow();
+            int id = (int) tab.getModel().getValueAt(row, 0);
+            Entreprise entreprise = entrepriseDAOImpl.findById(id);
+            VersementEntreprise versementEntreprise = versementEntrepriseDAOImpl.getLastVersementEntreprise(entreprise);
+            lastcredit = (versementEntreprise != null) ? versementEntreprise.getReste_credit() : 0;
+
+            if (lastcredit < 0) {
+                params = new HashMap<>();
+                params.put("ENTERPRISE_ID", entreprise.getId());
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
+                params.put("VERSEMENT_PLUS", lastcredit * -1);
+                service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_VERSEMENT_PLUS, params);
+            } else {
+                params = new HashMap<>();
+                params.put("ENTERPRISE_ID", entreprise.getId());
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
+                params.put("OLD_CREDITE", lastcredit);
+                service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE, params);
+            }
+
+        });
+        btnImp.addPopupItem("ديون الشركة المفصلةًٌ", e -> {
+            if (tab.getSelectedRow() == -1) {
+                exite.showMessage("تنبيه", "الرجاء اختيار الشركة");
+                return;
+            }            
+            double lastcredit = 0;
+            int row = tab.getSelectedRow();
+            int id = (int) tab.getModel().getValueAt(row, 0);
+            Entreprise entreprise = entrepriseDAOImpl.findById(id);
+            VersementEntreprise versementEntreprise = versementEntrepriseDAOImpl.getLastVersementEntreprise(entreprise);
+            lastcredit = (versementEntreprise != null) ? versementEntreprise.getReste_credit() : 0;
+            
+            if (lastcredit < 0) {
+                JOptionPane.showMessageDialog(null, ""+ lastcredit);
+                params = new HashMap<>();
+                params.put("ENTERPRISE_ID", entreprise.getId());
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
+                params.put("VERSEMENT_PLUS", lastcredit*-1 );
+                service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_DETAILS_VERSEMENT_PLUS, params);
+            } else {
+                params = new HashMap<>();
+                params.put("ENTERPRISE_ID", entreprise.getId() );
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar() );
+                params.put( "OLD_CREDITE", lastcredit );
+                service_print.printReport(ReportNames.LIST_ACHAT_NOT_payee_BY_ID_ENTERPRISE_DETAILS, params);
+            }
+        });
 
     }
 
@@ -253,19 +318,16 @@ public class pan_Entreprise extends javax.swing.JPanel {
                 .addGap(99, 99, 99)
                 .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(42, 42, 42)
-                .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 42, Short.MAX_VALUE)
-                .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(144, 144, 144)
+                .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(74, 74, 74)
+                .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(17, 17, 17)
+                .addComponent(btnModf3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
                 .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(40, 40, 40))
-            .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
-                    .addContainerGap(800, Short.MAX_VALUE)
-                    .addComponent(btnModf3, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(320, 320, 320)))
         );
         panTopLayout.setVerticalGroup(
             panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -276,14 +338,10 @@ public class pan_Entreprise extends javax.swing.JPanel {
                         .addComponent(btnModf, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnModf1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnModf3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(9, 9, 9))
-            .addGroup(panTopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panTopLayout.createSequentialGroup()
-                    .addContainerGap(14, Short.MAX_VALUE)
-                    .addComponent(btnModf3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap()))
         );
 
         add(panTop);
@@ -436,9 +494,9 @@ public class pan_Entreprise extends javax.swing.JPanel {
             .addGroup(panButtomLayout.createSequentialGroup()
                 .addGap(97, 97, 97)
                 .addComponent(panRound1, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 112, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 87, Short.MAX_VALUE)
                 .addComponent(btnModf2, javax.swing.GroupLayout.PREFERRED_SIZE, 358, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(26, 26, 26)
+                .addGap(51, 51, 51)
                 .addComponent(buttonRounder1, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(243, 243, 243))
         );
@@ -495,11 +553,11 @@ public class pan_Entreprise extends javax.swing.JPanel {
             int viewRow = tab.getSelectedRow();
             int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
-             System.out.println("ID = " + id);
-            Entreprise entreprise =  entrepriseDAOImpl.findById(id);
+            System.out.println("ID = " + id);
+            Entreprise entreprise = entrepriseDAOImpl.findById(id);
             new VersementEntrepriseForme(this.homeForm, true, entreprise).setVisible(true);
         }
-                                       
+
     }//GEN-LAST:event_btnModf1ActionPerformed
     private int lastRow = -1;
     private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
@@ -525,28 +583,36 @@ public class pan_Entreprise extends javax.swing.JPanel {
     }//GEN-LAST:event_tabMouseReleased
 
     private void buttonRounder1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRounder1ActionPerformed
-        if (tab.getSelectedRow() != -1) {
-             int viewRow = tab.getSelectedRow();
-    int row = tab.convertRowIndexToModel(viewRow);}
+        int viewRow = tab.getSelectedRow();
+        if (viewRow != -1) {
+            int row = tab.convertRowIndexToModel(viewRow);
+            int id = (int) tab.getModel().getValueAt(row, 0);
+            Entreprise entreprise = entrepriseDAOImpl.findById(id);
+            List<Achat> achats = achatDAOImpl.getAchatNotInTabVersementByEntreprise(entreprise);
+
+            new FactureEntrepriseForm(homeForm, true, entreprise, achats).setVisible(true);
+
+        }
     }//GEN-LAST:event_buttonRounder1ActionPerformed
 
     private void btnImpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImpActionPerformed
         if (tab.getSelectedRow() != -1) {
-             int viewRow = tab.getSelectedRow();
-    int row = tab.convertRowIndexToModel(viewRow);}
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
+        }
     }//GEN-LAST:event_btnImpActionPerformed
 
     private void btnModf2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModf2ActionPerformed
-              new AllVersementCreditVent(homeForm, true).setVisible(true);
+        new AllVersementCreditVent(homeForm, true).setVisible(true);
 
     }//GEN-LAST:event_btnModf2ActionPerformed
 
     private void txt_searchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_searchKeyReleased
-         lab_nbVersement.setText(tab.getRowCount()+"");
+        lab_nbVersement.setText(tab.getRowCount() + "");
     }//GEN-LAST:event_txt_searchKeyReleased
 
     private void btnModf3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModf3ActionPerformed
-        // TODO add your handling code here:
+        txt_search.requestFocus();
     }//GEN-LAST:event_btnModf3ActionPerformed
 
 

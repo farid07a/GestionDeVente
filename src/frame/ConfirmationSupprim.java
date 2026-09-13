@@ -26,8 +26,9 @@ public class ConfirmationSupprim extends javax.swing.JDialog {
         existUser = false;
         connection = DatabaseConnection.getInstance().getConnection();
         utilisateurDAOImp = new UtilisateurDAOImp(connection);
-        setLocationRelativeTo(this);
         initComponents();
+        setLocationRelativeTo(this.homeForm);
+
     }
 
     public boolean isExistUser() {
@@ -52,6 +53,7 @@ public class ConfirmationSupprim extends javax.swing.JDialog {
         buttonRounder2 = new material.design.buttonRounder();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setBackground(new java.awt.Color(0, 0, 153));
         setUndecorated(true);
 
         pan_gradiant1.setColor1(new java.awt.Color(1, 1, 86));
@@ -148,16 +150,20 @@ public class ConfirmationSupprim extends javax.swing.JDialog {
     }//GEN-LAST:event_txtMotPassKeyPressed
 
     private void buttonRounder1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRounder1ActionPerformed
-        String motPass = new String(txtMotPass.getPassword());
-        Utilisateur utilisateur1  = utilisateurDAOImp.getUtilisateurParMotPass(motPass);
-        System.out.println(motPass);
-        System.out.println(""+utilisateur1);
-        if(utilisateur1 !=null ){
-            existUser=true;
-            this.dispose();
-        }else{
-            LabError.setText("خـطأ في اسـم المستخدم أو كلمة المرور");
-        }
+       String motPass = String.valueOf(txtMotPass.getPassword());
+
+    Utilisateur utilisateur1 =
+            utilisateurDAOImp.getUtilisateurParMotPass(motPass);
+
+    if (utilisateur1 != null) {
+        existUser = true;
+        dispose();
+    } else {
+        existUser = false;
+        LabError.setText("خـطأ في كلمة المرور");
+        txtMotPass.requestFocus();
+        txtMotPass.selectAll();
+    }
     }//GEN-LAST:event_buttonRounder1ActionPerformed
 
     private void jLabel4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel4MouseClicked

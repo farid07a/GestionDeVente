@@ -10,24 +10,23 @@ import java.util.logging.Logger;
  *
  * @author pc
  */
-public class Utilisateur {
-    private int id;
+public class Utilisateur  extends BaseEntity {
     private String nom;
     private String motPass;   
 
+    public Utilisateur() {
+    }
+
+    public Utilisateur(int id) {
+        super(id);
+    }
+
     public Utilisateur(int id ,String nom, String motPass) {
-        this.id= id;
+       super(id);
         this.nom = nom;
         this.motPass = motPass;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public void setNom(String nom) {
         this.nom = nom;

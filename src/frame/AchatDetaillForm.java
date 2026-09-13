@@ -71,6 +71,8 @@ public class AchatDetaillForm extends javax.swing.JDialog {
             SetTotalAchatInLab();
             affichebtn();
         });
+        
+        
         setInfoClientInLab();
         setAchatDetaillONTab();
 
@@ -81,6 +83,11 @@ public class AchatDetaillForm extends javax.swing.JDialog {
         btnCancel.setVisible(false);
         TableColumn column = tab.getColumnModel().getColumn(0);
         tab.getColumnModel().removeColumn(column);
+        /*** Refactor with farid******/
+        TableColumn column6 = tab.getColumnModel().getColumn(5);
+        column6.setMinWidth(0);
+        column6.setMaxWidth(0);
+        column6.setPreferredWidth(0);
 
     }
 

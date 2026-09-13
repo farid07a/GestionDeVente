@@ -11,6 +11,7 @@ import Reports.PrintingService;
 import Reports.ReportNames;
 import config.DatabaseConnection;
 import dao.impl.AchatDAOImpl;
+import dao.impl.ClientPayeParEntrepriseDAOImpl;
 import dao.impl.EntrepriseDAOImpl;
 import dao.impl.VersementEntrepriseDAOImpl;
 import entity.Achat;
@@ -19,6 +20,7 @@ import entity.Nomber;
 import entity.VersementEntreprise;
 import enums.TableFilter;
 import frame.AllVersementCreditVent;
+import frame.ConfirmationSupprim;
 import frame.DetaillVersementEntrepriceForm;
 import frame.EtatInitialForm;
 import frame.VersementForm;
@@ -58,6 +60,7 @@ public class panVersement extends javax.swing.JPanel {
     DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
     HomeForm homeForm;
     EntrepriseDAOImpl entrepriseDAOImpl;
+    ClientPayeParEntrepriseDAOImpl clientPayeParEntrepriseDAOImpl;
     TableFilter filter;
 
     PrintingService service_print = new PrintingService();
@@ -74,6 +77,7 @@ public class panVersement extends javax.swing.JPanel {
         versementEntrepriseDAOImpl = new VersementEntrepriseDAOImpl(connection);
         entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
         achatDAOImpl = new AchatDAOImpl(connection);
+        clientPayeParEntrepriseDAOImpl = new ClientPayeParEntrepriseDAOImpl(connection);
         validationMessageDialog = new ValidationMessageDialog(homeForm);
         messageDialog = new MessageDialog(homeForm);
         exite = exite = new Exite(homeForm);
@@ -126,7 +130,7 @@ public class panVersement extends javax.swing.JPanel {
         btnImp.addPopupItem("قـائـمـة مـدفـوعـات كل الـشـركـات", e -> {
             params = new HashMap<>();
             //ALL_VERSEMENT_ENTERPRISES
-            service_print.printReport(Reports.ReportNames.ALL_VERSEMENT_ENTERPRISES, null);
+            service_print.printReport(Reports.ReportNames.ALL_VERSEMENT_ENTERPRISES, params);
         });
 
         btnImp.addPopupItem("قـائـمـة مـدفـوعـات كل الـشـركـات لسنة", e -> {
@@ -160,7 +164,7 @@ public class panVersement extends javax.swing.JPanel {
                 entreprise = entrepriseDAOImpl.getEntrepriseParName(nomEntreprise);
             }
             params.put("ENTERPRISE_ID", entreprise.getId());
-            params.put("ENTERPRISE_NAME_FR", (!entreprise.getNom_ar().isEmpty()) ? entreprise.getNom_ar() : entreprise.getNom_fr());
+            params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
             service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISE_BY_ID, params);
 
         });
@@ -191,7 +195,7 @@ public class panVersement extends javax.swing.JPanel {
             params = new HashMap<>();
 
             params.put("ENTERPRISE_ID", entreprise.getId());
-            params.put("ENTERPRISE_NAME_FR", (!entreprise.getNom_fr().isEmpty()) ? entreprise.getNom_fr() : entreprise.getNom_ar());
+            params.put("ENTERPRISE_NAME_FR",   entreprise.getNom_ar());
             params.put("YEAR", Integer.parseInt(year));
 
             service_print.printReport(ReportNames.ALL_VERSEMENT_ENTERPRISE_BY_ID_AND_YEAR, params);
@@ -228,7 +232,7 @@ public class panVersement extends javax.swing.JPanel {
             LocalDate Date = LocalDate.parse(panFilter.getDate(), format_date);
             params = new HashMap<>();
             params.put("ENTERPRISE_ID", entreprise.getId());
-            params.put("ENTERPRISE_NAME_FR", (!entreprise.getNom_fr().isEmpty()) ? entreprise.getNom_fr() : entreprise.getNom_ar());
+            params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
             params.put("DATE_VERSEMENT", java.sql.Date.valueOf(Date));
 
             service_print.printReport(ReportNames.VERSEMENT_ENTERPRISE_BY_ID_AND_DATE, params);
@@ -293,7 +297,8 @@ public class panVersement extends javax.swing.JPanel {
             model.insertRow(0, new Object[]{versementEntreprise.getId(),
                 versementEntreprise.getRemarque(),
                 versementEntreprise.getDate_versement(),
-                CrediteVal,
+                (Credite<0)? "+ " + formatter.format(-1 * Credite):" /",
+                (Credite>=0)? formatter.format(Credite):" /",
                 formatter.format(versementEntreprise.getTotal_credit()),
                 formatter.format(montant),
                 versementEntreprise.getMode_paiement(),
@@ -670,11 +675,11 @@ public class panVersement extends javax.swing.JPanel {
 
             },
             new String [] {
-                "idEntreprise", "المـلاحــضــات", "التاريخ", "ديون المتبقية", "ديون الزبائن", "المبلغ", "نوع الدفع", "الشركة"
+                "idEntreprise", "المـلاحــضــات", "التاريخ", "الزيادة", "الدين المتبقية", "مشتريات الزبائن ", "المبلغ الدفعة", "نوع الدفع", "الشركة"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false, false, false
+                false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -961,7 +966,7 @@ public class panVersement extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labCredit, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+                .addComponent(labCredit, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel17)
                 .addGap(5, 5, 5)
@@ -1004,7 +1009,7 @@ public class panVersement extends javax.swing.JPanel {
                 .addComponent(pan_gradiant6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(pan_gradiant5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -1013,22 +1018,20 @@ public class panVersement extends javax.swing.JPanel {
             .addGroup(panButtomLayout.createSequentialGroup()
                 .addGap(18, 18, 18)
                 .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
             .addGroup(panButtomLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panButtomLayout.createSequentialGroup()
-                        .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(pan_gradiant5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(pan_gradiant6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
             .addGroup(panButtomLayout.createSequentialGroup()
-                .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(pan_gradiant1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(LabNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pan_gradiant1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(LabNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(panButtomLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(pan_gradiant5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(pan_gradiant6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -1093,7 +1096,20 @@ public class panVersement extends javax.swing.JPanel {
                     validationMessageDialog.showMessage("حـذف", "تم حذف دفعة الشركة بنجاح");
                     setVersmentOnTab();
                 } else {
-                    exite.showMessage("خــطـأ", "لا يمكنك حذف دفعة الشركة");
+                     boolean userExist = false;
+                    ConfirmationSupprim confirmationSupprim = new ConfirmationSupprim(homeForm, true);
+                    confirmationSupprim.setVisible(true);
+                    userExist = confirmationSupprim.isExistUser();
+                    if (userExist) {
+                        if ( clientPayeParEntrepriseDAOImpl.deleteVersementEntreprise(id) > 0
+                                && versementEntrepriseDAOImpl.delete(id) > 0) {
+                            validationMessageDialog.showMessage("حـذف", "تم حذف عـمـلـيـة الدفع بنجاح");
+                            setVersmentOnTab();
+                        }
+                    }else{
+                        exite.showMessage("خــطـأ", "لا يمكنك حذف دفعة الشركة");
+
+                    } 
                 }
             }
         }

@@ -259,8 +259,6 @@ public class panAchat extends javax.swing.JPanel {
         labNbEntreprice.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         labNbEntreprice.setText("00");
 
-        jLabel11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-groupe-d&#39;utilisateurs-50.png"))); // NOI18N
-
         jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel12.setForeground(new java.awt.Color(153, 0, 153));
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -287,13 +285,13 @@ public class panAchat extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(11, Short.MAX_VALUE))
         );
         panRound3Layout.setVerticalGroup(
             panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound3Layout.createSequentialGroup()
-                .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panRound3Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(panRound3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -306,7 +304,7 @@ public class panAchat extends javax.swing.JPanel {
                     .addGroup(panRound3Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -606,7 +604,7 @@ public class panAchat extends javax.swing.JPanel {
             .addGroup(panRound1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panButtomLayout = new javax.swing.GroupLayout(panButtom);
@@ -662,14 +660,15 @@ public class panAchat extends javax.swing.JPanel {
                     confirmationSupprim.setVisible(true);
                     userExist = confirmationSupprim.isExistUser();
                     if (userExist) {
-                        if (achatDetailDAOImpl.deleteByAchatId(id) > 0
-                                && achatDAOImpl.delete(id) > 0) {
+                        if ( achatDetailDAOImpl.deleteByAchatId(id) > 0
+                               && achatDAOImpl.delete(id) > 0
+                                 ) {
                             validationMessageDialog.showMessage("حـذف", "تم حذف عـمـلـيـة الـبـيـع بنجاح");
                             setInfoAchatInTab();
+                        }else{
+                        exite.showMessageDialog("تنبيه", "لا يمكنك حذف عملية البيع لانه تم حفضها ضمن عملية دفع المؤسسة");               
                         }
-                    } else {
-                        exite.showMessage("خــطـأ", "لا يمكنك حـذف عـمـلـيـةالـبـيـع  ");
-                    }
+                    } 
                 }
             }
         }

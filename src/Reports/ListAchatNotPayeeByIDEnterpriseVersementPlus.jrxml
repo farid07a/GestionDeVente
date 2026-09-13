@@ -234,15 +234,19 @@ AND Achat.id NOT IN (
 			</textField>
 		</band>
 	</detail>
-	<summary>
-		<band height="486" splitType="Stretch">
+	<lastPageFooter>
+		<band height="100">
 			<staticText>
-				<reportElement x="24" y="340" width="162" height="27" uuid="81400dc6-bf3d-44fd-a8b6-8157fbded094"/>
+				<reportElement x="0" y="0" width="162" height="27" uuid="81400dc6-bf3d-44fd-a8b6-8157fbded094"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[توقيع و ختم صاحب المؤسسة]]></text>
 			</staticText>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band height="50" splitType="Stretch">
 			<textField>
 				<reportElement x="351" y="0" width="130" height="24" uuid="36bc1a45-382f-4f8f-8508-bc83751b8cdf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -265,21 +269,21 @@ AND Achat.id NOT IN (
 				<textFieldExpression><![CDATA[$V{TOATL_ACHAT}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="129" y="0" width="145" height="24" uuid="c47c063e-f43b-49eb-81e8-e8271eb68283"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
+				<reportElement x="129" y="0" width="121" height="24" uuid="c47c063e-f43b-49eb-81e8-e8271eb68283"/>
+				<textElement verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[المبلغ الكلي للمبيعات:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="129" y="24" width="145" height="24" uuid="617a8f39-3dfd-4c46-86fe-b32b292ec431"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement x="129" y="24" width="145" height="26" uuid="617a8f39-3dfd-4c46-86fe-b32b292ec431"/>
+				<textElement verticalAlignment="Middle">
 					<font size="16" isBold="true" isUnderline="true"/>
 				</textElement>
 				<text><![CDATA[المبلغ الاجمالي المستحق:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="2" y="24" width="127" height="24" uuid="af5d5389-f15a-4519-b640-95c3dc68afde"/>
+				<reportElement x="0" y="24" width="129" height="26" uuid="af5d5389-f15a-4519-b640-95c3dc68afde"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="12" isBold="true"/>
 				</textElement>
