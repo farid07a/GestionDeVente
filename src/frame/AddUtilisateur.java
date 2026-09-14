@@ -6,6 +6,7 @@ package frame;
 
 import DialogFram.Exite;
 import DialogFram.MessageDialog;
+import DialogFram.MessageDialog.MessageType;
 import DialogFram.ValidationMessageDialog;
 import config.DatabaseConnection;
 import dao.impl.UtilisateurDAOImp;
@@ -47,7 +48,10 @@ public class AddUtilisateur extends javax.swing.JDialog {
         validationMessageDialog = new ValidationMessageDialog(this, homeForm);
 
         TableColumn column = jTable1.getColumnModel().getColumn(0);
-        jTable1.getColumnModel().removeColumn(column);
+        //jTable1.getColumnModel().removeColumn(column);
+        column.setWidth(0);
+        column.setMaxWidth(0);
+        column.setPreferredWidth(WIDTH);
         setUtilisqteurInTab();
     }
 
@@ -55,9 +59,12 @@ public class AddUtilisateur extends javax.swing.JDialog {
         List<Utilisateur> utilisateurs = utilisateurDAOImp.findAll();
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         model.setRowCount(0);
+
         for (Utilisateur utilisateur : utilisateurs) {
             model.insertRow(0, new Object[]{utilisateur.getId(), utilisateur.getMotPass(),
-                utilisateur.getMotPass()});
+                utilisateur.getMotPass()
+            }
+            );
         }
 
     }
@@ -103,6 +110,11 @@ public class AddUtilisateur extends javax.swing.JDialog {
                 "id", "كلمة المرور", "إسم المستخدم"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         tableScrollButton1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -280,32 +292,44 @@ public class AddUtilisateur extends javax.swing.JDialog {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         if (txtNom.getText().isEmpty() || txtMotPass.getText().isEmpty()) {
-           exite.showMessageDialog("خــطـأ", "الرجاء تأكد من ادخال إسم المستخدم و كلمة المرر");
+            exite.showMessageDialog("خــطـأ", "الرجاء تأكد من ادخال إسم المستخدم و كلمة المرر");
             return;
         }
         Utilisateur utilisateur = new Utilisateur(0, txtNom.getText(), txtMotPass.getText());
         if (utilisateurDAOImp.save(utilisateur) > 0) {
             new ValidationMessageDialog(this, homeForm).showMessage("تأكيد", "تم إضافة المستخدم بنجاح ");
             setUtilisqteurInTab();
-          txtNom.setText("");
-          txtMotPass.setText("");
+            txtNom.setText("");
+            txtMotPass.setText("");
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
         txtNom.setText("");
-        txtMotPass.setText("");              
+        txtMotPass.setText("");
     }//GEN-LAST:event_btnCancelActionPerformed
 
     private void BtnSuppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSuppActionPerformed
+
+        messageDialog.ShowConfirmMessageInDialog("حذف", "هل تريد حذف المستخدم");
+        if (messageDialog.getMessageType() != MessageType.YES) {
+            return;
+        }
+
         DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
         int viewRow = jTable1.getSelectedRow();
         int row = jTable1.convertRowIndexToModel(viewRow);
-        if (row != -1) {
-            model.removeRow(row);
-            setUtilisqteurInTab();
+        if (row == -1) {
+            validationMessageDialog.showMessage("تنبيه", "الرجاء اختيار المستخدم من الجدول");
+            return;
         }
-        
+
+        int id_user = (int) jTable1.getValueAt(row, 0);
+        utilisateurDAOImp.delete(id_user);
+        //model.removeRow(row);
+        setUtilisqteurInTab();
+
+
     }//GEN-LAST:event_BtnSuppActionPerformed
 
     private void txt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searchActionPerformed
@@ -331,6 +355,11 @@ public class AddUtilisateur extends javax.swing.JDialog {
             txtMotPass.requestFocusInWindow();
         }
     }//GEN-LAST:event_txtNomKeyPressed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+
+
+    }//GEN-LAST:event_jTable1MouseClicked
 
     /**
      * @param args the command line arguments
