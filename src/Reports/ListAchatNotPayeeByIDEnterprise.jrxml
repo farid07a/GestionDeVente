@@ -219,7 +219,7 @@ AND Achat.id NOT IN (
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prix_total}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField pattern="dd/MM/yyyy">
 				<reportElement x="0" y="0" width="129" height="41" uuid="0e9d7256-23a2-4d9b-beb6-dee153f6db36"/>
 				<box>
 					<topPen lineWidth="1.0"/>

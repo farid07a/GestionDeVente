@@ -92,6 +92,9 @@ public class Exite extends javax.swing.JDialog {
             animator.setStartFraction(0f);
         }
         this.show = show;
+        // make update for test close
+        if(!show) dispose();
+        
         animator.start();
     }
 

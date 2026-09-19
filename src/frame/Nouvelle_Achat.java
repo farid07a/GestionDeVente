@@ -66,8 +66,8 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     MessageDialog messageDialog;
     ValidationMessageDialog validationMessageDialog;
     Exite exite;
-     PrintingService service_print = new PrintingService();
- Map<String, Object> params = new HashMap<>();
+    PrintingService service_print = new PrintingService();
+    Map<String, Object> params = new HashMap<>();
 
     public Nouvelle_Achat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -81,17 +81,17 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         new designeTable().setDesignTable(tabProduitAchat, jScrollPane3);
 
         new designeTable().SearchTable(tabProduit, txt_searcP);
-       new designeTable().SearchTable(tabProduitAchat, txt_searcProduitAchat);
+        new designeTable().SearchTable(tabProduitAchat, txt_searcProduitAchat);
 
         connection = DatabaseConnection.getInstance().getConnection();
         achatDAOImpl = new AchatDAOImpl(connection);
         clientDAOImpl = new ClientDAOImpl(connection);
         achatDetailDAOImpl = new AchatDetailDAOImpl(connection);
         produitDAOImpl = new ProduitDAOImpl(connection);
-        utilisateurDAOImp= new UtilisateurDAOImp(connection);
+        utilisateurDAOImp = new UtilisateurDAOImp(connection);
         tabProduit.removeColumn(tabProduit.getColumnModel().getColumn(0));
-       tabProduitAchat.removeColumn(tabProduitAchat.getColumnModel().getColumn(0));
-    
+        tabProduitAchat.removeColumn(tabProduitAchat.getColumnModel().getColumn(0));
+
         validationMessageDialog = new ValidationMessageDialog(this, homeForm);
         messageDialog = new MessageDialog(this);
         exite = new Exite(this, homeForm);
@@ -104,16 +104,13 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         setProduitsOnTab();
         setInfoEntreprice();
 
-        
-
 //        TableColumn column1 = tabProduitAchat.getColumnModel().getColumn(0);
 //        tabProduitAchat.getColumnModel().removeColumn(column1);
-
         Clock Clock = new Clock();
         Clock.start(LabTime, labDate);
-        
+
         Utilisateur utilisateur = utilisateurDAOImp.findById(homeForm.getIdUser());
-        jLabel23.setText((utilisateur !=null)? utilisateur.getNom() :  "");
+        jLabel23.setText((utilisateur != null) ? utilisateur.getNom() : "");
         txt_matricul.requestFocus();
 //        
 //        tabProduitAchat.addMouseListener(new MouseAdapter() {
@@ -141,30 +138,30 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 //    });
     }
 
-    public int calculNbProduit(){
-       int nbProduit=0;
+    public int calculNbProduit() {
+        int nbProduit = 0;
         int rowsCount = tabProduitAchat.getModel().getRowCount();
         if (rowsCount > 0) {
             for (int row = 0; row < rowsCount; row++) {
                 int nb = (int) tabProduitAchat.getModel().getValueAt(row, 2);
                 nbProduit = nbProduit + nb;
             }
-        
-            LabNBProduit.setText((nbProduit<10) ? "0"+ nbProduit: nbProduit+"");
 
-    
+            LabNBProduit.setText((nbProduit < 10) ? "0" + nbProduit : nbProduit + "");
+
         } else {
             LabNBProduit.setText("00");
 
         }
         return nbProduit;
     }
+
     public void SetTotalAchatInLab() {
         int rowsCount = tabProduitAchat.getModel().getRowCount();
         if (rowsCount > 0) {
             double prixTotal = 0;
             for (int row = 0; row < rowsCount; row++) {
-                
+
                 double prix = new Nomber().getNbDouble(tabProduitAchat.getModel().getValueAt(row, 1).toString());
                 prixTotal = prixTotal + prix;
             }
@@ -202,27 +199,27 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
             double prix_vent = produit.getPrix_vente();
             int qt = produit.getQty();
             model.insertRow(0, new Object[]{id, formatter.format(prix_vent),
-              produit.getQty() , marque, desg});
+                produit.getQty(), marque, desg});
         }
 
     }
 
     public int getRowById(JTable table, int id) {
 
-    for (int viewRow = 0; viewRow < table.getRowCount(); viewRow++) {
+        for (int viewRow = 0; viewRow < table.getRowCount(); viewRow++) {
 
-        int modelRow = table.convertRowIndexToModel(viewRow);
+            int modelRow = table.convertRowIndexToModel(viewRow);
 
-        Object value = table.getModel().getValueAt(modelRow, 0);
+            Object value = table.getModel().getValueAt(modelRow, 0);
 
-        if (value != null && Integer.parseInt(value.toString()) == id) {
-            return modelRow;
+            if (value != null && Integer.parseInt(value.toString()) == id) {
+                return modelRow;
+            }
         }
+
+        return -1;
     }
 
-    return -1;
-}
-    
     public void saveAchatDetaille(Achat achat, int rowCont) {
         for (int row = 0; row < rowCont; row++) {
 
@@ -247,7 +244,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
             if (achatDetailDAOImpl.save(achatDetail) > 0) {
                 System.out.println("Save Achat Detaill - base ");
             }
-            
+
             UpdateQt(produit, qt);
             setProduitsOnTab();
             homeForm.getPan_produit().setProduitsOnTab();
@@ -267,21 +264,22 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         return exist;
     }
 
-    public void print(){
-               params = new HashMap<>();
-                Achat achat = achatDAOImpl.findLast();
-             Client client = achat.getClient();
-         params = new HashMap<>();
+    public void print() {
+        params = new HashMap<>();
+        Achat achat = achatDAOImpl.findLast();
+        Client client = achat.getClient();
+        params = new HashMap<>();
         params.put("ACHAT_ID", achat.getId());
         params.put("FName", client.getNom() + " " + client.getPrenom());
-        if (!client.getEntreprise().getNom_fr().isEmpty()) {
-            params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
-        } else {
+        if (!client.getEntreprise().getNom_ar().isEmpty()) {
             params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_ar());
+        } else {
+            params.put("ENTERPRISE_NAME_FR", client.getEntreprise().getNom_fr());
         }
-        
+
         service_print.printReport(ReportNames.CLIENT_PURCHASES_BY_ID_ACHAT, params);
-       }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -989,17 +987,18 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void UpdateQt(Produit produit , int Qt){
-             Qt= produit.getQty() - Qt;
-             produit.setQty(Qt);
-            if( produitDAOImpl.update(produit)>0){
-                System.out.println("QT produit update . . . :  "+Qt);
-            }else{
-                System.out.println("No update . . . :  ");
-            } 
+    public void UpdateQt(Produit produit, int Qt) {
+        Qt = produit.getQty() - Qt;
+        produit.setQty(Qt);
+        if (produitDAOImpl.update(produit) > 0) {
+            System.out.println("QT produit update . . . :  " + Qt);
+        } else {
+            System.out.println("No update . . . :  ");
+        }
     }
     private void btnSaveAndImpriActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveAndImpriActionPerformed
         String matricul = txt_matricul.getText();
+        // can get by Form client by setClient no need to reconnect and get client with matricule
         Client client = clientDAOImpl.getClientByMatricul(matricul);
         int rowCont = tabProduitAchat.getModel().getRowCount();
         boolean existClient = true;
@@ -1038,13 +1037,14 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 .trim();
         double prixTotal = Double.parseDouble(cleanValue);
         achat = new Achat(0, client, prixTotal, LocalDate.now());
+        // ? pour verification
         if (!existClient && new ClientDAOImpl(connection).save(client) > 0) {
             client = new ClientDAOImpl(connection).findLast();
             achat.setClient(client);
         }
         messageDialog.ShowConfirmMessageInDialog("حــفـظ", "هـل تريد حفظ عملية البيع ");
         if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
-           //JOptionPane.showConfirmDialog(null, "Yes");
+            //JOptionPane.showConfirmDialog(null, "Yes");
             if (achatDAOImpl.save(achat) > 0) {
                 //JOptionPane.showConfirmDialog(null, "save");
                 System.out.println("save Achat");
@@ -1065,7 +1065,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     }//GEN-LAST:event_txt_searcPActionPerformed
 
     private void tabProduitMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabProduitMouseClicked
-        
+
         if (evt.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(evt)) {
             DefaultTableModel model = (DefaultTableModel) tabProduitAchat.getModel();
             if (tabProduit.getSelectedRow() != -1) {
@@ -1074,12 +1074,12 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 int id = Integer.parseInt(tabProduit.getModel().getValueAt(selectedRow, 0).toString());
                 Produit produit = new ProduitDAOImpl(connection).findById(id);
                 int existProduit = existProduitAchat(produit);
-               int qtproduitTab= (int) tabProduit.getModel().getValueAt(selectedRow, 2);
-               if(qtproduitTab ==0){
-               exite.showMessageDialog("تنبيه", "لا يمكنك اضافة المنتج \n عدد المنتجات =0");
-               return;
-               }
-               if (existProduit == -1) {
+                int qtproduitTab = (int) tabProduit.getModel().getValueAt(selectedRow, 2);
+                if (qtproduitTab == 0) {
+                    exite.showMessageDialog("تنبيه", "لا يمكنك اضافة المنتج \n عدد المنتجات =0");
+                    return;
+                }
+                if (existProduit == -1) {
                     String marque = "";
                     String desg = produit.getDesignation();
                     Categorie categorie = produit.getCategorie();
@@ -1089,10 +1089,10 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                     }
                     double prix_vent = produit.getPrix_vente();
 
-                    model.insertRow(0,new Object[]{id,formatter.format( prix_vent), 1, 
+                    model.insertRow(0, new Object[]{id, formatter.format(prix_vent), 1,
                         formatter.format(prix_vent),
                         marque, desg});
-                    qtproduitTab= produit.getQty()-1;
+                    qtproduitTab = produit.getQty() - 1;
                     tabProduit.getModel().setValueAt(qtproduitTab, selectedRow, 2);
                 } else {
                     int Qt = (int) tabProduitAchat.getModel().getValueAt(existProduit, 2) + 1;
@@ -1100,11 +1100,10 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                     double Prix_total = prixUnitaire * Qt;
                     tabProduitAchat.getModel().setValueAt(Qt, existProduit, 2);
                     tabProduitAchat.getModel().setValueAt(formatter.format(Prix_total), existProduit, 1);
-                    qtproduitTab=produit.getQty()-Qt;
+                    qtproduitTab = produit.getQty() - Qt;
                     tabProduit.getModel().setValueAt(qtproduitTab, selectedRow, 2);
                 }
-                
-                
+
             }
         }
 
@@ -1140,20 +1139,20 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     private void BtnSuppActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSuppActionPerformed
         DefaultTableModel model = (DefaultTableModel) tabProduitAchat.getModel();
         int viewRow = tabProduitAchat.getSelectedRow();
-         if (viewRow == -1) {
-                return;
-          }
-         
+        if (viewRow == -1) {
+            return;
+        }
+
         int row = tabProduitAchat.convertRowIndexToModel(viewRow);
         if (row != -1) {
-           int id =  (int) tabProduitAchat.getModel().getValueAt(row, 0);
-          int qtProduitAchat =  (int) tabProduitAchat.getModel().getValueAt(row, 2);
-          
-          int rowTabProuit= getRowById(tabProduit, id);
-          int qtProduit =  (int) tabProduit.getModel().getValueAt(rowTabProuit, 2);           
-           qtProduit= qtProduit+qtProduitAchat;
-           tabProduit.getModel().setValueAt(qtProduit, rowTabProuit, 2);
-          model.removeRow(row);
+            int id = (int) tabProduitAchat.getModel().getValueAt(row, 0);
+            int qtProduitAchat = (int) tabProduitAchat.getModel().getValueAt(row, 2);
+
+            int rowTabProuit = getRowById(tabProduit, id);
+            int qtProduit = (int) tabProduit.getModel().getValueAt(rowTabProuit, 2);
+            qtProduit = qtProduit + qtProduitAchat;
+            tabProduit.getModel().setValueAt(qtProduit, rowTabProuit, 2);
+            model.removeRow(row);
 
         }
     }//GEN-LAST:event_BtnSuppActionPerformed
@@ -1176,12 +1175,12 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         DefaultTableModel model = (DefaultTableModel) tabProduitAchat.getModel();
         int viewRow = tabProduitAchat.getSelectedRow();
         if (viewRow == -1) {
-                return;
-          }
+            return;
+        }
         int row = tabProduitAchat.convertRowIndexToModel(viewRow);
         int id = (int) tabProduitAchat.getModel().getValueAt(row, 0);
-        int rowTabProuit= getRowById(tabProduit, id);
-       
+        int rowTabProuit = getRowById(tabProduit, id);
+
         if (row != -1) {
             int Qt = (int) tabProduitAchat.getModel().getValueAt(row, 2);
             if (Qt == 1) {
@@ -1192,11 +1191,11 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 double prix_Total_tab = prixUnitair * Qt;
                 tabProduitAchat.getModel().setValueAt(formatter.format(prix_Total_tab), row, 1);
                 tabProduitAchat.getModel().setValueAt(Qt, row, 2);
-                
+
             }
             int qtTabProduit = (int) tabProduit.getModel().getValueAt(rowTabProuit, 2);
-             qtTabProduit=qtTabProduit+1;
-            tabProduit.getModel().setValueAt(qtTabProduit,rowTabProuit, 2);
+            qtTabProduit = qtTabProduit + 1;
+            tabProduit.getModel().setValueAt(qtTabProduit, rowTabProuit, 2);
 
         }
     }//GEN-LAST:event_BtnSupp2ActionPerformed
@@ -1223,7 +1222,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 }
                 double prix_vent = produit.getPrix_vente();
 
-                model.insertRow(0,new Object[]{id, prix_vent, 1, prix_vent,
+                model.insertRow(0, new Object[]{id, prix_vent, 1, prix_vent,
                     marque, desg});
 
             } else {
@@ -1261,7 +1260,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                     }
                     double prix_vent = produit.getPrix_vente();
 
-                    model.insertRow(0,new Object[]{id, prix_vent, 1, prix_vent,
+                    model.insertRow(0, new Object[]{id, prix_vent, 1, prix_vent,
                         marque, desg});
 
                 } else {
@@ -1347,7 +1346,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     }//GEN-LAST:event_tabProduitMouseReleased
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-         String matricul = txt_matricul.getText();
+        String matricul = txt_matricul.getText();
         Client client = clientDAOImpl.getClientByMatricul(matricul);
         int rowCont = tabProduitAchat.getModel().getRowCount();
         boolean existClient = true;

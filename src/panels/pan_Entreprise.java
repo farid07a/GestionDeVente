@@ -93,10 +93,10 @@ public class pan_Entreprise extends javax.swing.JPanel {
             int id = (int) tab.getModel().getValueAt(row, 0);
             Entreprise entreprise = entrepriseDAOImpl.findById(id);
             params.put("ENTERPRISE_ID", entreprise.getId());
-            if (!entreprise.getNom_fr().isEmpty()) {
-                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_fr());
-            } else {
+            if (!entreprise.getNom_ar().isEmpty()) {
                 params.put("ENTERPRISE_NAME_FR", entreprise.getNom_ar());
+            } else {
+                params.put("ENTERPRISE_NAME_FR", entreprise.getNom_fr());
             }
             service_print.printReport(ReportNames.LIST_OF_CLIENT_BY_ID_ENTERPRISE, params);
 
@@ -108,7 +108,7 @@ public class pan_Entreprise extends javax.swing.JPanel {
             //lAST_VERSEMENT_ENTERPRISES
             service_print.printReport(ReportNames.LAST_ALL_VERSEMENT_ENTERPRISES, params);
         });
-        btnImp.addPopupItem("ديون الشركةًٌ", e -> {
+        btnImp.addPopupItem("ديون الشركة", e -> {
 
             if (tab.getSelectedRow() == -1) {
                 exite.showMessage("تنبيه", "الرجاء اختيار الشركة");
@@ -136,7 +136,7 @@ public class pan_Entreprise extends javax.swing.JPanel {
             }
 
         });
-        btnImp.addPopupItem("ديون الشركة المفصلةًٌ", e -> {
+        btnImp.addPopupItem("ديون الشركة المفصلة", e -> {
             if (tab.getSelectedRow() == -1) {
                 exite.showMessage("تنبيه", "الرجاء اختيار الشركة");
                 return;

@@ -9,6 +9,7 @@ import dao.impl.ClientPayeParEntrepriseDAOImpl;
 import entity.Client;
 import entity.ClientPayeParEntreprise;
 import entity.VersementEntreprise;
+import enums.ModePaiement;
 import home.HomeForm;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -55,6 +56,7 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         labNomEntrep.setText(versementEntreprise.getEntreprise().getNom_ar());
         labDatVersement.setText(versementEntreprise.getDate_versement().toString());
         labSommeVersement.setText(formatter.format(versementEntreprise.getMontant()));
+        //JOptionPane.showMessageDialog(null, versementEntreprise.getNumCheque());
         if (versementEntreprise.getReste_credit() < 0) {
             labRestCredit.setText("0.00");
             labAugMantant.setText(formatter.format(versementEntreprise.getReste_credit()));
@@ -62,6 +64,31 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
             labRestCredit.setText(formatter.format(versementEntreprise.getReste_credit()));
             labAugMantant.setText("0.00");
         }
+        
+        //if (versementEntreprise.getMode_paiement()==ModePaiement.CARTE_BANCAIRE)
+        
+        GrpBtn.add(radioCart);
+        GrpBtn.add(radioEsp);
+        GrpBtn.add(radioChequ);
+        radioCart.setSelected(true);
+        ModePaiement mode= ModePaiement.valueOf(versementEntreprise.getMode_paiement());
+        switch(mode)
+        {
+            case CARTE_BANCAIRE:
+                radioCart.setSelected(true);
+                break;
+            case ESPECES:
+                radioEsp.setSelected(true);
+                break;
+            case CHEQUE:
+                radioChequ.setSelected(true);
+                
+                txtNumCheque.setText(versementEntreprise.getNumCheque());
+                break;
+                
+        } 
+          
+            
         setClientPayeeParVersementInTab();
         setLocationRelativeTo(homeForm);
         TableColumn column = tab.getColumnModel().getColumn(0);
@@ -92,6 +119,7 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        GrpBtn = new javax.swing.ButtonGroup();
         jPanel1 = new javax.swing.JPanel();
         panRound4 = new ui.card.panRound();
         tableScrollButton1 = new ui.table.TableScrollButton();
@@ -115,6 +143,11 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        radioEsp = new material.design.RadioButtonCustomAR();
+        radioCart = new material.design.RadioButtonCustomAR();
+        radioChequ = new material.design.RadioButtonCustomAR();
+        txtNumCheque = new material.design.TextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -175,11 +208,11 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
 
-        jPanel1.add(panRound4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 200, 680, 390));
+        jPanel1.add(panRound4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 680, 370));
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
@@ -222,12 +255,12 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jLabel7.setText("تـاريــخ الدفــع  : ");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 100, 27));
+        jLabel7.setText("طريقة الدفع: ");
+        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 80, 30));
 
         labDatVersement.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         labDatVersement.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jPanel1.add(labDatVersement, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 100, 32));
+        jPanel1.add(labDatVersement, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 100, 30));
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel2.setText("المبلغ الزائد لدفعة :");
@@ -265,6 +298,66 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         jLabel11.setText("دج");
         jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 20, 20));
 
+        jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel12.setText("تـاريــخ الدفــع: ");
+        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 100, 30));
+
+        radioEsp.setBackground(new java.awt.Color(51, 204, 0));
+        radioEsp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-cash-40.png"))); // NOI18N
+        radioEsp.setText("نقدا");
+        radioEsp.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        radioEsp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        radioEsp.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioEsp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioEspActionPerformed(evt);
+            }
+        });
+        jPanel1.add(radioEsp, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 90, 35));
+
+        radioCart.setBackground(new java.awt.Color(51, 204, 0));
+        radioCart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-carte-bancaire-40.png"))); // NOI18N
+        radioCart.setText("بطاقة");
+        radioCart.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        radioCart.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        radioCart.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioCart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioCartActionPerformed(evt);
+            }
+        });
+        jPanel1.add(radioCart, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 90, 30));
+
+        radioChequ.setBackground(new java.awt.Color(51, 204, 0));
+        radioChequ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cheque-de-paiement.png"))); // NOI18N
+        radioChequ.setText("صك بريدي");
+        radioChequ.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        radioChequ.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        radioChequ.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        radioChequ.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioChequActionPerformed(evt);
+            }
+        });
+        jPanel1.add(radioChequ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 142, 110, 30));
+
+        txtNumCheque.setForeground(new java.awt.Color(0, 0, 102));
+        txtNumCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtNumCheque.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        txtNumCheque.setLabelText("رقم الحساب البريدي");
+        txtNumCheque.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                txtNumChequeMouseClicked(evt);
+            }
+        });
+        txtNumCheque.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                txtNumChequeKeyTyped(evt);
+            }
+        });
+        jPanel1.add(txtNumCheque, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 180, 40));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -282,6 +375,30 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     private void txt_searchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searchActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchActionPerformed
+
+    private void radioEspActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioEspActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_radioEspActionPerformed
+
+    private void radioCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioCartActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_radioCartActionPerformed
+
+    private void radioChequActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioChequActionPerformed
+        if (radioChequ.isSelected()) {
+            txtNumCheque.requestFocus();
+        }
+    }//GEN-LAST:event_radioChequActionPerformed
+
+    private void txtNumChequeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtNumChequeMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNumChequeMouseClicked
+
+    private void txtNumChequeKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtNumChequeKeyTyped
+        //        if (!Character.isDigit(evt.getKeyChar())) {
+            //            evt.consume();
+            //        }
+    }//GEN-LAST:event_txtNumChequeKeyTyped
 
     /**
      * @param args the command line arguments
@@ -335,9 +452,11 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.ButtonGroup GrpBtn;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -354,9 +473,13 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     private javax.swing.JLabel labRestCredit;
     private javax.swing.JLabel labSommeVersement;
     private ui.card.panRound panRound4;
+    private material.design.RadioButtonCustomAR radioCart;
+    private material.design.RadioButtonCustomAR radioChequ;
+    private material.design.RadioButtonCustomAR radioEsp;
     private javax.swing.JTable tab;
     private ui.table.TableScrollButton tableScrollButton1;
     private javax.swing.JLabel totalAchat;
+    private material.design.TextField txtNumCheque;
     private material.design.SearchTextRound txt_search;
     // End of variables declaration//GEN-END:variables
 }
