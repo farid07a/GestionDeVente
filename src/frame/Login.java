@@ -8,12 +8,15 @@ import dao.impl.EntreeSortieUtilisateurDAOImp;
 import dao.impl.UtilisateurDAOImp;
 import entity.EntreeSortieUtilisateur;
 import entity.Utilisateur;
+import exception.DAOException;
 import home.HomeForm;                   
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import javax.swing.JOptionPane;
+import license.LicenseManager;
+import license.LicenseStatus;
 
 /**
  *
@@ -157,6 +160,7 @@ public class Login extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonRounder1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRounder1ActionPerformed
+       try{
         String nom = txtUser.getText();
         String motPass = new String(txtMotPass.getPassword());
         Utilisateur utilisateur  = utilisateurDAOImp.getUtilisateurParNomMotPass(nom , motPass);
@@ -170,16 +174,17 @@ public class Login extends javax.swing.JDialog {
           if(entreeSortieUtilisateurDAOImp.save(entreeSortieUtilisateur)>0){
               System.out.println("save entreeSortieUtilisateur ");
           }
-         HomeForm homeForm=  new HomeForm() ;
+          HomeForm homeForm=  new HomeForm() ;
           homeForm.setIdUser(utilisateur.getId());
           homeForm.setNomUserInlab("المستخدم : " +utilisateur.getNom());  
           homeForm.setVisible(true);
           
-                
         }else{
             LabError.setText("خـطأ في اسـم المستخدم أو كلمة المرور");
         }
-        
+       }catch(DAOException ex){
+           JOptionPane.showMessageDialog(null, "Error "+ex.getMessage());
+       }
     }//GEN-LAST:event_buttonRounder1ActionPerformed
     
     private void txtMotPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMotPassActionPerformed
@@ -257,7 +262,80 @@ public class Login extends javax.swing.JDialog {
                         System.exit(0);
                     }
                 });
-                dialog.setVisible(true);
+                
+                LicenseManager licenseManager
+                        = new LicenseManager();
+                try {
+                    LicenseStatus status
+                            = licenseManager.validate();
+                    switch (status) {
+                        case TRIAL:
+                            long remaining
+                                    = licenseManager
+                                            .getRemainingDays();
+
+                            /*JOptionPane.showMessageDialog(
+                            null,
+                            "Trial Version\n\n"
+                            + "Remaining days: "
+                            + remaining,
+                            "License",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );*/
+                            dialog.setVisible(true);
+
+                            break;
+
+                        case LICENSED:
+
+                            dialog.setVisible(true);
+                            break;
+
+                        case EXPIRED:
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Your trial period has expired.\n\n"
+                                    + "Please contact the administrator.",
+                                    "Trial Expired",
+                                    JOptionPane.WARNING_MESSAGE
+                            );
+
+                            System.exit(0);
+
+                            break;
+
+                        case TAMPERED:
+
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Invalid license or system date detected.\n\n"
+                                    + "Please contact the administrator.",
+                                    "License Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+
+                            System.exit(0);
+
+                            break;
+                    }
+
+                } catch (Exception e) {
+
+                    e.printStackTrace();
+
+                    JOptionPane.showMessageDialog(
+                            null,
+                            "Unable to start application.\n\n"
+                            + e.getMessage(),
+                            "Application Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+
+                    System.exit(1);
+                }
+                
+                //dialog.setVisible(true);
             }
         });
     }

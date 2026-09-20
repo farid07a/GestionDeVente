@@ -43,7 +43,7 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
 
         } catch (SQLException e) {
 
-    e.printStackTrace();
+    //e.printStackTrace();
 
     throw new DAOException(
             "Erreur lors de l'enregistrement dans la table "
@@ -66,7 +66,7 @@ public abstract class AbstractDAO<T> implements GenericDAO<T> {
             return ps.executeUpdate();
 
         } catch (SQLException e) {
-            throw new DAOException("Erreur lors de l'enregistrement dans la table " + getTableName(), e);
+            throw new DAOException("Erreur lors de l'Update dans la table " + getTableName(), e);
         }
 
     }

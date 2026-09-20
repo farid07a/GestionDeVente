@@ -144,6 +144,11 @@ public class EtatInitialForm extends javax.swing.JDialog {
         textMontantVersement.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         textMontantVersement.setText("00.00");
         textMontantVersement.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        textMontantVersement.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                textMontantVersementFocusGained(evt);
+            }
+        });
         textMontantVersement.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textMontantVersementActionPerformed(evt);
@@ -362,6 +367,11 @@ public class EtatInitialForm extends javax.swing.JDialog {
         TxtCreditRest.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         TxtCreditRest.setText("00.00");
         TxtCreditRest.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
+        TxtCreditRest.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                TxtCreditRestFocusGained(evt);
+            }
+        });
         TxtCreditRest.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 TxtCreditRestActionPerformed(evt);
@@ -612,6 +622,25 @@ public class EtatInitialForm extends javax.swing.JDialog {
     private void txtNumChequeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumChequeActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNumChequeActionPerformed
+
+    private void textMontantVersementFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textMontantVersementFocusGained
+    
+        if (textMontantVersement.getText().equals("00.00") 
+                || textMontantVersement.getText().equals("00")
+                || textMontantVersement.getText().equals("0")){
+            textMontantVersement.setText("");
+        }
+    }//GEN-LAST:event_textMontantVersementFocusGained
+
+    private void TxtCreditRestFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_TxtCreditRestFocusGained
+        // TODO add your handling code here:
+        if (TxtCreditRest.getText().equals("00.00") 
+                || TxtCreditRest.getText().equals("00")
+                || TxtCreditRest.getText().equals("0")){
+            TxtCreditRest.setText("");
+        }
+        
+    }//GEN-LAST:event_TxtCreditRestFocusGained
 
     /**
      * @param args the command line arguments

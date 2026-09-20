@@ -37,14 +37,14 @@ public class Main {
                             licenseManager
                                     .getRemainingDays();
 
-                    JOptionPane.showMessageDialog(
+                    /*JOptionPane.showMessageDialog(
                             null,
                             "Trial Version\n\n"
                             + "Remaining days: "
                             + remaining,
                             "License",
                             JOptionPane.INFORMATION_MESSAGE
-                    );
+                    );*/
 
                     openApplication();
 

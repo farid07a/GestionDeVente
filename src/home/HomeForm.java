@@ -9,12 +9,15 @@ import entity.EntreeSortieUtilisateur;
 import entity.Utilisateur;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
+import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import license.LicenseManager;
+import license.LicenseStatus;
 import panels.panDashBoard;
 import panels.pan_Entreprise;
 import panels.PanClient;
@@ -43,10 +46,12 @@ public class HomeForm extends javax.swing.JFrame {
     panSetting panSetting;
     MessageDialog messageDialog;
     ValidationMessageDialog validationMessageDialog;
+    Clock Clock;
 
     public HomeForm() {
         // pan_produit = new pan_produit(this);
         initComponents();
+      
         pan_client = new PanClient(this);
         pan_Entreprise = new pan_Entreprise(this);
         pan_produit = new pan_produit(this);
@@ -104,15 +109,16 @@ public class HomeForm extends javax.swing.JFrame {
                     case 10:
                         messageDialog.ShowConfirmMessageInFrame("إغــلاق", "هـل تـريـد غـلاق الـبـرنـامـج");
                         if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
-                            Connection connection = DatabaseConnection.getInstance().getConnection();
-                            int id = Integer.parseInt(LabIdUser.getText());
-                            Utilisateur utilisateur = new UtilisateurDAOImp(connection).findById(id);
-                            EntreeSortieUtilisateurDAOImp entreeSortieUtilisateurDAOImp = new EntreeSortieUtilisateurDAOImp(connection);
-                            EntreeSortieUtilisateur esu = entreeSortieUtilisateurDAOImp.findLast();
-                            esu.setHeureSortie(LocalTime.now());
-                            entreeSortieUtilisateurDAOImp.update(esu);
-
-                            dispose();
+//                            Connection connection = DatabaseConnection.getInstance().getConnection();
+//                            int id = Integer.parseInt(LabIdUser.getText());
+//                            Utilisateur utilisateur = new UtilisateurDAOImp(connection).findById(id);
+//                            EntreeSortieUtilisateurDAOImp entreeSortieUtilisateurDAOImp = new EntreeSortieUtilisateurDAOImp(connection);
+//                            EntreeSortieUtilisateur esu = entreeSortieUtilisateurDAOImp.findLast();
+//                            esu.setHeureSortie(LocalTime.now());
+//                            entreeSortieUtilisateurDAOImp.update(esu);
+//                            
+//                            dispose();
+                            formWindowClosing(null);
                         }
                         break;
                     default:
@@ -121,7 +127,7 @@ public class HomeForm extends javax.swing.JFrame {
             }
         });
 
-        Clock Clock = new Clock();
+        Clock = new Clock();
         Clock.start(LabTime, labDate);
     }
 
@@ -320,65 +326,236 @@ public class HomeForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-
+        
     }//GEN-LAST:event_formWindowClosed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        Connection connection = DatabaseConnection.getInstance().getConnection();
-        int id = Integer.parseInt(LabIdUser.getText());
-        Utilisateur utilisateur = new UtilisateurDAOImp(connection).findById(id);
-        EntreeSortieUtilisateurDAOImp entreeSortieUtilisateurDAOImp = new EntreeSortieUtilisateurDAOImp(connection);
-        EntreeSortieUtilisateur esu = entreeSortieUtilisateurDAOImp.findLast();
-        esu.setHeureSortie(LocalTime.now());
-        entreeSortieUtilisateurDAOImp.update(esu);
+//        Connection connection = DatabaseConnection.getInstance().getConnection();
+//        int id = Integer.parseInt(LabIdUser.getText());
+//        Utilisateur utilisateur = new UtilisateurDAOImp(connection).findById(id);
+//        EntreeSortieUtilisateurDAOImp entreeSortieUtilisateurDAOImp = new EntreeSortieUtilisateurDAOImp(connection);
+//        EntreeSortieUtilisateur esu = entreeSortieUtilisateurDAOImp.findLast();
+//        esu.setHeureSortie(LocalTime.now());
+//        entreeSortieUtilisateurDAOImp.update(esu);
+//        Clock.stop();
+//        System.exit(0);
+
+            System.out.println("1 - windowClosing");
+            //JOptionPane.showMessageDialog(null, "1 - windowClosing");
+            try {
+
+                Connection connection =
+                        DatabaseConnection.getInstance().getConnection();
+
+                System.out.println("2 - connection");
+                //JOptionPane.showMessageDialog(null, "2 - connection");
+
+                int id = Integer.parseInt(LabIdUser.getText());
+
+                Utilisateur utilisateur =
+                        new UtilisateurDAOImp(connection).findById(id);
+
+                System.out.println("3 - findById");
+               // JOptionPane.showMessageDialog(null, "3 - findById");
+
+                EntreeSortieUtilisateurDAOImp dao =
+                        new EntreeSortieUtilisateurDAOImp(connection);
+
+                EntreeSortieUtilisateur esu =
+                        dao.findLast();
+
+                System.out.println("4 - findLast");
+                //JOptionPane.showMessageDialog(null, "4 - findLast");
+
+                if (esu != null) {
+                    esu.setHeureSortie(LocalTime.now());
+                    dao.update(esu);
+                }
+
+                System.out.println("5 - update");
+                //JOptionPane.showMessageDialog(null, "5 - update");
+
+                Clock.stop();
+
+                System.out.println("6 - timer stopped");
+                //JOptionPane.showMessageDialog(null, "6 - timer stopped");
+
+            } catch (HeadlessException | NumberFormatException e) {
+                //JOptionPane.showMessageDialog(null, "HeadlessException "+e.getMessage());
+                //e.printStackTrace();
+                
+                
+            }catch(Exception ex){
+                //JOptionPane.showMessageDialog(null, "Exception "+ex.getMessage());
+            } finally {
+
+                System.out.println("7 - EXIT");
+                //JOptionPane.showMessageDialog(null, "7 - EXIT");
+
+                System.exit(0);
+            }
+        
     }//GEN-LAST:event_formWindowClosing
 
+    
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                // new splashscreen.SplashScreen(null, true).setVisible(true);
-                new HomeForm().setVisible(true);
-            }
-        });
+        new HomeForm().setVisible(true);
+        
     }
+//    System.out.println("APPLICATION START");
+//
+//    try {
+//        for (javax.swing.UIManager.LookAndFeelInfo info
+//                : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//
+//            if ("Nimbus".equals(info.getName())) {
+//                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                break;
+//            }
+//        }
+//
+//    } catch (Exception ex) {
+//        ex.printStackTrace();
+//    }
+//
+//    java.awt.EventQueue.invokeLater(new Runnable() {
+//        public void run() {
+//
+//            LicenseManager licenseManager = new LicenseManager();
+//
+//            try {
+//                LicenseStatus status = licenseManager.validate();
+//
+//                switch (status) {
+//
+//                    case TRIAL:
+//                    case LICENSED:
+//                        new HomeForm().setVisible(true);
+//                        break;
+//
+//                    case EXPIRED:
+//                    case TAMPERED:
+//                        System.exit(0);
+//                        break;
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                System.exit(1);
+//            }
+//        }
+//    });
+//}
+    
+/*****************************************************************************/
+    
+
+
+
+//    public static void main(String args[]) {
+//        /* Set the Nimbus look and feel */
+//        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+//        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+//         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+//         */
+//        try {
+//            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+//                if ("Nimbus".equals(info.getName())) {
+//                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+//                    break;
+//                }
+//            }
+//        } catch (ClassNotFoundException ex) {
+//            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (InstantiationException ex) {
+//            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (IllegalAccessException ex) {
+//            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+//            java.util.logging.Logger.getLogger(HomeForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+//        }
+//        //</editor-fold>
+//
+//        java.awt.EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                // new splashscreen.SplashScreen(null, true).setVisible(true);
+//
+//                LicenseManager licenseManager
+//                        = new LicenseManager();
+//                try {
+//                    LicenseStatus status
+//                            = licenseManager.validate();
+//                    switch (status) {
+//                        case TRIAL:
+//                            long remaining
+//                                    = licenseManager
+//                                            .getRemainingDays();
+//
+//                            /*JOptionPane.showMessageDialog(
+//                            null,
+//                            "Trial Version\n\n"
+//                            + "Remaining days: "
+//                            + remaining,
+//                            "License",
+//                            JOptionPane.INFORMATION_MESSAGE
+//                    );*/
+//                            new HomeForm().setVisible(true);
+//
+//                            break;
+//
+//                        case LICENSED:
+//
+//                            new HomeForm().setVisible(true);
+//                            break;
+//
+//                        case EXPIRED:
+//
+//                            JOptionPane.showMessageDialog(
+//                                    null,
+//                                    "Your trial period has expired.\n\n"
+//                                    + "Please contact the administrator.",
+//                                    "Trial Expired",
+//                                    JOptionPane.WARNING_MESSAGE
+//                            );
+//
+//                            System.exit(0);
+//
+//                            break;
+//
+//                        case TAMPERED:
+//
+//                            JOptionPane.showMessageDialog(
+//                                    null,
+//                                    "Invalid license or system date detected.\n\n"
+//                                    + "Please contact the administrator.",
+//                                    "License Error",
+//                                    JOptionPane.ERROR_MESSAGE
+//                            );
+//
+//                            System.exit(0);
+//
+//                            break;
+//                    }
+//
+//                } catch (Exception e) {
+//
+//                    e.printStackTrace();
+//
+//                    JOptionPane.showMessageDialog(
+//                            null,
+//                            "Unable to start application.\n\n"
+//                            + e.getMessage(),
+//                            "Application Error",
+//                            JOptionPane.ERROR_MESSAGE
+//                    );
+//
+//                    System.exit(1);
+//                }
+//
+//                //new HomeForm().setVisible(true);
+//            }
+//        });
+//    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel LabIdUser;

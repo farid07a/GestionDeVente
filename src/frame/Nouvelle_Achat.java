@@ -68,7 +68,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     Exite exite;
     PrintingService service_print = new PrintingService();
     Map<String, Object> params = new HashMap<>();
-
+    Clock Clock;
     public Nouvelle_Achat(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         this.homeForm = (HomeForm) parent;
@@ -106,7 +106,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
 
 //        TableColumn column1 = tabProduitAchat.getColumnModel().getColumn(0);
 //        tabProduitAchat.getColumnModel().removeColumn(column1);
-        Clock Clock = new Clock();
+        Clock = new Clock();
         Clock.start(LabTime, labDate);
 
         Utilisateur utilisateur = utilisateurDAOImp.findById(homeForm.getIdUser());
@@ -1403,6 +1403,15 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    @Override
+    public void dispose() {
+        if(Clock !=null){
+            Clock.stop();
+        }
+        super.dispose(); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -1531,5 +1540,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     public TextFieldRound getTxt_tel() {
         return txt_tel;
     }
-
+    
+    
+    
 }

@@ -24,15 +24,8 @@ public class Clock {
                     new SimpleDateFormat("HH:mm:ss");
     SimpleDateFormat dateFormat =
     new SimpleDateFormat("EEEE yyyy/MM/dd", new Locale("ar", "DZ"));
-
-//            SimpleDateFormat dateFormat =
-//                    new SimpleDateFormat("EEEE dd/MM/yyyy", new Locale("ar"));
-
-//             "EEEE dd MMMM yyyy",
-//        new Locale("ar")
             lblTime.setText(timeFormat.format(now));
             lblDate.setText(dateFormat.format(now));
-
         });
 
         timer.setInitialDelay(0);

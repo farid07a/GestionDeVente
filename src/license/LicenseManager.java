@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 
 public class LicenseManager {
 
-    private static final int DEFAULT_TRIAL_DAYS = 15;
+    private static final int DEFAULT_TRIAL_DAYS = 25;
 
     private LicenseConfig config;
 

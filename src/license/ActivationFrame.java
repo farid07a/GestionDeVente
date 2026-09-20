@@ -51,7 +51,7 @@ public class ActivationFrame extends JFrame {
             
             add(panel);
             
-            btnActivate.addActionListener(e -> activate());
+           // btnActivate.addActionListener(e -> activate());
         } catch (Exception ex) {
             Logger.getLogger(ActivationFrame.class.getName()).log(Level.SEVERE, null, ex);
         }
