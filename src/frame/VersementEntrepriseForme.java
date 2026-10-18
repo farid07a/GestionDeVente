@@ -199,8 +199,6 @@ public class VersementEntrepriseForme extends javax.swing.JDialog {
         LabAugmentations2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabAugmentations2.setText("0.00");
 
-        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-dollar-bag-48.png"))); // NOI18N
-
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 102, 0));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

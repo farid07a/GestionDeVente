@@ -29,6 +29,7 @@ import java.util.Locale;
 import javax.swing.ButtonGroup;
 import javax.swing.table.DefaultTableModel;
 import material.design.designeTable;
+import org.apache.poi.ss.usermodel.Row;
 import services.serviceVersementEntreprise;
 
 public class VersementForm extends javax.swing.JDialog {
@@ -83,7 +84,7 @@ public class VersementForm extends javax.swing.JDialog {
 
     public double calculeCreditApresVersement() {
         if (textMontantVersement.getText().isEmpty()) {
-            textMontantVersement.setText(0.00 + "");
+            textMontantVersement.setText(00.00 + "");
         }
 //        double prixVersement = new Nomber().getNbDouble(textMontantVersement.getText());
 //        double prixCredit = new Nomber().getNbDouble(labCreditAvanVersement.getText());
@@ -189,13 +190,13 @@ public class VersementForm extends javax.swing.JDialog {
             progressBarLastCredit.setValue(progress);
 
         } else {
-            
+
             labCreditLsatVersemnt.setText(formatter.format(00));
             labCreditAchatVersement.setText(formatter.format(PrixTotalCredit));
             labAguLsatVersemnt.setText(formatter.format(restCreditLastVersemet * -1));
-           // -500+200 = -300
-            prixVersementCreditAugm = PrixTotalCredit ;//+ restCreditLastVersemet;
-           
+            // -500+200 = -300
+            prixVersementCreditAugm = PrixTotalCredit;//+ restCreditLastVersemet;
+
             labTotal.setText(formatter.format(PrixTotalCredit));
 
             progress = (int) (((prixVersementCreditAugm) / prixVersementCreditAugm) * 100);
@@ -258,11 +259,11 @@ public class VersementForm extends javax.swing.JDialog {
 
         double lastCredit = new Nomber().getNbDouble(labCreditLsatVersemnt.getText());
         double Credit = new Nomber().getNbDouble(labTotalAchats.getText());
-      
+
         double CreditNewAndLast = lastCredit + Credit;
 
         double restCridetApreVersement = CreditNewAndLast - montantAndAug; // +100 ent-->credi عند دين مؤسسة// -100 ---> بزيادة
-       
+
         String numCheque = txtNumCheque.getText();
         ModePaiement mode_paiement = getModePaiement();
 
@@ -380,6 +381,7 @@ public class VersementForm extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -515,12 +517,12 @@ public class VersementForm extends javax.swing.JDialog {
                 .addGap(22, 22, 22)
                 .addComponent(jLabel17)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labCredit_avec_versment, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labCredit_avec_versment, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addGap(5, 5, 5)
                 .addComponent(jLabel28)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pan_gradiant1Layout.setVerticalGroup(
             pan_gradiant1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -563,12 +565,12 @@ public class VersementForm extends javax.swing.JDialog {
                 .addGap(51, 51, 51)
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labAug_avec_versment, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labAug_avec_versment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(jLabel11)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         pan_gradiant5Layout.setVerticalGroup(
             pan_gradiant5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -898,9 +900,14 @@ public class VersementForm extends javax.swing.JDialog {
 
         textMontantVersement.setForeground(new java.awt.Color(0, 0, 0));
         textMontantVersement.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textMontantVersement.setText("0.00");
+        textMontantVersement.setText("00.00");
         textMontantVersement.setFont(new java.awt.Font("Times New Roman", 1, 30)); // NOI18N
         textMontantVersement.setSelectionColor(new java.awt.Color(255, 0, 0));
+        textMontantVersement.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                textMontantVersementFocusGained(evt);
+            }
+        });
         textMontantVersement.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 textMontantVersementActionPerformed(evt);
@@ -1062,33 +1069,31 @@ public class VersementForm extends javax.swing.JDialog {
                 .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(panRound25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(220, 220, 220)
-                        .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(140, 140, 140)
-                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(28, 28, 28)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(panRound25, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(panRound24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panRound23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(panRound22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(panRound21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(pan_gradiant1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(pan_gradiant5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                        .addComponent(panRound24, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panRound23, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(panRound22, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(panRound21, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(pan_gradiant5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(pan_gradiant1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(pantab, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(78, 78, 78))
+                .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(75, 75, 75)
+                .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(163, 163, 163)
+                .addComponent(pantab, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1117,14 +1122,14 @@ public class VersementForm extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(pan_gradiant1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(pan_gradiant5, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(pantab, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
+                    .addComponent(pan_gradiant5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_annuler, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_save, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(pantab, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(20, 20, 20))
         );
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -1137,6 +1142,15 @@ public class VersementForm extends javax.swing.JDialog {
         if (comboboxRound1.getSelectedIndex() != -1) {
             String nomEntreprise = comboboxRound1.getSelectedItem().toString();
             Entreprise entreprise = entrepriseDAOImpl.getEntrepriseParName(nomEntreprise);
+
+//             VersementEntreprise lastVersementSpecial = versementEntrepriseDAOImpl.getLastVersementSpeciale(entreprise);         
+//             
+//            if(lastVersementSpecial!= null && versementEntrepriseDAOImpl.getEtat(lastVersementSpecial).equals("non") && this.isVisible() ){
+//                exite.showMessageDialog("تنبيه", "لا يمكنك تسجيل دفعة لهذه الشركة \n لم يتم تسجيل أو تحديد آخر دفعة استثنائية من الدفعات الاستثنائية المحفوظة\n للبدأ بتسجيل الدفعات العادية");
+//               comboboxRound1.setSelectedIndex(-1);
+//               initItems();
+//               return;
+//            }
             setAchatNotVersementInTablByEntreprise(entreprise);
 
         } else {
@@ -1151,7 +1165,7 @@ public class VersementForm extends javax.swing.JDialog {
     private void btn_saveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_saveActionPerformed
         double montant = new Nomber().getNbDouble(textMontantVersement.getText());
         double achatAcredit = new Nomber().getNbDouble(labCreditAchatVersement.getText());
-        double lestCredit = new Nomber().getNbDouble( labCreditLsatVersemnt.getText());
+        double lestCredit = new Nomber().getNbDouble(labCreditLsatVersemnt.getText());
 //        if (achatAcredit>0) {
 //            exite.showMessageDialog("تـنـبـيه", "لا يمكنك تسجيل الدفع لأن الشركة ليس لها ديون");
 //            return;
@@ -1168,24 +1182,60 @@ public class VersementForm extends javax.swing.JDialog {
             exite.showMessageDialog("تـنـبـيه", "الـرجـاء إخـتـيـار الـشركـة الـمـعنـيـة بالـدفـع");
             return;
         }
-                if (achatAcredit==0 && lestCredit ==0) {
+        if (achatAcredit == 0 && lestCredit == 0) {
             exite.showMessageDialog("تـنـبـيه", "لا يمكنك تسجيل الدفع لأن الشركة ليس لها ديون");
             return;
         }
-        
+
         if (radioChequ.isSelected() && txtNumCheque.getText().isEmpty()) {
             exite.showMessageDialog("تـنـبـيه", "الرجاء إدخال رقم الصـك البريدي");
             return;
         }
-        messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـدفـع", "هـل أنت متـأكـد مـن عـمـلـية الـدفـع");
-        if (messageDialog.getMessageType() == MessageDialog.MessageType.CANCEL) {
-            return;
-        }
+
         montant = new Nomber().getNbDouble(textMontantVersement.getText());
         String nomEntreprise = comboboxRound1.getSelectedItem().toString();
         Entreprise entreprise = entrepriseDAOImpl.getEntrepriseParName(nomEntreprise);
-        saveVersement(entreprise); // save versement+ Save ClientPayeeParEntreprise  
-        System.out.println("Save New Versement :" + nomEntreprise + "  montant : " + montant);
+
+        VersementEntreprise lastVersementSpecial = versementEntrepriseDAOImpl.getLastVersementSpeciale(entreprise);
+        VersementEntreprise lastVersement = versementEntrepriseDAOImpl.findLast();
+        String etat="";
+        
+        if(lastVersementSpecial!=null ){etat= versementEntrepriseDAOImpl.getEtat(lastVersementSpecial);}
+       //|| (lastVersementSpecial != null && etat.equals("oui") )
+       
+        if ((lastVersementSpecial != null && etat.equals("non"))){          
+            messageDialog.ShowConfirmMessageInDialog("إنهاء مرحلة الدفعات الاستثنائية و تـأكـيد الدفع",
+                    "سيتم إنهاء مرحلة الدفعات الاستثنائية وحفظ الدفعة الحالية\n بعدها لن تتمكن من إضافة دفعات استثنائية أخرى لهذه الشركة ");          
+            if( messageDialog.getMessageType() == MessageDialog.MessageType.YES){
+                versementEntrepriseDAOImpl.setEtat(lastVersementSpecial, "oui");
+                saveVersement(entreprise);
+                return;
+            }else{
+                return;
+            }        
+        }
+        
+        if (lastVersementSpecial == null && lastVersement == null) {
+            messageDialog.ShowConfirmMessageInDialog("إنهاء مرحلة الدفعات الاستثنائية و تـأكـيد الدفع", "لا توجد دفعات استثنائية لهذه الشركة،\n سيتم إنهاء مرحلة الدفعات الاستثنائية وحفظ الدفعة الحالية،\n وبعدها لن تتمكن من إضافة دفعات استثنائية أخرى لهذه الشركة.");
+         if( messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
+             saveVersement(entreprise); 
+             return;
+         }else{
+                return;
+            }
+        }
+        
+        if (lastVersement != null) {
+            messageDialog.ShowConfirmMessageInDialog("تـأكـيد الـدفـع", "هـل أنت متـأكـد مـن عـمـلـية الـدفـع");
+             if( messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
+             saveVersement(entreprise); 
+             return;
+         }else{
+                return;
+            }
+        }
+       
+     //   System.out.println("Save New Versement :" + nomEntreprise + "  montant : " + montant);
 
     }//GEN-LAST:event_btn_saveActionPerformed
 
@@ -1204,7 +1254,6 @@ public class VersementForm extends javax.swing.JDialog {
     }//GEN-LAST:event_radioChequActionPerformed
 
     private void textMontantVersementKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textMontantVersementKeyReleased
-
         calculeCreditApresVersement();
     }//GEN-LAST:event_textMontantVersementKeyReleased
 
@@ -1251,6 +1300,14 @@ public class VersementForm extends javax.swing.JDialog {
 //            evt.consume();
 //        }
     }//GEN-LAST:event_txtNumChequeKeyTyped
+
+    private void textMontantVersementFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textMontantVersementFocusGained
+        if (textMontantVersement.getText().equals("00.00")
+                || textMontantVersement.getText().equals("00")
+                || textMontantVersement.getText().equals("0")) {
+            textMontantVersement.setText("");
+        }
+    }//GEN-LAST:event_textMontantVersementFocusGained
 
     /**
      * @param args the command line arguments

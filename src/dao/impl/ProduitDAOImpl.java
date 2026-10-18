@@ -117,5 +117,23 @@ public class ProduitDAOImpl extends AbstractDAO<Produit> {
         return produit;
 
     }
+    
+    public Produit getProduitForInit(String nomProduit ,String marque){
+         Produit produit = null;
+      try{
+                    String query = "SELECT * FROM " + getTableName() + " WHERE designation =? AND marque=? ";
+                    PreparedStatement statement = connection.prepareStatement(query);
+                    statement.setString(1,nomProduit);
+                    statement.setString(2, marque);
+                    ResultSet resultSet = statement.executeQuery();
+                    if (resultSet.next()) {
+                        produit = mapResultSetToEntity(resultSet);
+                    }
+             
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return produit;
+    }
 
 }

@@ -28,6 +28,7 @@ public class AchatDAOImpl extends AbstractDAO<Achat> {
     protected String getTableName() {
         return "Achat";
     }
+
     // Achat
     @Override
     protected String getInsertQuery() {
@@ -114,16 +115,17 @@ public class AchatDAOImpl extends AbstractDAO<Achat> {
         return achats;
 
     }
+
     public List<Achat> getAchatNotInTabVersement() {
         List<Achat> achats = new ArrayList<>();
         try {
 
             String query = "SELECT * FROM " + getTableName() + " "
-        + "WHERE id NOT IN ( "
-        + "    SELECT id_achat "
-        + "    FROM Client_Paye_Par_Entreprise "
-        + "    WHERE id_achat IS NOT NULL"
-        + ")";
+                    + "WHERE id NOT IN ( "
+                    + "    SELECT id_achat "
+                    + "    FROM Client_Paye_Par_Entreprise "
+                    + "    WHERE id_achat IS NOT NULL"
+                    + ")";
 
             PreparedStatement statement = connection.prepareStatement(query);
             ResultSet resultSet = statement.executeQuery();
@@ -137,37 +139,58 @@ public class AchatDAOImpl extends AbstractDAO<Achat> {
         return achats;
 
     }
-    
-      public List<Achat> getAchatByEntreprise(Entreprise entreprise) {
 
-    List<Achat> list = new ArrayList<>();
+    public List<Achat> getAchatByEntreprise(Entreprise entreprise) {
 
-    String query =
-            "SELECT a.* " +
-            "FROM Achat AS a " +
-            "INNER JOIN Client AS c ON a.id_client = c.id " +
-            "WHERE c.id_entreprise = ? " +
-            "ORDER BY a.id ASC";
+        List<Achat> list = new ArrayList<>();
 
-    try (PreparedStatement ps = connection.prepareStatement(query)) {
+        String query
+                = "SELECT a.* "
+                + "FROM Achat AS a "
+                + "INNER JOIN Client AS c ON a.id_client = c.id "
+                + "WHERE c.id_entreprise = ? "
+                + "ORDER BY a.id ASC";
 
-        ps.setInt(1, entreprise.getId());
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
 
-        try (ResultSet rs = ps.executeQuery()) {
+            ps.setInt(1, entreprise.getId());
 
-            while (rs.next()) {
-                list.add(mapResultSetToEntity(rs));
+            try ( ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next()) {
+                    list.add(mapResultSetToEntity(rs));
+                }
             }
+
+        } catch (SQLException e) {
+            throw new DAOException(
+                    "Erreur lors de récupération des achats de l'entreprise.",
+                    e);
         }
 
-    } catch (SQLException e) {
-        throw new DAOException(
-                "Erreur lors de récupération des achats de l'entreprise.",
-                e );
+        return list;
     }
 
-    return list;
-}
-    
+    public List<Achat> getAchatSpecial(String nomClients) {
+        List<Achat> achats = new ArrayList<>();
+        try {
 
+            String query = " SELECT *FROM Achat "
+                    + " INNER JOIN Client "
+                    + " ON Achat.id_client = Client.id "
+                    + " WHERE Client.nom = ? ";
+
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, nomClients);
+            ResultSet resultSet = ps.executeQuery();
+            while (resultSet.next()) {
+                Achat achat = mapResultSetToEntity(resultSet);
+                achats.add(achat);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return achats;
+
+    }
 }

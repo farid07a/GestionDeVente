@@ -70,7 +70,7 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
     @Override
     protected VersementEntreprise mapResultSetToEntity(ResultSet rs) throws SQLException {
 
-        Entreprise entreprise = new EntrepriseDAOImpl(connection ).findById(rs.getInt("id_entreprise"));
+        Entreprise entreprise = new EntrepriseDAOImpl(connection).findById(rs.getInt("id_entreprise"));
 
         return new VersementEntreprise(
                 rs.getInt("id"),
@@ -85,178 +85,398 @@ public class VersementEntrepriseDAOImpl extends AbstractDAO<VersementEntreprise>
         );
 
     }
-    
+
     public VersementEntreprise getLastVersementEntreprise(Entreprise entreprise) {
 
-    VersementEntreprise versementEntreprise = null;
+        VersementEntreprise versementEntreprise = null;
 
-    String query = "SELECT * FROM " + getTableName()
-            + " WHERE  id_entreprise  = ? "
-            + " ORDER BY id DESC";
+        String query = "SELECT * FROM " + getTableName()
+                + " WHERE  id_entreprise  = ? "
+                + " ORDER BY id DESC";
+
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, entreprise.getId());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                versementEntreprise = mapResultSetToEntity(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération du dernier versement.", e);
+        }
+
+        return versementEntreprise;
+    }
+
+    public List<VersementEntreprise> getLastVersementParEntreprises() {
+
+        List<VersementEntreprise> list = new ArrayList<>();
+
+        String query
+                = "SELECT * FROM Versement_Entreprise "
+                + "WHERE id IN ("
+                + "SELECT MAX(id) FROM Versement_Entreprise "
+                + "GROUP BY id_entreprise"
+                + ")";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapResultSetToEntity(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException(
+                    "Erreur lors de la récupération des derniers versements pour chaque entreprise.", e);
+        }
+
+        return list;
+    }
+
+    public List<VersementEntreprise> getVersementEntrepriseByIdEntreprise(Entreprise entreprise) {
+
+        List<VersementEntreprise> list = new ArrayList<>();
+
+        String query
+                = "SELECT * FROM Versement_Entreprise "
+                + " WHERE  id_entreprise = ?  ";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setInt(1, entreprise.getId());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapResultSetToEntity(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public List<Object[]> getSommeVesementGroupByEntreprise() {
+
+        List<Object[]> list = new ArrayList<>();
+
+        String query
+                = "SELECT e.id, e.nom_ar, "
+                + "COALESCE(SUM(v.montant), 0) AS total_montant "
+                + "FROM Entreprise e "
+                + "LEFT JOIN Versement_Entreprise v "
+                + "ON e.id = v.id_entreprise "
+                + "GROUP BY e.id, e.nom_ar "
+                + "ORDER BY e.id ASC";
+
+        try ( PreparedStatement ps = connection.prepareStatement(query);  ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+
+                list.add(new Object[]{
+                    rs.getInt("id"),
+                    rs.getString("nom_ar"),
+                    rs.getDouble("total_montant")
+                });
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException(
+                    "Erreur lors de récupération du total des versements.",
+                    e
+            );
+        }
+
+        return list;
+    }
+
+    public List<VersementEntreprise> getVersementEntrepriseByEntrepriseAndYearAndMonth(
+            Entreprise entreprise, int mois, int annee) {
+
+        List<VersementEntreprise> list = new ArrayList<>();
+
+        String query
+                = "SELECT * FROM Versement_Entreprise "
+                + "WHERE id_entreprise = ? "
+                + "AND YEAR(date_versement) = ? "
+                + "AND MONTH(date_versement) = ? "
+                + "ORDER BY date_versement DESC";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setInt(1, entreprise.getId());
+            ps.setInt(2, mois);
+            ps.setInt(3, annee);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapResultSetToEntity(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public List<VersementEntreprise> getVersementEntrepriseByEntrepriseAndYear(
+            Entreprise entreprise, int annee) {
+
+        List<VersementEntreprise> list = new ArrayList<>();
+
+        String query
+                = "SELECT * FROM Versement_Entreprise "
+                + "WHERE id_entreprise = ? "
+                + "AND YEAR(date_versement) = ? "
+                + "ORDER BY date_versement DESC";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(query);
+
+            ps.setInt(1, entreprise.getId());
+            ps.setInt(2, annee);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(mapResultSetToEntity(rs));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
+    public VersementEntreprise getLastVersementSpeciale(Entreprise entreprise) {
+        VersementEntreprise versementEntreprise = null;
+
+        String query = "SELECT TOP 1 * FROM Versement_Entreprise "
+                + " WHERE id_entreprise = ? "
+                + " AND (etat = 'oui' OR  etat = 'non' ) "
+                + " ORDER BY id DESC ";
+
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, entreprise.getId());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                versementEntreprise = mapResultSetToEntity(rs);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new DAOException("Erreur lors de la récupération du LastVersementSpeciale", e);
+        }
+
+        return versementEntreprise;
+
+    }
+
+    public VersementEntreprise getPreviousVersementEntreprise(VersementEntreprise versement) {
+        VersementEntreprise versementEntreprise = null;
+        String query = "SELECT TOP 1 * FROM Versement_Entreprise "
+                + " WHERE id_entreprise = ? AND id < ? "
+                + " ORDER BY id DESC";
+
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, versement.getEntreprise().getId());
+            ps.setInt(2, versement.getId());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                versementEntreprise = mapResultSetToEntity(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération du PreviousVersementEntreprise ", e);
+        }
+
+        return versementEntreprise;
+
+    }
+    
+    public VersementEntreprise getNextVersementEntreprise(VersementEntreprise versement) {
+        VersementEntreprise versementEntreprise = null;
+        String query = "SELECT TOP 1 * FROM Versement_Entreprise "
+                + " WHERE id_entreprise = ? AND id > ? "
+                + " ORDER BY id ASC";
+
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+
+            ps.setInt(1, versement.getEntreprise().getId());
+            ps.setInt(2, versement.getId());
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                versementEntreprise = mapResultSetToEntity(rs);
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération du PreviousVersementEntreprise ", e);
+        }
+
+        return versementEntreprise;
+
+    }
+
+   public List<VersementEntreprise> getALLNextVersementsEntreprise( VersementEntreprise versement) {
+
+    List<VersementEntreprise> versements = new ArrayList<>();
+
+    String query = "SELECT * FROM Versement_Entreprise "
+            + "WHERE id_entreprise = ? AND id > ? "
+            + "ORDER BY id ASC";
 
     try (PreparedStatement ps = connection.prepareStatement(query)) {
 
-        ps.setInt(1, entreprise.getId());
+        ps.setInt(1, versement.getEntreprise().getId());
+        ps.setInt(2, versement.getId());
 
-        ResultSet rs = ps.executeQuery();
+        try (ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
 
-        if (rs.next()) {
-            versementEntreprise = mapResultSetToEntity(rs);
-        }
-
-    } catch (SQLException e) {
-        throw new DAOException("Erreur lors de la récupération du dernier versement.", e);
-    }
-
-    return versementEntreprise ;
-}
-    
-    public List<VersementEntreprise> getLastVersementParEntreprises() {
-
-    List<VersementEntreprise> list = new ArrayList<>();
-
-    String query =
-            "SELECT * FROM Versement_Entreprise " +
-            "WHERE id IN (" +
-            "SELECT MAX(id) FROM Versement_Entreprise " +
-            "GROUP BY id_entreprise" +
-            ")";
-
-    try {
-        PreparedStatement ps = connection.prepareStatement(query);
-    
-         ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            list.add(mapResultSetToEntity(rs));
+                VersementEntreprise v = mapResultSetToEntity(rs);
+                versements.add(v);
+            }
         }
 
     } catch (SQLException e) {
         throw new DAOException(
-                "Erreur lors de la récupération des derniers versements pour chaque entreprise.", e);
+                "Erreur lors de la récupération des versements suivants", e);
     }
 
-    return list;
+    return versements;
 }
+   
+
+    public void  setEtat(VersementEntreprise versementEntreprise , String etat){
     
-    public List<VersementEntreprise> getVersementEntrepriseByIdEntreprise(Entreprise entreprise) {
+         String query = " UPDATE  Versement_Entreprise  " 
+                        + " SET etat =?   WHERE id =?  ";
+         
+         try ( PreparedStatement ps = connection.prepareStatement(query)) {
 
-    List<VersementEntreprise> list = new ArrayList<>();
+            ps.setString(1, etat);
+            ps.setInt(2, versementEntreprise.getId());
+            ps.executeUpdate();
 
-    String query =
-            "SELECT * FROM Versement_Entreprise " +
-            " WHERE  id_entreprise = ?  ";
+              
+    
+    } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la modification de l'état du versement", e);
+   }
+      
+    }
+    
+    public String getEtat(VersementEntreprise versementEntreprise) {
+        String query = " SELECT etat FROM Versement_Entreprise "
+                + " WHERE id  = ? ";
+        String etat = "";
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
 
-    try {
-         PreparedStatement ps = connection.prepareStatement(query);
-         ps.setInt(1, entreprise.getId());
-         ResultSet rs = ps.executeQuery();
+            ps.setInt(1, versementEntreprise.getId());
 
-        while (rs.next()) {
-            list.add(mapResultSetToEntity(rs));
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                etat=rs.getString("etat");
+            }
+
+        } catch (SQLException e) {
+            throw new DAOException( "Erreur lors de la récupération de l'état du versement", e);
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
+        return etat;
 
-    return list;
-}
+    }
      
-     public List<Object[]> getSommeVesementGroupByEntreprise(){
+    public List< VersementEntreprise>  getAllVersementSpecialeByEntreprise(Entreprise entreprise) {
+       List< VersementEntreprise> versementEntreprises =new ArrayList<>() ;
+        String query = "SELECT  * FROM Versement_Entreprise "
+                + " WHERE id_entreprise = ? "
+                + " AND ( etat = 'oui' OR  etat = 'non')  " ;
 
-    List<Object[]> list = new ArrayList<>();
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
 
-    String query =
-            "SELECT e.id, e.nom_ar, " +
-            "COALESCE(SUM(v.montant), 0) AS total_montant " +
-            "FROM Entreprise e " +
-            "LEFT JOIN Versement_Entreprise v " +
-            "ON e.id = v.id_entreprise " +
-            "GROUP BY e.id, e.nom_ar " +
-            "ORDER BY e.id ASC";
+            ps.setInt(1, entreprise.getId());
 
-    try (PreparedStatement ps = connection.prepareStatement(query);
-         ResultSet rs = ps.executeQuery()) {
+            ResultSet rs = ps.executeQuery();
 
-        while (rs.next()) {
+            while (rs.next()) {            
+                versementEntreprises.add(mapResultSetToEntity(rs));
+            }
 
-            list.add(new Object[]{
-                rs.getInt("id"),
-                rs.getString("nom_ar"),
-                rs.getDouble("total_montant")
-            });
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération du List VersementSpeciale", e);
         }
 
-    } catch (SQLException e) {
-        throw new DAOException(
-                "Erreur lors de récupération du total des versements.",
-                e
-        );
+        return versementEntreprises;
+
     }
-
-    return list;
-}
- 
-     public List<VersementEntreprise> getVersementEntrepriseByEntrepriseAndYearAndMonth(
-        Entreprise entreprise, int mois,int annee) {
-
-    List<VersementEntreprise> list = new ArrayList<>();
-
-    String query =
-            "SELECT * FROM Versement_Entreprise " +
-            "WHERE id_entreprise = ? " +
-            "AND YEAR(date_versement) = ? " +
-            "AND MONTH(date_versement) = ? " +
-            "ORDER BY date_versement DESC";
-
-    try {
-        PreparedStatement ps = connection.prepareStatement(query);
-
-        ps.setInt(1, entreprise.getId());
-        ps.setInt(2, mois);
-        ps.setInt(3, annee);
-
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            list.add(mapResultSetToEntity(rs));
-        }
-
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return list;
-}
     
-     public List<VersementEntreprise> getVersementEntrepriseByEntrepriseAndYear(
-        Entreprise entreprise, int annee) {
+    public List< VersementEntreprise>  getAllVersementSpeciale() {
+       List< VersementEntreprise> versementEntreprises =new ArrayList<>() ;
+        String query = "SELECT  * FROM Versement_Entreprise "
+                + " WHERE  etat = 'oui' OR  etat = 'non'  " ;
 
-    List<VersementEntreprise> list = new ArrayList<>();
+        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+        
+            ResultSet rs = ps.executeQuery();
 
-    String query =
-            "SELECT * FROM Versement_Entreprise " +
-            "WHERE id_entreprise = ? " +
-            "AND YEAR(date_versement) = ? " +
-            "ORDER BY date_versement DESC";
+            while (rs.next()) {            
+                versementEntreprises.add(mapResultSetToEntity(rs));
+            }
 
-    try {
-        PreparedStatement ps = connection.prepareStatement(query);
-
-        ps.setInt(1, entreprise.getId());
-        ps.setInt(2, annee);
-
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-            list.add(mapResultSetToEntity(rs));
+        } catch (SQLException e) {
+            throw new DAOException("Erreur lors de la récupération du List VersementSpeciale", e);
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
+        return versementEntreprises;
 
-    return list;
-}
+    }
+  
+    
+     //    public VersementEntreprise getLastVersementSpeciale_Etat(Entreprise entreprise) {
+//        VersementEntreprise versementEntreprise = null;
+//        String query = "SELECT TOP 1 * FROM Versement_Entreprise "
+//                + " WHERE id_entreprise = ? "
+//                + " AND etat IS NOT NULL "
+//                + " AND etat <> '' "
+//                + " ORDER BY id DESC ";
+//
+//        try ( PreparedStatement ps = connection.prepareStatement(query)) {
+//
+//            ps.setInt(1, entreprise.getId());
+//
+//            ResultSet rs = ps.executeQuery();
+//
+//            if (rs.next()) {
+//                versementEntreprise = mapResultSetToEntity(rs);
+//            }
+//
+//        } catch (SQLException e) {
+//            throw new DAOException("Erreur lors de la récupération du LastVersementSpeciale", e);
+//        }
+//
+//        return versementEntreprise;
+//
+//    }
+    
 }

@@ -27,6 +27,7 @@ import panels.PanProduitCategorie;
 import panels.panAchat;
 import panels.panSetting;
 import panels.panVersement;
+import panels.panVersementSpecialAchat;
 import services.Clock;
 import ui.menufr.EventMenuSelected;
 
@@ -44,6 +45,8 @@ public class HomeForm extends javax.swing.JFrame {
     panAchat panAchat;
     panVersement panVersement;
     panSetting panSetting;
+    panDashBoard panDashBoard;
+    panVersementSpecialAchat panVersementSpecialAchat; 
     MessageDialog messageDialog;
     ValidationMessageDialog validationMessageDialog;
     Clock Clock;
@@ -59,8 +62,11 @@ public class HomeForm extends javax.swing.JFrame {
         panAchat = new panAchat(this);
         panVersement = new panVersement(this);
         pan_produit_categorie = new PanProduitCategorie(pan_produit, pan_categorie);
+        panDashBoard= new panDashBoard();
         panSetting = new panSetting(this);
+        panVersementSpecialAchat= new panVersementSpecialAchat(this);
         messageDialog = new MessageDialog(this);
+        
         validationMessageDialog = new ValidationMessageDialog(this);
 
         setExtendedState(MAXIMIZED_BOTH);
@@ -75,38 +81,42 @@ public class HomeForm extends javax.swing.JFrame {
                 switch (index) {
                     case 0:
                         setForm(new panDashBoard());
+//                        panDashBoard.setInfoInChartBar();
+//                        panDashBoard.getcostumChart().setData2();
                         break;
                     case 2:
                         setForm(pan_Entreprise);
                         pan_Entreprise.setEntreprisesOnTab();
-
                         break;
                     case 3:
+                        setForm(panVersementSpecialAchat);
+                        panVersementSpecialAchat.setAchatSpecialOnTab();                        
+
+                        break;
+                    case 4:
                         setForm(pan_client);
                         pan_client.setClientsOnTab();
                         break;
-                    case 4:
+                    case 5:
                         setForm(pan_produit_categorie);
                         pan_produit_categorie.getPan_produit().setProduitsOnTab();
                         pan_produit_categorie.getPan_categorie().setCategoriesOnTab();
 
                         break;
-                    case 6:
+                    case 7:
                         setForm(panAchat);
                         panAchat.setInfoAchatInTab();
 
                         break;
-                    case 7:
+                    case 8:
                         setForm(panVersement);
                         panVersement.setVersmentOnTab();
                         break;
-                    case 8:
-
-                        break;
-                    case 9:
+                    
+                    case 10:
                         setForm(panSetting);
                         break;
-                    case 10:
+                    case 11:
                         messageDialog.ShowConfirmMessageInFrame("إغــلاق", "هـل تـريـد غـلاق الـبـرنـامـج");
                         if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
 //                            Connection connection = DatabaseConnection.getInstance().getConnection();
@@ -157,6 +167,9 @@ public class HomeForm extends javax.swing.JFrame {
         body.revalidate();
     }
 
+    public panDashBoard getPanDashBoard() {
+        return panDashBoard;
+    }
     public pan_produit getPan_produit() {
         return pan_produit;
     }
@@ -180,6 +193,12 @@ public class HomeForm extends javax.swing.JFrame {
     public panVersement getPanVersement() {
         return panVersement;
     }
+    
+    public  panVersementSpecialAchat getpanVersementSpecialAchat() {
+        return panVersementSpecialAchat;
+    }
+    
+    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -201,7 +220,6 @@ public class HomeForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(1000, 700));
-        setPreferredSize(new java.awt.Dimension(900, 600));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosed(java.awt.event.WindowEvent evt) {
                 formWindowClosed(evt);

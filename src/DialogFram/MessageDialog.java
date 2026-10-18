@@ -179,6 +179,7 @@ public class MessageDialog extends javax.swing.JDialog {
         });
 
         lbIcon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbIcon.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-pointinterrogation.png"))); // NOI18N
 
         lbTitle.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         lbTitle.setForeground(new java.awt.Color(245, 71, 71));
@@ -200,7 +201,7 @@ public class MessageDialog extends javax.swing.JDialog {
                 .addComponent(cmdCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(cmdOK, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(txt)
+            .addComponent(txt, javax.swing.GroupLayout.PREFERRED_SIZE, 388, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(lbTitle, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(background1Layout.createSequentialGroup()
                 .addGap(41, 41, 41)
@@ -214,9 +215,9 @@ public class MessageDialog extends javax.swing.JDialog {
                 .addComponent(lbIcon, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
                 .addComponent(lbTitle)
-                .addGap(13, 13, 13)
-                .addComponent(txt, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txt, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(background1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(cmdOK, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(cmdCancel, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))

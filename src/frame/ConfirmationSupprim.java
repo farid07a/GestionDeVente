@@ -61,7 +61,6 @@ public class ConfirmationSupprim extends javax.swing.JDialog {
 
         txtMotPass.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         txtMotPass.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtMotPass.setText("000000");
         txtMotPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtMotPassActionPerformed(evt);
@@ -80,7 +79,7 @@ public class ConfirmationSupprim extends javax.swing.JDialog {
         pan_gradiant1.add(jLabel2);
         jLabel2.setBounds(280, 80, 30, 30);
 
-        buttonRounder1.setBackground(new java.awt.Color(204, 0, 0));
+        buttonRounder1.setBackground(new java.awt.Color(255, 0, 51));
         buttonRounder1.setForeground(new java.awt.Color(255, 255, 255));
         buttonRounder1.setText("تأكيد الحذف");
         buttonRounder1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
@@ -113,7 +112,7 @@ public class ConfirmationSupprim extends javax.swing.JDialog {
         pan_gradiant1.add(jLabel4);
         jLabel4.setBounds(290, 10, 30, 30);
 
-        buttonRounder2.setBackground(new java.awt.Color(0, 0, 204));
+        buttonRounder2.setBackground(new java.awt.Color(51, 153, 255));
         buttonRounder2.setForeground(new java.awt.Color(255, 255, 255));
         buttonRounder2.setText("إلغاء الحذف");
         buttonRounder2.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N

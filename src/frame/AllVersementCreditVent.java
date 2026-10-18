@@ -42,6 +42,7 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
     MessageDialog messageDialog;
     ValidationMessageDialog validationMessageDialog;
     Exite exite;
+      int lastRow=-1;
 
     public AllVersementCreditVent(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
@@ -402,7 +403,7 @@ public class AllVersementCreditVent extends javax.swing.JDialog {
     private void txt_searcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txt_searcActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_searcActionPerformed
-    int lastRow=-1;
+  
     private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
          if (!SwingUtilities.isLeftMouseButton(evt)) {
         return;

@@ -198,8 +198,10 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
             }
             double prix_vent = produit.getPrix_vente();
             int qt = produit.getQty();
-            model.insertRow(0, new Object[]{id, formatter.format(prix_vent),
+            if(!produit.getDesignation().equals("Produits")){
+                 model.insertRow(0, new Object[]{id, formatter.format(prix_vent),
                 produit.getQty(), marque, desg});
+            }
         }
 
     }
@@ -338,6 +340,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         txt_tel = new ui.card.TextFieldRound();
         com_entreprice = new material.design.ComboboxRoundNew();
         btn = new material.design.buttonRounder();
+        btnAddProduit1 = new material.design.buttonRounderC();
         panOrder = new ui.card.panRound();
         tableScrollButton2 = new ui.table.TableScrollButton();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -674,7 +677,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel11.setForeground(new java.awt.Color(102, 102, 255));
         jLabel11.setText("مـعـلـومـات الـزبــون");
-        pan_client.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(165, 5, 128, -1));
+        pan_client.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 10, 128, -1));
 
         jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel13.setForeground(new java.awt.Color(0, 0, 102));
@@ -694,7 +697,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         jLabel16.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel16.setForeground(new java.awt.Color(102, 102, 102));
         jLabel16.setText("رقـم الـتـعـريـف");
-        pan_client.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(330, 40, -1, -1));
+        pan_client.add(jLabel16, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 40, -1, -1));
 
         jLabel17.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel17.setForeground(new java.awt.Color(0, 0, 102));
@@ -721,7 +724,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 txt_matriculKeyPressed(evt);
             }
         });
-        pan_client.add(txt_matricul, new org.netbeans.lib.awtextra.AbsoluteConstraints(80, 30, 246, 32));
+        pan_client.add(txt_matricul, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 30, 246, 32));
 
         txt_adress.setBorder(null);
         txt_adress.setHorizontalAlignment(javax.swing.JTextField.CENTER);
@@ -800,7 +803,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         });
         pan_client.add(com_entreprice, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 150, 370, 50));
 
-        btn.setBackground(new java.awt.Color(102, 204, 0));
+        btn.setBackground(new java.awt.Color(0, 153, 0));
         btn.setForeground(new java.awt.Color(255, 255, 255));
         btn.setText("الزبائن");
         btn.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
@@ -810,7 +813,18 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
                 btnActionPerformed(evt);
             }
         });
-        pan_client.add(btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 10, 80, 30));
+        pan_client.add(btn, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 40, 100, 30));
+
+        btnAddProduit1.setBackground(new java.awt.Color(102, 204, 0));
+        btnAddProduit1.setForeground(new java.awt.Color(255, 255, 255));
+        btnAddProduit1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-ajouter-29.png"))); // NOI18N
+        btnAddProduit1.setText("زبون جديد");
+        btnAddProduit1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddProduit1ActionPerformed(evt);
+            }
+        });
+        pan_client.add(btnAddProduit1, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 5, 100, 30));
 
         panOrder.setColor1(new java.awt.Color(255, 255, 255));
 
@@ -1403,6 +1417,10 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
         }
     }//GEN-LAST:event_btnSaveActionPerformed
 
+    private void btnAddProduit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddProduit1ActionPerformed
+        new AddClient(homeForm,true).setVisible(true);
+    }//GEN-LAST:event_btnAddProduit1ActionPerformed
+
     @Override
     public void dispose() {
         if(Clock !=null){
@@ -1463,6 +1481,7 @@ public class Nouvelle_Achat extends javax.swing.JDialog {
     private javax.swing.JLabel LabTime;
     private material.design.buttonRounder btn;
     private material.design.buttonRounderC btnAddProduit;
+    private material.design.buttonRounderC btnAddProduit1;
     private material.design.buttonRounder btnSave;
     private material.design.buttonRounder btnSaveAndImpri;
     private material.design.ComboboxRoundNew com_entreprice;

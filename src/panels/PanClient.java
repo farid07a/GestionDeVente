@@ -118,8 +118,10 @@ public class PanClient extends javax.swing.JPanel {
             if (client.getEntreprise() != null) {
                 nom_entreprise = client.getEntreprise().getNom_ar();
             }
+            if(!client.getNom().equals("Clients")){
             model.insertRow(0, new Object[]{id, tel, adress, nom_entreprise, prenom
                 + " " + nom, matricul});
+            }
 //            model.addRow(new Object[]{id, tel, adress, nom_entreprise, prenom
 //                + " " + nom});
         }

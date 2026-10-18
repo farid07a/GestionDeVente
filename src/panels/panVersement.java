@@ -23,7 +23,9 @@ import frame.AllVersementCreditVent;
 import frame.ConfirmationSupprim;
 import frame.DetaillVersementEntrepriceForm;
 import frame.EtatInitialForm;
+import frame.ModifyVersementEntreprise;
 import frame.VersementForm;
+import frame.VersementSpecialForm;
 import home.HomeForm;
 import java.awt.Color;
 import java.awt.Frame;
@@ -108,6 +110,9 @@ public class panVersement extends javax.swing.JPanel {
 //        });
         TableColumn column = tab.getColumnModel().getColumn(0);
         tab.getColumnModel().removeColumn(column);
+       column = tab.getColumnModel().getColumn(0);
+        tab.getColumnModel().removeColumn(column);
+       
 
         setVersmentOnTab();
         print();
@@ -269,13 +274,13 @@ public class panVersement extends javax.swing.JPanel {
         LabSomVersemEntrep.setText((totalVersementEntreprise > 0) ? formatter.format(totalVersementEntreprise) : "0.0");
         LabVresement.setText(formatter.format(versement.getMontant()));
         labCredit.setText(formatter.format(LsatVersmentEntrepr.getReste_credit()));
-
     }
 
     public void clearFields() {
-        LabSomVersemEntrep.setText("0.0");
-        labCredit.setText("0.0");
-        LabSomVersemEntrep.setText("0.0");
+        
+        LabSomVersemEntrep.setText("0.00");
+        labCredit.setText("0.00");
+        LabVresement.setText("0.00");
 
     }
 
@@ -283,10 +288,11 @@ public class panVersement extends javax.swing.JPanel {
         double Montant = 0;
         DefaultTableModel model = (DefaultTableModel) tab.getModel();
         model.setRowCount(0);
-
+        int i =0;
         List<VersementEntreprise> versementEntreprises = versementEntrepriseDAOImpl.findAll();
         for (VersementEntreprise versementEntreprise : versementEntreprises) {
 
+            if(versementEntreprise.getRemarque().isEmpty()){
             double montant = versementEntreprise.getMontant();
 
             double Credite = versementEntreprise.getReste_credit();
@@ -305,8 +311,10 @@ public class panVersement extends javax.swing.JPanel {
                 versementEntreprise.getEntreprise().getNom_ar()});
 
             Montant = Montant + versementEntreprise.getMontant();
+            i=i+1;
         }
-        LabNombre.setText("" + versementEntreprises.size());
+        }
+        LabNombre.setText("" + i);
         LabMontanTotal.setText(formatter.format(Montant));
         MontantAchatAndCreditInLab();
     }
@@ -389,10 +397,11 @@ public class panVersement extends javax.swing.JPanel {
         panFilter = new enums.PanFilterNew();
         btnAdd = new material.design.buttonRounder();
         btnAdd1 = new material.design.buttonRounder();
-        btnAdd2 = new material.design.buttonRounder();
         btnImp = new material.design.buttonMenu();
         btnSupprim = new material.design.buttonRounder();
-        jLabel2 = new javax.swing.JLabel();
+        labVersementEntreprises = new javax.swing.JLabel();
+        labVersementSepcial = new javax.swing.JLabel();
+        btn_ModifyVersement = new material.design.buttonRounder();
         panButtom = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         button1 = new material.design.button();
@@ -455,7 +464,7 @@ public class panVersement extends javax.swing.JPanel {
                         .addGap(18, 18, 18))
                     .addGroup(panRound1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
                         .addGap(15, 15, 15))))
         );
         panRound1Layout.setVerticalGroup(
@@ -482,7 +491,7 @@ public class panVersement extends javax.swing.JPanel {
         LabMontanTotal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabMontanTotal.setText("0.00");
 
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-dollar-bag-48.png"))); // NOI18N
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons_dollar_bag.png"))); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 102, 0));
@@ -502,7 +511,7 @@ public class panVersement extends javax.swing.JPanel {
                 .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panRound2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
                     .addGroup(panRound2Layout.createSequentialGroup()
                         .addGap(8, 8, 8)
                         .addComponent(jLabel14)
@@ -561,7 +570,7 @@ public class panVersement extends javax.swing.JPanel {
                         .addComponent(LabAllCreditRest, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(16, 16, 16))
                     .addGroup(panRound5Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)
+                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
                         .addGap(36, 36, 36))))
         );
         panRound5Layout.setVerticalGroup(
@@ -587,7 +596,7 @@ public class panVersement extends javax.swing.JPanel {
         LabAugmentations.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabAugmentations.setText("0.00");
 
-        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-dollar-bag-48.png"))); // NOI18N
+        jLabel13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons_dollar_bag.png"))); // NOI18N
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(0, 102, 0));
@@ -705,7 +714,7 @@ public class panVersement extends javax.swing.JPanel {
                 .addGap(15, 15, 15))
             .addGroup(panRound4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(panFilter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panFilter, javax.swing.GroupLayout.DEFAULT_SIZE, 1134, Short.MAX_VALUE)
                 .addGap(24, 24, 24))
         );
         panRound4Layout.setVerticalGroup(
@@ -714,13 +723,13 @@ public class panVersement extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(panFilter, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
                 .addGap(33, 33, 33))
         );
 
         btnAdd.setBackground(new java.awt.Color(204, 0, 204));
         btnAdd.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-recherche-immobilière-30.png"))); // NOI18N
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/validation-du-billet.png"))); // NOI18N
         btnAdd.setText("مــعــايــنــة");
         btnAdd.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         btnAdd.addActionListener(new java.awt.event.ActionListener() {
@@ -737,17 +746,6 @@ public class panVersement extends javax.swing.JPanel {
         btnAdd1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnAdd1ActionPerformed(evt);
-            }
-        });
-
-        btnAdd2.setBackground(new java.awt.Color(76, 143, 143));
-        btnAdd2.setForeground(new java.awt.Color(255, 255, 255));
-        btnAdd2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-plus-64 (2).png"))); // NOI18N
-        btnAdd2.setText("دفعة إسـتــثــنــا ئــيــة");
-        btnAdd2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        btnAdd2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAdd2ActionPerformed(evt);
             }
         });
 
@@ -773,28 +771,64 @@ public class panVersement extends javax.swing.JPanel {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 51, 255));
-        jLabel2.setText("مـلـخـص مدفوعات الـشـركــات & الـديــون & الـمـبـيــعــات  ");
-        jLabel2.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 51, 255)));
-        jLabel2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        jLabel2.addFocusListener(new java.awt.event.FocusAdapter() {
+        labVersementEntreprises.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        labVersementEntreprises.setForeground(new java.awt.Color(0, 51, 255));
+        labVersementEntreprises.setText("مـلـخـص مدفوعات الـشـركــات & الـديــون & الـمـبـيــعــات  ");
+        labVersementEntreprises.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 51, 255)));
+        labVersementEntreprises.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        labVersementEntreprises.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                jLabel2FocusGained(evt);
+                labVersementEntreprisesFocusGained(evt);
             }
             public void focusLost(java.awt.event.FocusEvent evt) {
-                jLabel2FocusLost(evt);
+                labVersementEntreprisesFocusLost(evt);
             }
         });
-        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+        labVersementEntreprises.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel2MouseClicked(evt);
+                labVersementEntreprisesMouseClicked(evt);
             }
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jLabel2MouseEntered(evt);
+                labVersementEntreprisesMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jLabel2MouseExited(evt);
+                labVersementEntreprisesMouseExited(evt);
+            }
+        });
+
+        labVersementSepcial.setFont(new java.awt.Font("Times New Roman", 1, 14)); // NOI18N
+        labVersementSepcial.setForeground(new java.awt.Color(0, 51, 255));
+        labVersementSepcial.setText("الدفـعـات الإسـتـثــنـائـيـة لشركة");
+        labVersementSepcial.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 1, 0, new java.awt.Color(0, 51, 255)));
+        labVersementSepcial.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        labVersementSepcial.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                labVersementSepcialFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                labVersementSepcialFocusLost(evt);
+            }
+        });
+        labVersementSepcial.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                labVersementSepcialMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                labVersementSepcialMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                labVersementSepcialMouseExited(evt);
+            }
+        });
+
+        btn_ModifyVersement.setBackground(new java.awt.Color(112, 112, 193));
+        btn_ModifyVersement.setForeground(new java.awt.Color(255, 255, 255));
+        btn_ModifyVersement.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/button/icons8-pencil-drawing-64.png"))); // NOI18N
+        btn_ModifyVersement.setText("تعديل الدفعة");
+        btn_ModifyVersement.setFont(new java.awt.Font("Times New Roman", 1, 17)); // NOI18N
+        btn_ModifyVersement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ModifyVersementActionPerformed(evt);
             }
         });
 
@@ -803,39 +837,44 @@ public class panVersement extends javax.swing.JPanel {
         panCenterLayout.setHorizontalGroup(
             panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCenterLayout.createSequentialGroup()
-                .addGap(19, 19, 19)
-                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addComponent(btnAdd2, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
-                        .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(33, 33, 33)
-                        .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCenterLayout.createSequentialGroup()
+                        .addContainerGap(37, Short.MAX_VALUE)
+                        .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panCenterLayout.createSequentialGroup()
+                                .addComponent(labVersementEntreprises)
+                                .addGap(33, 33, 33)
+                                .addComponent(labVersementSepcial))
+                            .addGroup(panCenterLayout.createSequentialGroup()
+                                .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(354, 354, 354)
+                                .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 199, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(btn_ModifyVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnAdd1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnAdd1, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCenterLayout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(15, 15, 15))
         );
         panCenterLayout.setVerticalGroup(
             panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCenterLayout.createSequentialGroup()
-                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btnAdd1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnAdd2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(panCenterLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2)))
-                .addGap(15, 15, 15)
+                .addContainerGap()
+                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labVersementEntreprises)
+                    .addComponent(labVersementSepcial))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnAdd1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_ModifyVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(10, 10, 10)
                 .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(5, 5, 5))
         );
@@ -966,7 +1005,7 @@ public class panVersement extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel18)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labCredit, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)
+                .addComponent(labCredit, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel17)
                 .addGap(5, 5, 5)
@@ -1039,15 +1078,12 @@ public class panVersement extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-
-        
         if (tab.getSelectedRow() != -1) {
             int viewRow = tab.getSelectedRow();
             int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             VersementEntreprise versementEntreprise = versementEntrepriseDAOImpl.findById(id);
             new DetaillVersementEntrepriceForm(homeForm,true, versementEntreprise).setVisible(true);
-
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
@@ -1076,10 +1112,6 @@ public class panVersement extends javax.swing.JPanel {
 //        }
     }//GEN-LAST:event_button1ActionPerformed
 
-    private void btnAdd2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdd2ActionPerformed
-        new EtatInitialForm(homeForm, true).setVisible(true);
-    }//GEN-LAST:event_btnAdd2ActionPerformed
-
     private void btnImpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImpActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnImpActionPerformed
@@ -1090,7 +1122,15 @@ public class panVersement extends javax.swing.JPanel {
             int row = tab.convertRowIndexToModel(viewRow);
             int id = (int) tab.getModel().getValueAt(row, 0);
             VersementEntreprise versementEntreprise = versementEntrepriseDAOImpl.findById(id);
+            VersementEntreprise LastVersementEntreprise=versementEntrepriseDAOImpl.getLastVersementEntreprise(versementEntreprise.getEntreprise());
+            if(!versementEntreprise.equals(LastVersementEntreprise)){
+               exite.showMessage("خطأ", "لايمكنك الحذف لأنه توجد دفعات مسجلة بعدها");
+               return;
+            }
+            
             messageDialog.ShowConfirmMessageInFrame("تـأكـيد الـحـذف", "هـل أنت متـأكـد مـن حـذف دفعة الشركة");
+           
+            
             if (messageDialog.getMessageType() == MessageDialog.MessageType.YES) {
                 if (versementEntrepriseDAOImpl.delete(id) > 0) {
                     validationMessageDialog.showMessage("حـذف", "تم حذف دفعة الشركة بنجاح");
@@ -1115,20 +1155,20 @@ public class panVersement extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnSupprimActionPerformed
 
-    private void jLabel2FocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jLabel2FocusGained
-    }//GEN-LAST:event_jLabel2FocusGained
+    private void labVersementEntreprisesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labVersementEntreprisesFocusGained
+    }//GEN-LAST:event_labVersementEntreprisesFocusGained
 
-    private void jLabel2FocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jLabel2FocusLost
-    }//GEN-LAST:event_jLabel2FocusLost
+    private void labVersementEntreprisesFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labVersementEntreprisesFocusLost
+    }//GEN-LAST:event_labVersementEntreprisesFocusLost
 
-    private void jLabel2MouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseEntered
-        jLabel2.setFont(new java.awt.Font("Segoe UI Semibold", 0, 13));
-    }//GEN-LAST:event_jLabel2MouseEntered
+    private void labVersementEntreprisesMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labVersementEntreprisesMouseEntered
+        labVersementEntreprises.setFont(new java.awt.Font("Segoe UI Semibold", 0, 13));
+    }//GEN-LAST:event_labVersementEntreprisesMouseEntered
 
-    private void jLabel2MouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseExited
-        jLabel2.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12));
+    private void labVersementEntreprisesMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labVersementEntreprisesMouseExited
+        labVersementEntreprises.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12));
 
-    }//GEN-LAST:event_jLabel2MouseExited
+    }//GEN-LAST:event_labVersementEntreprisesMouseExited
     private int lastRow = -1;
     private void tabMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabMouseReleased
         if (!SwingUtilities.isLeftMouseButton(evt)) {
@@ -1140,21 +1180,59 @@ public class panVersement extends javax.swing.JPanel {
         if (row == -1) {
             tab.clearSelection();
             lastRow = -1;
+            clearFields();
             return;
         }
 
         if (lastRow == row) {
             tab.clearSelection();
             lastRow = -1;
+            clearFields();
         } else {
             tab.setRowSelectionInterval(row, row);
             lastRow = row;
         }
     }//GEN-LAST:event_tabMouseReleased
 
-    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+    private void labVersementEntreprisesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labVersementEntreprisesMouseClicked
         new AllVersementCreditVent(homeForm, true).setVisible(true);
-    }//GEN-LAST:event_jLabel2MouseClicked
+    }//GEN-LAST:event_labVersementEntreprisesMouseClicked
+
+    private void labVersementSepcialFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labVersementSepcialFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_labVersementSepcialFocusGained
+
+    private void labVersementSepcialFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_labVersementSepcialFocusLost
+        // TODO add your handling code here:
+    }//GEN-LAST:event_labVersementSepcialFocusLost
+
+    private void labVersementSepcialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labVersementSepcialMouseClicked
+         if (tab.getSelectedRow() != -1) {
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
+            int id = (int) tab.getModel().getValueAt(row, 0);
+            VersementEntreprise versementEntreprise = versementEntrepriseDAOImpl.findById(id);        
+            new VersementSpecialForm(homeForm, true,versementEntreprise.getEntreprise()).setVisible(true);
+         }
+    }//GEN-LAST:event_labVersementSepcialMouseClicked
+
+    private void labVersementSepcialMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labVersementSepcialMouseEntered
+        labVersementSepcial.setFont(new java.awt.Font("Segoe UI Semibold", 0, 13));
+    }//GEN-LAST:event_labVersementSepcialMouseEntered
+
+    private void labVersementSepcialMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_labVersementSepcialMouseExited
+       labVersementSepcial.setFont(new java.awt.Font("Segoe UI Semibold", 0, 12));
+    }//GEN-LAST:event_labVersementSepcialMouseExited
+
+    private void btn_ModifyVersementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ModifyVersementActionPerformed
+        if (tab.getSelectedRow() != -1) {
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
+            int id = (int) tab.getModel().getValueAt(row, 0);
+            VersementEntreprise versementEntreprise = versementEntrepriseDAOImpl.findById(id);
+            new ModifyVersementEntreprise(homeForm, true, versementEntreprise).setVisible(true);
+        }
+    }//GEN-LAST:event_btn_ModifyVersementActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1167,9 +1245,9 @@ public class panVersement extends javax.swing.JPanel {
     private javax.swing.JLabel LabVresement;
     private material.design.buttonRounder btnAdd;
     private material.design.buttonRounder btnAdd1;
-    private material.design.buttonRounder btnAdd2;
     private material.design.buttonMenu btnImp;
     private material.design.buttonRounder btnSupprim;
+    private material.design.buttonRounder btn_ModifyVersement;
     private material.design.button button1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -1180,7 +1258,6 @@ public class panVersement extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
@@ -1195,6 +1272,8 @@ public class panVersement extends javax.swing.JPanel {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel labCredit;
+    private javax.swing.JLabel labVersementEntreprises;
+    private javax.swing.JLabel labVersementSepcial;
     private javax.swing.JPanel panButtom;
     private javax.swing.JPanel panCenter;
     private enums.PanFilterNew panFilter;

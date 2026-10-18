@@ -487,7 +487,8 @@ public byte[] getImageLogo() throws IOException {
                 this.dispose();
                 validationMessageDialog.showMessagetoDialog("تأكيد", "تم تحديث معلومات المؤسسة بنجاح");
             }
-        }
+        } 
+       homeForm.getPanDashBoard().SetInfoEntreprise();
 
     }//GEN-LAST:event_btnSaveActionPerformed
 

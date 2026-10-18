@@ -41,8 +41,8 @@ public class ClientDAOImpl extends AbstractDAO<Client> {
         ps.setString(3, entity.getMatricule());
         ps.setString(4, entity.getTel());
         ps.setString(5, entity.getAdresse());
-      //  ps.setInt(6, entity.getEntreprise().getId());
-      if (entity.getEntreprise() == null) {
+        //  ps.setInt(6, entity.getEntreprise().getId());
+        if (entity.getEntreprise() == null) {
             ps.setNull(6, java.sql.Types.INTEGER);//for what ?
         } else {
             ps.setInt(6, entity.getEntreprise().getId());
@@ -58,7 +58,7 @@ public class ClientDAOImpl extends AbstractDAO<Client> {
         ps.setString(3, entity.getMatricule());
         ps.setString(4, entity.getTel());
         ps.setString(5, entity.getAdresse());
-      //  ps.setInt(6, entity.getEntreprise().getId());
+        //  ps.setInt(6, entity.getEntreprise().getId());
         if (entity.getEntreprise() == null) {
             ps.setNull(6, java.sql.Types.INTEGER);
         } else {
@@ -84,12 +84,13 @@ public class ClientDAOImpl extends AbstractDAO<Client> {
         );
 
     }
-public  Client getClientByMatricul(String matricul){
-    Client  client = null;
-      try {
+
+    public Client getClientByMatricul(String matricul) {
+        Client client = null;
+        try {
             String query = "SELECT * FROM " + getTableName() + " WHERE matricule =?";
             PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, matricul );
+            statement.setString(1, matricul);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 client = mapResultSetToEntity(resultSet);
@@ -97,6 +98,23 @@ public  Client getClientByMatricul(String matricul){
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    return client;
-}
+        return client;
+    }
+
+    public Client getClientByNameAndEntrepriseForInit(Entreprise entreprise, String Nom) {
+      Client client = null;
+        try {
+            String query = "SELECT * FROM " + getTableName() + "  WHERE  nom=? AND  id_entreprise =?";
+            PreparedStatement statement = connection.prepareStatement(query);
+            statement.setString(1, Nom);
+            statement.setInt(2, entreprise.getId());
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                client = mapResultSetToEntity(resultSet);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return client;
+    }
 }

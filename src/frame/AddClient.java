@@ -400,19 +400,19 @@ public class AddClient extends javax.swing.JDialog {
 
     private void matriculKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_matriculKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
-            nom.requestFocusInWindow();
+            prenom.requestFocusInWindow();
         }
     }//GEN-LAST:event_matriculKeyPressed
 
     private void nomKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nomKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
-            prenom.requestFocusInWindow();
+            adress.requestFocusInWindow();
         }
     }//GEN-LAST:event_nomKeyPressed
 
     private void prenomKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_prenomKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER || evt.getKeyCode() == KeyEvent.VK_TAB) {
-            adress.requestFocusInWindow();
+            nom.requestFocusInWindow();
         }
     }//GEN-LAST:event_prenomKeyPressed
 

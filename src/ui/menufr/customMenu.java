@@ -24,26 +24,32 @@ public class customMenu extends javax.swing.JPanel {
     }
 
     public customMenu() {
+        System.out.println("Start constructor customMenu");
         initComponents();
+        System.out.println("Load ui components");
         setOpaque(false);
         listMenu121.setOpaque(false);
         init();
+        System.out.println("Load init menu");
+        
     }
 
     private void init() {
         //System.out.println("com.raven.component.Menu.init()");
-        listMenu121.addItem(new Model_Menu("icons8-vitesse-64 (1)", " الرئيسية", Model_Menu.MenuType.MENU));
+        listMenu121.addItem(new Model_Menu("iconsVitesse", " الرئيسية", Model_Menu.MenuType.MENU));
         // listMenu121.addItem(new Model_Menu("","",Model_Menu.MenuType.EMPTY));
         listMenu121.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
 
-        listMenu121.addItem(new Model_Menu("icons8-organisation-64 (2)", "الشركات", Model_Menu.MenuType.MENU));
-        listMenu121.addItem(new Model_Menu("icons8-conférence-64 (1)", "الزبائن", Model_Menu.MenuType.MENU));
+        listMenu121.addItem(new Model_Menu("iconOrganisation", "الشركات", Model_Menu.MenuType.MENU));
+        listMenu121.addItem(new Model_Menu("cashFlow", "الدفعات القديمة", Model_Menu.MenuType.MENU));
+
+        listMenu121.addItem(new Model_Menu("iconConference", "الزبائن", Model_Menu.MenuType.MENU));
         listMenu121.addItem(new Model_Menu("boite", " المنتجات", Model_Menu.MenuType.MENU));
 
         listMenu121.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
 
-        listMenu121.addItem(new Model_Menu("icons8-vendre-les-stock-64", "المبيعات ", Model_Menu.MenuType.MENU));
-        listMenu121.addItem(new Model_Menu("icons8-sac-d'argent-64 (2)", "المدفوعات ", Model_Menu.MenuType.MENU));
+        listMenu121.addItem(new Model_Menu("iconsVendrStock", "المبيعات ", Model_Menu.MenuType.MENU));
+        listMenu121.addItem(new Model_Menu("argent", "المدفوعات ", Model_Menu.MenuType.MENU));
         //  listMenu121.addItem(new Model_Menu("approvisionnement","الفواتير ",Model_Menu.MenuType.MENU));
         listMenu121.addItem(new Model_Menu("", "", Model_Menu.MenuType.EMPTY));
 

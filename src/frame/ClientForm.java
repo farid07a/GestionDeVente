@@ -44,6 +44,7 @@ public class ClientForm extends javax.swing.JDialog {
         List<Client> clients = new ClientDAOImpl(connection).findAll();
         String nom_entreprise = "";
         for (Client client : clients) {
+            if(!client.getNom().equals("Clients")){
             int id = client.getId();
             String nom = client.getNom();
             String prenom = client.getPrenom();
@@ -55,8 +56,10 @@ public class ClientForm extends javax.swing.JDialog {
             if (client.getEntreprise() != null) {
                 nom_entreprise = client.getEntreprise().getNom_ar();
             }
-            model.addRow(new Object[]{id, tel, adress, nom_entreprise, prenom,
-                nom, client.getMatricule()});
+            
+            model.insertRow(0,new Object[]{id, tel, adress, nom_entreprise,nom,prenom,
+               client.getMatricule()});
+        }
         }
 
     }
@@ -126,14 +129,14 @@ public class ClientForm extends javax.swing.JDialog {
         panRound4.setLayout(panRound4Layout);
         panRound4Layout.setHorizontalGroup(
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panRound4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 696, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(362, Short.MAX_VALUE)
                 .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, 275, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(210, 210, 210))
+            .addGroup(panRound4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 821, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         panRound4Layout.setVerticalGroup(
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

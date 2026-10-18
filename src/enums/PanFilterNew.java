@@ -372,7 +372,7 @@ public class PanFilterNew extends JPanel {
                 if (!entreprise.equals("الــشركــات")) {
 
                     Object value
-                            = entry.getValue(7);
+                            = entry.getValue(8);
 
                     if (value == null) {
                         return false;

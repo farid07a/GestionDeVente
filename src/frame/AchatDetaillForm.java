@@ -136,10 +136,10 @@ public class AchatDetaillForm extends javax.swing.JDialog {
     public void setInfoClientInLab() {
         labNomPrenom.setText(achat.getClient().getNom() + " " + achat.getClient().getPrenom());
         labMatricul.setText(achat.getClient().getMatricule());
-        if (!achat.getClient().getEntreprise().getNom_fr().isEmpty()) {
-            labEntreprice.setText(achat.getClient().getEntreprise().getNom_fr());
-        } else {
+        if (!achat.getClient().getEntreprise().getNom_ar().isEmpty()) {
             labEntreprice.setText(achat.getClient().getEntreprise().getNom_ar());
+        } else {
+            labEntreprice.setText(achat.getClient().getEntreprise().getNom_fr());
         }
 
         labTel.setText(achat.getClient().getTel());

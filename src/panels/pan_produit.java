@@ -79,6 +79,7 @@ public class pan_produit extends javax.swing.JPanel {
             double prix_ache = produit.getPrix_achat();
             double prix_vent = produit.getPrix_vente();
             int qt = produit.getQty();
+            if(!produit.getDesignation().equals("Produits"))
             model.insertRow(0, new Object[]{id,
                 formatter.format(prix_vent),
                 formatter.format(prix_ache),

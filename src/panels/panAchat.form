@@ -21,7 +21,7 @@
     <Container class="javax.swing.JPanel" name="panTop">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+          <Color blue="fa" green="f9" red="f8" type="rgb"/>
         </Property>
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[32767, 100]"/>
@@ -356,7 +356,7 @@
     <Container class="javax.swing.JPanel" name="panCenter">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+          <Color blue="fa" green="f9" red="f8" type="rgb"/>
         </Property>
       </Properties>
 
@@ -366,11 +366,11 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                   <Component id="btnSupprim" min="-2" pref="110" max="-2" attributes="0"/>
-                  <EmptySpace pref="145" max="32767" attributes="0"/>
-                  <Component id="btnImp" min="-2" pref="169" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Component id="bDetaill" min="-2" pref="191" max="-2" attributes="0"/>
-                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="btnImp" min="-2" pref="188" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="84" max="-2" attributes="0"/>
+                  <Component id="bDetaill" min="-2" pref="190" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="btnNewAchat" min="-2" pref="183" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="51" max="-2" attributes="0"/>
               </Group>
@@ -384,12 +384,12 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" max="-2" attributes="0">
+                  <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="btnNewAchat" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
-                      <Component id="bDetaill" pref="0" max="32767" attributes="0"/>
                       <Component id="btnSupprim" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="btnImp" alignment="3" min="-2" pref="30" max="-2" attributes="0"/>
+                      <Component id="bDetaill" alignment="3" min="-2" pref="32" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                   <Component id="panRound4" max="32767" attributes="0"/>
@@ -495,31 +495,6 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="material.design.button" name="bDetaill">
-          <Properties>
-            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="ff" red="ff" type="rgb"/>
-            </Property>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/icon/icons8-petits-caract&#xe8;res-48.png"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="&#x645;&#x640;&#x639;&#x640;&#x627;&#x64a;&#x640;&#x646;&#x640;&#x629; &#x639;&#x640;&#x640;&#x645;&#x640;&#x644;&#x640;&#x64a;&#x629; &#x627;&#x644;&#x640;&#x628;&#x640;&#x64a;&#x640;&#x639;"/>
-            <Property name="color1" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="99" red="33" type="rgb"/>
-            </Property>
-            <Property name="color2" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="ff" green="99" red="33" type="rgb"/>
-            </Property>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Times New Roman" size="16" style="1"/>
-            </Property>
-            <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="horizontalTextPosition" type="int" value="2"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bDetaillActionPerformed"/>
-          </Events>
-        </Component>
         <Component class="material.design.buttonRounder" name="btnNewAchat">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
@@ -576,6 +551,26 @@
               <Font name="Times New Roman" size="16" style="1"/>
             </Property>
           </Properties>
+        </Component>
+        <Component class="material.design.buttonRounder" name="bDetaill">
+          <Properties>
+            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="cc" green="0" red="cc" type="rgb"/>
+            </Property>
+            <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+            </Property>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/icon/validation-du-billet (1).png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="&#x645;&#x640;&#x639;&#x640;&#x627;&#x64a;&#x640;&#x646;&#x640;&#x629; &#x639;&#x640;&#x640;&#x645;&#x640;&#x644;&#x640;&#x64a;&#x629; &#x627;&#x644;&#x640;&#x628;&#x640;&#x64a;&#x640;&#x639;"/>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Times New Roman" size="17" style="1"/>
+            </Property>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="bDetaillActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

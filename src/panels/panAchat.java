@@ -227,10 +227,10 @@ public class panAchat extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         tab = new javax.swing.JTable();
         txt_search = new material.design.SearchTextRound();
-        bDetaill = new material.design.button();
         btnNewAchat = new material.design.buttonRounder();
         btnSupprim = new material.design.buttonRounder();
         btnImp = new material.design.buttonMenu();
+        bDetaill = new material.design.buttonRounder();
         panButtom = new javax.swing.JPanel();
         panRound1 = new ui.card.panRound();
         jLabel1 = new javax.swing.JLabel();
@@ -238,7 +238,7 @@ public class panAchat extends javax.swing.JPanel {
 
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-        panTop.setBackground(new java.awt.Color(255, 255, 255));
+        panTop.setBackground(new java.awt.Color(248, 249, 250));
         panTop.setMaximumSize(new java.awt.Dimension(32767, 100));
         panTop.setMinimumSize(new java.awt.Dimension(100, 100));
         panTop.setPreferredSize(new java.awt.Dimension(100, 100));
@@ -424,7 +424,7 @@ public class panAchat extends javax.swing.JPanel {
 
         add(panTop);
 
-        panCenter.setBackground(new java.awt.Color(255, 255, 255));
+        panCenter.setBackground(new java.awt.Color(248, 249, 250));
 
         panRound4.setColor1(new java.awt.Color(255, 255, 255));
 
@@ -492,20 +492,6 @@ public class panAchat extends javax.swing.JPanel {
                 .addGap(19, 19, 19))
         );
 
-        bDetaill.setForeground(new java.awt.Color(255, 255, 255));
-        bDetaill.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-petits-caractères-48.png"))); // NOI18N
-        bDetaill.setText("مـعـايـنـة عــمـلـية الـبـيـع");
-        bDetaill.setColor1(new java.awt.Color(51, 153, 255));
-        bDetaill.setColor2(new java.awt.Color(51, 153, 255));
-        bDetaill.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
-        bDetaill.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        bDetaill.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        bDetaill.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                bDetaillActionPerformed(evt);
-            }
-        });
-
         btnNewAchat.setBackground(new java.awt.Color(0, 153, 0));
         btnNewAchat.setForeground(new java.awt.Color(255, 255, 255));
         btnNewAchat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-panier-rapide-30.png"))); // NOI18N
@@ -534,6 +520,17 @@ public class panAchat extends javax.swing.JPanel {
         btnImp.setText("طــباعـة التـقـاريــر");
         btnImp.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
 
+        bDetaill.setBackground(new java.awt.Color(204, 0, 204));
+        bDetaill.setForeground(new java.awt.Color(255, 255, 255));
+        bDetaill.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/validation-du-billet (1).png"))); // NOI18N
+        bDetaill.setText("مـعـايـنـة عــمـلـية الـبـيـع");
+        bDetaill.setFont(new java.awt.Font("Times New Roman", 1, 17)); // NOI18N
+        bDetaill.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bDetaillActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panCenterLayout = new javax.swing.GroupLayout(panCenter);
         panCenter.setLayout(panCenterLayout);
         panCenterLayout.setHorizontalGroup(
@@ -541,11 +538,11 @@ public class panAchat extends javax.swing.JPanel {
             .addGroup(panCenterLayout.createSequentialGroup()
                 .addGap(31, 31, 31)
                 .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
-                .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(bDetaill, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(84, 84, 84)
+                .addComponent(bDetaill, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(51, 51, 51))
             .addGroup(panCenterLayout.createSequentialGroup()
@@ -556,12 +553,12 @@ public class panAchat extends javax.swing.JPanel {
         panCenterLayout.setVerticalGroup(
             panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panCenterLayout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
+                .addGap(13, 13, 13)
+                .addGroup(panCenterLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnNewAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(bDetaill, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addComponent(btnSupprim, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnImp, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bDetaill, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15)
                 .addComponent(panRound4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(10, 10, 10))
@@ -628,17 +625,6 @@ public class panAchat extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_txt_searchActionPerformed
 
-    private void bDetaillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDetaillActionPerformed
-        if (tab.getSelectedRow() != -1) {
-            int viewRow = tab.getSelectedRow();
-            int row = tab.convertRowIndexToModel(viewRow);
-
-            int idAchat = (int) tab.getModel().getValueAt(row, 0);
-            Achat achat = new AchatDAOImpl(connection).findById(idAchat);
-            new AchatDetaillForm(this.homeForm, false, achat).setVisible(true);
-        }
-    }//GEN-LAST:event_bDetaillActionPerformed
-
     private void btnNewAchatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewAchatActionPerformed
         new Nouvelle_Achat(this.homeForm, true).setVisible(true);
     }//GEN-LAST:event_btnNewAchatActionPerformed
@@ -700,9 +686,20 @@ public class panAchat extends javax.swing.JPanel {
         lab_nbAchat.setText(tab.getRowCount() + "");
     }//GEN-LAST:event_txt_searchKeyReleased
 
+    private void bDetaillActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bDetaillActionPerformed
+        if (tab.getSelectedRow() != -1) {
+            int viewRow = tab.getSelectedRow();
+            int row = tab.convertRowIndexToModel(viewRow);
+
+            int idAchat = (int) tab.getModel().getValueAt(row, 0);
+            Achat achat = new AchatDAOImpl(connection).findById(idAchat);
+            new AchatDetaillForm(this.homeForm, false, achat).setVisible(true);
+        }
+    }//GEN-LAST:event_bDetaillActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private material.design.button bDetaill;
+    private material.design.buttonRounder bDetaill;
     private material.design.buttonMenu btnImp;
     private material.design.buttonRounder btnNewAchat;
     private material.design.buttonRounder btnSupprim;

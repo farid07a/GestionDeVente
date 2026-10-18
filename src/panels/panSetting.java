@@ -57,7 +57,6 @@ public class panSetting extends javax.swing.JPanel {
         button1 = new material.design.button();
         button2 = new material.design.button();
         button3 = new material.design.button();
-        button4 = new material.design.button();
 
         setBackground(new java.awt.Color(255, 255, 255));
 
@@ -150,21 +149,6 @@ public class panSetting extends javax.swing.JPanel {
             }
         });
 
-        button4.setForeground(new java.awt.Color(255, 255, 255));
-        button4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/foreign-language_8495095.png"))); // NOI18N
-        button4.setText("الـلـغـة");
-        button4.setColor1(new java.awt.Color(255, 255, 255));
-        button4.setColor2(new java.awt.Color(153, 153, 255));
-        button4.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
-        button4.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        button4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button4ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -183,8 +167,7 @@ public class panSetting extends javax.swing.JPanel {
                         .addComponent(button1, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(button3, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(button7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(button4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(button7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(120, 120, 120))
         );
         layout.setVerticalGroup(
@@ -204,9 +187,7 @@ public class panSetting extends javax.swing.JPanel {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(button2, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
                             .addComponent(button10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(button4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(158, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -220,10 +201,6 @@ public class panSetting extends javax.swing.JPanel {
 
     private void button10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button10ActionPerformed
     }//GEN-LAST:event_button10ActionPerformed
-
-    private void button4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_button4ActionPerformed
 
     private void button1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button1ActionPerformed
         new AddUtilisateur(homeForm, true).setVisible(true);
@@ -246,9 +223,10 @@ public class panSetting extends javax.swing.JPanel {
             System.out.println("المسار المختار : " + path);
 
             try {     
-                Path source = Paths.get("resources/StoreDBDJ.accdb");
+               // Path source = Paths.get("resources/StoreDBDJ.accdb");
 
-                String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
+               Path source = Paths.get("C:/resources/StoreDBDJ.accdb"); 
+               String date = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss")
                         .format(new Date());
 
                 String backupName = "StoreDBDJ_Backup_" + date + ".accdb";
@@ -285,7 +263,6 @@ public class panSetting extends javax.swing.JPanel {
     private material.design.button button10;
     private material.design.button button2;
     private material.design.button button3;
-    private material.design.button button4;
     private material.design.button button7;
     private material.design.button button9;
     // End of variables declaration//GEN-END:variables

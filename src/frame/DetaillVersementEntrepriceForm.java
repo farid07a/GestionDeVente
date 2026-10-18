@@ -6,6 +6,7 @@ package frame;
 
 import config.DatabaseConnection;
 import dao.impl.ClientPayeParEntrepriseDAOImpl;
+import dao.impl.VersementEntrepriseDAOImpl;
 import entity.Client;
 import entity.ClientPayeParEntreprise;
 import entity.VersementEntreprise;
@@ -38,6 +39,7 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     Connection connection;
     HomeForm homeForm;
     ClientPayeParEntrepriseDAOImpl clientPayeParEntrepriseDAOImpl;
+    VersementEntrepriseDAOImpl versementEntrepriseDAOImpl;
     DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
    
 
@@ -48,14 +50,23 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         connection = DatabaseConnection.getInstance().getConnection();
         this.versementEntreprise = versementEntreprise;
         clientPayeParEntrepriseDAOImpl = new ClientPayeParEntrepriseDAOImpl(connection);
+        versementEntrepriseDAOImpl = new VersementEntrepriseDAOImpl(connection);
         initComponents();
-        
-        
+   
         new designeTable().setDesignTable(tab, jScrollPane2);
         new designeTable().SearchTable(tab, txt_search);
+        
+  VersementEntreprise PreviousVersement =versementEntrepriseDAOImpl.getPreviousVersementEntreprise(versementEntreprise);
+        
+  
         labNomEntrep.setText(versementEntreprise.getEntreprise().getNom_ar());
         labDatVersement.setText(versementEntreprise.getDate_versement().toString());
         labSommeVersement.setText(formatter.format(versementEntreprise.getMontant()));
+        
+        labPreviousCredit.setText(PreviousVersement!=null && PreviousVersement.getReste_credit()>=0 ? 
+                            formatter.format(PreviousVersement.getReste_credit()):
+                            "0.00");
+        
         //JOptionPane.showMessageDialog(null, versementEntreprise.getNumCheque());
         if (versementEntreprise.getReste_credit() < 0) {
             labRestCredit.setText("0.00");
@@ -71,30 +82,40 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         GrpBtn.add(radioEsp);
         GrpBtn.add(radioChequ);
         radioCart.setSelected(true);
+        
+        radioCart.setVisible(false);
+        radioEsp.setVisible(false);
+        radioChequ.setVisible(false);
+                
         ModePaiement mode= ModePaiement.valueOf(versementEntreprise.getMode_paiement());
         switch(mode)
         {
             case CARTE_BANCAIRE:
-                radioCart.setSelected(true);
+                labModPayemen.setText("بطاقة");
+                txtNumCheque.setVisible(false);
+//                radioCart.setSelected(true);
                 break;
             case ESPECES:
-                radioEsp.setSelected(true);
+                labModPayemen.setText("نقدا");
+                txtNumCheque.setVisible(false);
+                //radioEsp.setSelected(true);
                 break;
             case CHEQUE:
-                radioChequ.setSelected(true);
-                
+                labModPayemen.setText("صك بريدي");
+                txtNumCheque.setVisible(true);
+//                radioChequ.setSelected(true);            
                 txtNumCheque.setText(versementEntreprise.getNumCheque());
                 break;
                 
         } 
-          
-            
+         
+        
         setClientPayeeParVersementInTab();
         setLocationRelativeTo(homeForm);
         TableColumn column = tab.getColumnModel().getColumn(0);
         tab.getColumnModel().removeColumn(column);
+               
 }
-
     public void setClientPayeeParVersementInTab() {
         DefaultTableModel model = (DefaultTableModel) tab.getModel();
         model.setRowCount(0);
@@ -113,6 +134,7 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
             });
         }
         totalAchat.setText(formatter.format(total));
+        labAchats.setText(formatter.format(total)); 
     }
 
     @SuppressWarnings("unchecked")
@@ -148,14 +170,21 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         radioCart = new material.design.RadioButtonCustomAR();
         radioChequ = new material.design.RadioButtonCustomAR();
         txtNumCheque = new material.design.TextField();
+        jLabel13 = new javax.swing.JLabel();
+        labAchats = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jLabel16 = new javax.swing.JLabel();
+        labPreviousCredit = new javax.swing.JLabel();
+        jLabel18 = new javax.swing.JLabel();
+        labModPayemen = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setResizable(false);
+        getContentPane().setLayout(new java.awt.CardLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setMaximumSize(new java.awt.Dimension(700, 660));
         jPanel1.setMinimumSize(new java.awt.Dimension(700, 660));
-        jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         panRound4.setColor1(new java.awt.Color(255, 255, 255));
 
@@ -195,7 +224,7 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
             panRound4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panRound4Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 636, Short.MAX_VALUE)
                 .addGap(29, 29, 29))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panRound4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -208,42 +237,34 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 .addContainerGap()
                 .addComponent(txt_search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 307, Short.MAX_VALUE)
+                .addComponent(tableScrollButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                 .addGap(20, 20, 20))
         );
-
-        jPanel1.add(panRound4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 220, 680, 370));
 
         jLabel4.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel4.setText("الــشـــركــــة   :");
-        jPanel1.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 50, 87, 36));
 
         labNomEntrep.setFont(new java.awt.Font("Times New Roman", 1, 20)); // NOI18N
         labNomEntrep.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jPanel1.add(labNomEntrep, new org.netbeans.lib.awtextra.AbsoluteConstraints(219, 50, 350, 36));
 
         jLabel5.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel5.setText("قيمة الدفعة : ");
-        jPanel1.add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 100, 94, 27));
 
         labSommeVersement.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         labSommeVersement.setForeground(new java.awt.Color(0, 0, 204));
         labSommeVersement.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labSommeVersement.setText("0.00");
-        jPanel1.add(labSommeVersement, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 100, 90, 32));
 
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jLabel6.setText("الديون المتبقية لدفعة :");
-        jPanel1.add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 130, -1, 27));
 
         labRestCredit.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         labRestCredit.setForeground(new java.awt.Color(255, 51, 51));
         labRestCredit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labRestCredit.setText("0.00");
-        jPanel1.add(labRestCredit, new org.netbeans.lib.awtextra.AbsoluteConstraints(467, 132, 90, 30));
 
         jLabel1.setBackground(new java.awt.Color(43, 43, 140));
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 26)); // NOI18N
@@ -251,61 +272,50 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("تفاصيل عملية الدفع");
         jLabel1.setOpaque(true);
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 710, 40));
 
         jLabel7.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel7.setText("طريقة الدفع: ");
-        jPanel1.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 70, 80, 30));
 
         labDatVersement.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         labDatVersement.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        jPanel1.add(labDatVersement, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 100, 30));
 
         jLabel2.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel2.setText("المبلغ الزائد لدفعة :");
-        jPanel1.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 170, 130, -1));
 
         labAugMantant.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         labAugMantant.setForeground(new java.awt.Color(51, 153, 0));
         labAugMantant.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labAugMantant.setText("0.00");
-        jPanel1.add(labAugMantant, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 170, 90, -1));
 
         totalAchat.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         totalAchat.setForeground(new java.awt.Color(0, 0, 153));
         totalAchat.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         totalAchat.setText("0.00");
-        jPanel1.add(totalAchat, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 590, 140, 40));
 
         jLabel8.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel8.setText("المجموع :");
-        jPanel1.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 590, 120, 40));
 
         jLabel3.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel3.setText("دج");
-        jPanel1.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 110, 20, 20));
 
         jLabel9.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel9.setText("دج");
-        jPanel1.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 600, 20, 20));
 
         jLabel10.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel10.setText("دج");
-        jPanel1.add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 170, 20, 20));
 
         jLabel11.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel11.setText("دج");
-        jPanel1.add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 140, 20, 20));
 
         jLabel12.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
         jLabel12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         jLabel12.setText("تـاريــخ الدفــع: ");
-        jPanel1.add(jLabel12, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 40, 100, 30));
 
         radioEsp.setBackground(new java.awt.Color(51, 204, 0));
         radioEsp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-cash-40.png"))); // NOI18N
         radioEsp.setText("نقدا");
+        radioEsp.setEnabled(false);
         radioEsp.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         radioEsp.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         radioEsp.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -314,11 +324,11 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 radioEspActionPerformed(evt);
             }
         });
-        jPanel1.add(radioEsp, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 90, 35));
 
         radioCart.setBackground(new java.awt.Color(51, 204, 0));
         radioCart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-carte-bancaire-40.png"))); // NOI18N
         radioCart.setText("بطاقة");
+        radioCart.setEnabled(false);
         radioCart.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         radioCart.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         radioCart.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -327,11 +337,11 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 radioCartActionPerformed(evt);
             }
         });
-        jPanel1.add(radioCart, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 110, 90, 30));
 
         radioChequ.setBackground(new java.awt.Color(51, 204, 0));
         radioChequ.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/cheque-de-paiement.png"))); // NOI18N
         radioChequ.setText("صك بريدي");
+        radioChequ.setEnabled(false);
         radioChequ.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         radioChequ.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         radioChequ.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -340,10 +350,10 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 radioChequActionPerformed(evt);
             }
         });
-        jPanel1.add(radioChequ, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 142, 110, 30));
 
         txtNumCheque.setForeground(new java.awt.Color(0, 0, 102));
         txtNumCheque.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
+        txtNumCheque.setEnabled(false);
         txtNumCheque.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
         txtNumCheque.setLabelText("رقم الحساب البريدي");
         txtNumCheque.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -356,18 +366,185 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
                 txtNumChequeKeyTyped(evt);
             }
         });
-        jPanel1.add(txtNumCheque, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 170, 180, 40));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 703, Short.MAX_VALUE)
+        jLabel13.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel13.setText("المـبـيـعـات :");
+
+        labAchats.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        labAchats.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labAchats.setText("0.00");
+
+        jLabel15.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel15.setText("دج");
+
+        jLabel16.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel16.setText("ديون سابقة :");
+
+        labPreviousCredit.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
+        labPreviousCredit.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labPreviousCredit.setText("0.00");
+
+        jLabel18.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        jLabel18.setText("دج");
+
+        labModPayemen.setFont(new java.awt.Font("Times New Roman", 1, 16)); // NOI18N
+        labModPayemen.setForeground(new java.awt.Color(51, 0, 204));
+        labModPayemen.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(labDatVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, 0)
+                                .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(6, 6, 6)
+                                .addComponent(labModPayemen, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(txtNumCheque, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(9, 9, 9)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(221, 221, 221)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(10, 10, 10))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labAchats, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(labPreviousCredit, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(59, 59, 59))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(labNomEntrep, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(1, 1, 1)
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(219, 219, 219)
+                                .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(labSommeVersement, javax.swing.GroupLayout.DEFAULT_SIZE, 112, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(50, 50, 50))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(170, 170, 170)
+                        .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(totalAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(labAugMantant, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(144, 144, 144)
+                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(labRestCredit, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel6)
+                .addGap(37, 37, 37))
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labDatVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(labModPayemen, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtNumCheque, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labNomEntrep, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(labPreviousCredit)
+                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(12, 12, 12)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel13)
+                            .addComponent(labAchats)
+                            .addComponent(jLabel15))))
+                .addGap(3, 3, 3)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(radioEsp, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(radioChequ, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(radioCart, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel18)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(labSommeVersement, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(labRestCredit, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11)
+                    .addComponent(labAugMantant)
+                    .addComponent(jLabel10)
+                    .addComponent(jLabel2))
+                .addGap(18, 18, 18)
+                .addComponent(panRound4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(jLabel9))
+                    .addComponent(totalAchat, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        getContentPane().add(jPanel1, "card2");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -457,6 +634,10 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel16;
+    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -467,9 +648,12 @@ public class DetaillVersementEntrepriceForm extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JLabel labAchats;
     private javax.swing.JLabel labAugMantant;
     private javax.swing.JLabel labDatVersement;
+    private javax.swing.JLabel labModPayemen;
     private javax.swing.JLabel labNomEntrep;
+    private javax.swing.JLabel labPreviousCredit;
     private javax.swing.JLabel labRestCredit;
     private javax.swing.JLabel labSommeVersement;
     private ui.card.panRound panRound4;

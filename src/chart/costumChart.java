@@ -10,6 +10,7 @@ import config.DatabaseConnection;
 import dao.impl.EntrepriseDAOImpl;
 import dao.impl.VersementEntrepriseDAOImpl;
 import entity.Entreprise;
+import entity.Utils;
 import entity.VersementEntreprise;
 import java.awt.Color;
 import java.sql.Connection;
@@ -35,7 +36,7 @@ public class costumChart extends javax.swing.JPanel {
      * Creates new form NewJPanel
      */
     DecimalFormat formatter = new DecimalFormat("#,##0.00", new DecimalFormatSymbols(Locale.US));
-
+    Utils utils = new Utils();
     public costumChart() {
         initComponents();
 
@@ -47,7 +48,7 @@ public class costumChart extends javax.swing.JPanel {
         setData2();
         //    test();
     }
-private void setData2() {
+public void setData2() {
 
     System.out.println("========== setData2 START ==========");
 
@@ -69,8 +70,7 @@ private void setData2() {
 
         System.out.println("3 - VersementEntrepriseDAOImpl OK");
 
-        EntrepriseDAOImpl entrepriseDAOImpl
-                = new EntrepriseDAOImpl(connection);
+        EntrepriseDAOImpl entrepriseDAOImpl = new EntrepriseDAOImpl(connection);
 
         System.out.println("4 - EntrepriseDAOImpl OK");
 
@@ -88,9 +88,6 @@ private void setData2() {
                     = versementEntrepriseDAOImpl
                      .getVersementEntrepriseByIdEntreprise(entreprise);
 
-            System.out.println("Versements trouvés = "
-                    + versementEntreprises.size());
-
             double sommeVersement = versementEntreprises.stream()
                     .mapToDouble(VersementEntreprise::getMontant)
                     .sum();
@@ -99,7 +96,7 @@ private void setData2() {
 
             chart.addData(
                     new ModelChart(
-                            entreprise.getNom_ar(),
+                         !entreprise.getNom_fr().isEmpty()? utils.getInitiales(entreprise.getNom_fr()) : utils.getInitiales(entreprise.getNom_ar()),
                             new double[]{sommeVersement}
                     )
             );

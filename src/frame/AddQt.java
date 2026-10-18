@@ -8,6 +8,7 @@ import config.DatabaseConnection;
 import dao.impl.ProduitDAOImpl;
 import entity.Produit;
 import home.HomeForm;
+import java.awt.event.KeyEvent;
 import java.sql.Connection;
 
 /**
@@ -20,12 +21,13 @@ public class AddQt extends javax.swing.JDialog {
     Produit produit;
     ProduitDAOImpl produitDAOImpl;
     Connection connection;
-    public AddQt(java.awt.Frame parent, boolean modal, Produit produit ) {
+
+    public AddQt(java.awt.Frame parent, boolean modal, Produit produit) {
         super(parent, modal);
         this.homeForm = (HomeForm) parent;
-        this.produit= produit ;
+        this.produit = produit;
         connection = DatabaseConnection.getInstance().getConnection();
-        produitDAOImpl = new ProduitDAOImpl(connection);  
+        produitDAOImpl = new ProduitDAOImpl(connection);
         initComponents();
         setLocationRelativeTo(this);
         txtNomPro.setText(produit.getDesignation());
@@ -154,7 +156,17 @@ public class AddQt extends javax.swing.JDialog {
     }//GEN-LAST:event_txt_qtActionPerformed
 
     private void txt_qtKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_qtKeyPressed
-      
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            int Qt = Integer.parseInt(txt_qt.getText());
+            int newQt = produit.getQty() + Qt;
+            produit.setQty(newQt);
+            if (produitDAOImpl.update(produit) > 0) {
+                System.out.println("update QtProduit");
+                this.dispose();
+                homeForm.getPan_produit().setProduitsOnTab();
+
+            }
+        }
     }//GEN-LAST:event_txt_qtKeyPressed
 
     private void txt_qtKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txt_qtKeyTyped
@@ -164,16 +176,16 @@ public class AddQt extends javax.swing.JDialog {
     }//GEN-LAST:event_txt_qtKeyTyped
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-        int Qt= Integer.parseInt( txt_qt.getText());
-        int newQt = produit.getQty()+Qt;
+        int Qt = Integer.parseInt(txt_qt.getText());
+        int newQt = produit.getQty() + Qt;
         produit.setQty(newQt);
-        if(produitDAOImpl.update(produit)>0){
+        if (produitDAOImpl.update(produit) > 0) {
             System.out.println("update QtProduit");
             this.dispose();
             homeForm.getPan_produit().setProduitsOnTab();
-            
+
         }
-        
+
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
@@ -210,7 +222,7 @@ public class AddQt extends javax.swing.JDialog {
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                AddQt dialog = new AddQt(new javax.swing.JFrame(), true,null);
+                AddQt dialog = new AddQt(new javax.swing.JFrame(), true, null);
                 dialog.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosing(java.awt.event.WindowEvent e) {
