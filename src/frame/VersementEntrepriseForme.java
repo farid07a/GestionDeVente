@@ -199,6 +199,8 @@ public class VersementEntrepriseForme extends javax.swing.JDialog {
         LabAugmentations2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabAugmentations2.setText("0.00");
 
+        jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons_dollar_bag.png"))); // NOI18N
+
         jLabel6.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(0, 102, 0));
         jLabel6.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -345,7 +347,7 @@ public class VersementEntrepriseForme extends javax.swing.JDialog {
         LabMontanTotal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         LabMontanTotal.setText("0.00");
 
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons8-dollar-bag-48.png"))); // NOI18N
+        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/icon/icons_dollar_bag.png"))); // NOI18N
 
         jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 102, 0));
